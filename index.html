@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مركز يثرب الخيري التخصصي | قريباً</title>
     
-    <!-- Font Awesome 6 (CDN سريع) -->
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* reset متقدم */
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +23,147 @@
             overflow-x: hidden;
         }
 
-        /* خلفية متحركة راقية */
+        /* ===== شاشة التحميل الترحيبية ===== */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #0a5d7a, #0e7c9e);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 30px;
+        }
+
+        /* اللوجو في شاشة التحميل */
+        .splash-logo {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 40px;
+            position: relative;
+            perspective: 2000px;
+        }
+
+        .splash-logo-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: splashFlip 2s ease-in-out forwards;
+        }
+
+        @keyframes splashFlip {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(180deg); }
+        }
+
+        .splash-logo-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .splash-logo-front {
+            background: white;
+            transform: rotateY(0deg);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .splash-logo-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .splash-logo-back {
+            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            transform: rotateY(180deg);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            color: #0e7c9e;
+        }
+
+        .splash-logo-back i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .splash-logo-back span {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* عنوان التحميل */
+        .splash-title {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* شريط التحميل */
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffd700, #fbbf24);
+            border-radius: 30px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px #fbbf24;
+        }
+
+        .progress-text {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            direction: ltr;
+        }
+
+        .progress-text span {
+            font-size: 1.2rem;
+            margin-right: 5px;
+            color: #ffd700;
+        }
+
+        /* ===== المحتوى الرئيسي (يظهر بعد الاختفاء) ===== */
+        .main-site {
+            opacity: 1;
+            transition: opacity 1s;
+        }
+
+        /* خلفية متحركة */
         .bg-pattern {
             position: fixed;
             top: 0;
@@ -182,7 +321,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 1s;
+            transition: transform 0.5s;
         }
 
         .logo-face {
@@ -195,12 +334,19 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 30px 50px rgba(0, 80, 100, 0.3);
+            overflow: hidden;
         }
 
         .logo-front {
-            background: linear-gradient(145deg, #ffffff, #f1f9ff);
+            background: white;
             border: 3px solid rgba(14, 124, 158, 0.3);
             transform: rotateY(0deg);
+        }
+
+        .logo-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .logo-back {
@@ -210,25 +356,13 @@
             border: 3px solid rgba(255, 255, 255, 0.3);
             font-size: 2.5rem;
             font-weight: bold;
+            display: flex;
+            flex-direction: column;
         }
 
-        .logo-front i {
-            font-size: 8rem;
-            color: #0e7c9e;
-            filter: drop-shadow(0 10px 15px rgba(14,124,158,0.3));
-        }
-
-        .logo-front span {
-            position: absolute;
-            bottom: 30px;
-            font-size: 1.5rem;
-            color: #155e75;
-            font-weight: 600;
-            background: rgba(255,255,255,0.8);
-            padding: 5px 25px;
-            border-radius: 40px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(14,124,158,0.2);
+        .logo-back i {
+            font-size: 5rem;
+            margin-bottom: 20px;
         }
 
         /* النصوص الرئيسية */
@@ -300,53 +434,6 @@
             font-size: 1rem;
             color: #2d5a73;
             font-weight: 600;
-        }
-
-        /* فورم الإيميل */
-        .notify-form {
-            background: white;
-            padding: 15px;
-            border-radius: 70px;
-            display: flex;
-            gap: 10px;
-            box-shadow: 0 20px 40px rgba(0, 70, 100, 0.2);
-            max-width: 500px;
-            margin: 40px 0;
-            border: 1px solid rgba(14,124,158,0.2);
-        }
-
-        .notify-form input {
-            flex: 1;
-            padding: 18px 25px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            direction: rtl;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .notify-form input:focus {
-            outline: none;
-        }
-
-        .notify-form button {
-            background: linear-gradient(145deg, #0e7c9e, #0a5d7a);
-            color: white;
-            border: none;
-            padding: 0 35px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .notify-form button:hover {
-            background: linear-gradient(145deg, #0a5d7a, #0e7c9e);
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px rgba(14,124,158,0.3);
         }
 
         /* بطاقات الخدمات */
@@ -435,8 +522,8 @@
             .services-grid { grid-template-columns: repeat(2, 1fr); }
             .main-content { flex-direction: column; text-align: center; }
             .right-section { text-align: center; }
-            .notify-form { margin: 40px auto; }
             .countdown { justify-content: center; }
+            .splash-logo { width: 220px; height: 220px; }
         }
 
         @media (max-width: 640px) {
@@ -444,153 +531,194 @@
             .countdown { flex-wrap: wrap; }
             .services-grid { grid-template-columns: 1fr; }
             .top-bar { flex-direction: column; gap: 15px; }
+            .splash-logo { width: 180px; height: 180px; }
+            .splash-title { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-    <!-- خلفية متحركة -->
-    <div class="bg-pattern"></div>
-    
-    <!-- عناصر طبية عائمة -->
-    <div class="floating-medical">
-        <div class="float-item"><i class="fas fa-heartbeat"></i></div>
-        <div class="float-item"><i class="fas fa-stethoscope"></i></div>
-        <div class="float-item"><i class="fas fa-caduceus"></i></div>
-        <div class="float-item"><i class="fas fa-pills"></i></div>
+    <!-- شاشة التحميل الترحيبية -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="splash-logo-3d" id="splashLogo">
+                    <div class="splash-logo-face splash-logo-front">
+                        <img src="https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7" alt="مركز يثرب الخيري التخصصي">
+                    </div>
+                    <div class="splash-logo-face splash-logo-back">
+                        <i class="fas fa-heart"></i>
+                        <span>يثرب</span>
+                    </div>
+                </div>
+            </div>
+            <h2 class="splash-title">مركز يثرب الخيري التخصصي</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0<span>%</span></div>
+        </div>
     </div>
 
-    <div class="container">
-        <!-- الشريط العلوي -->
-        <div class="top-bar">
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-phone-alt"></i>
-                    <span>١٥٠٠٠</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>المدينة المنورة</span>
-                </div>
-            </div>
-            <div class="lang-switch">
-                <button class="lang-btn active">العربية</button>
-                <button class="lang-btn">English</button>
-            </div>
+    <!-- المحتوى الرئيسي -->
+    <div class="main-site" id="mainSite">
+        <!-- خلفية متحركة -->
+        <div class="bg-pattern"></div>
+        
+        <!-- عناصر طبية عائمة -->
+        <div class="floating-medical">
+            <div class="float-item"><i class="fas fa-heartbeat"></i></div>
+            <div class="float-item"><i class="fas fa-stethoscope"></i></div>
+            <div class="float-item"><i class="fas fa-caduceus"></i></div>
+            <div class="float-item"><i class="fas fa-pills"></i></div>
         </div>
 
-        <!-- المحتوى الرئيسي -->
-        <div class="main-content">
-            <div class="right-section">
-                <div class="coming-badge">
-                    <i class="fas fa-calendar-alt" style="margin-left: 10px;"></i>
-                    الافتتاح قريباً
-                </div>
-                
-                <h1>
-                    مركز <span class="highlight">يثرب الخيري</span><br>
-                    التخصصي
-                </h1>
-                
-                <p class="subtitle">
-                    صرح طبي متكامل يقدم خدمات صحية متميزة بمعايير عالمية 
-                    وكوادر بشرية متخصصة، بروح خيرية أصيلة
-                </p>
-
-                <!-- العد التنازلي -->
-                <div class="countdown">
-                    <div class="count-item">
-                        <div class="count-number" id="days">٠٠</div>
-                        <div class="count-label">يوم</div>
+        <div class="container">
+            <!-- الشريط العلوي -->
+            <div class="top-bar">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>١٥٠٠٠</span>
                     </div>
-                    <div class="count-item">
-                        <div class="count-number" id="hours">٠٠</div>
-                        <div class="count-label">ساعة</div>
-                    </div>
-                    <div class="count-item">
-                        <div class="count-number" id="minutes">٠٠</div>
-                        <div class="count-label">دقيقة</div>
-                    </div>
-                    <div class="count-item">
-                        <div class="count-number" id="seconds">٠٠</div>
-                        <div class="count-label">ثانية</div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>المدينة المنورة</span>
                     </div>
                 </div>
-
-                <!-- فورم الإشعارات -->
-                <form class="notify-form" onsubmit="event.preventDefault(); notifyMe()">
-                    <button type="submit">نبهني عند الافتتاح</button>
-                    <input type="email" placeholder="بريدك الإلكتروني" required id="notifyEmail">
-                </form>
-
-                <!-- بطاقات الخدمات -->
-                <div class="services-grid">
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fas fa-user-md"></i></div>
-                        <div class="service-title">عيادات تخصصية</div>
-                        <div class="service-desc">باطنة - مسالك - أطفال</div>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fas fa-flask"></i></div>
-                        <div class="service-title">معمل متطور</div>
-                        <div class="service-desc">تحاليل دقيقة وسريعة</div>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fas fa-baby"></i></div>
-                        <div class="service-title">حضانات أطفال</div>
-                        <div class="service-desc">رعاية متكاملة</div>
-                    </div>
-                    <div class="service-card">
-                        <div class="service-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                        <div class="service-title">خدمات خيرية</div>
-                        <div class="service-desc">بأسعار مخفضة</div>
-                    </div>
+                <div class="lang-switch">
+                    <button class="lang-btn active">العربية</button>
+                    <button class="lang-btn">English</button>
                 </div>
             </div>
 
-            <div class="left-section">
-                <!-- اللوجو ثلاثي الأبعاد -->
-                <div class="logo-container" id="logoContainer">
-                    <div class="logo-3d" id="logo3d">
-                        <div class="logo-face logo-front">
-                            <i class="fas fa-caduceus"></i>
-                            <span>يثرب</span>
+            <!-- المحتوى الرئيسي -->
+            <div class="main-content">
+                <div class="right-section">
+                    <div class="coming-badge">
+                        <i class="fas fa-calendar-alt" style="margin-left: 10px;"></i>
+                        الافتتاح قريباً
+                    </div>
+                    
+                    <h1>
+                        مركز <span class="highlight">يثرب الخيري</span><br>
+                        التخصصي
+                    </h1>
+                    
+                    <p class="subtitle">
+                        صرح طبي متكامل يقدم خدمات صحية متميزة بمعايير عالمية 
+                        وكوادر بشرية متخصصة، بروح خيرية أصيلة
+                    </p>
+
+                    <!-- العد التنازلي -->
+                    <div class="countdown">
+                        <div class="count-item">
+                            <div class="count-number" id="days">٠٠</div>
+                            <div class="count-label">يوم</div>
                         </div>
-                        <div class="logo-face logo-back">
-                            <i class="fas fa-heart"></i>
-                            <span style="font-size: 1.8rem; margin-top: 20px;">الخيري</span>
+                        <div class="count-item">
+                            <div class="count-number" id="hours">٠٠</div>
+                            <div class="count-label">ساعة</div>
+                        </div>
+                        <div class="count-item">
+                            <div class="count-number" id="minutes">٠٠</div>
+                            <div class="count-label">دقيقة</div>
+                        </div>
+                        <div class="count-item">
+                            <div class="count-number" id="seconds">٠٠</div>
+                            <div class="count-label">ثانية</div>
+                        </div>
+                    </div>
+
+                    <!-- بطاقات الخدمات -->
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-user-md"></i></div>
+                            <div class="service-title">عيادات تخصصية</div>
+                            <div class="service-desc">باطنة - مسالك - أطفال</div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-flask"></i></div>
+                            <div class="service-title">معمل متطور</div>
+                            <div class="service-desc">تحاليل دقيقة وسريعة</div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-baby"></i></div>
+                            <div class="service-title">حضانات أطفال</div>
+                            <div class="service-desc">رعاية متكاملة</div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                            <div class="service-title">خدمات خيرية</div>
+                            <div class="service-desc">بأسعار مخفضة</div>
+                        </div>
+                        <!-- بطاقة التمريض الجديدة -->
+                        <div class="service-card">
+                            <div class="service-icon"><i class="fas fa-user-nurse"></i></div>
+                            <div class="service-title">تمريض منزلي</div>
+                            <div class="service-desc">رعاية تمريضية في المنزل</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- الفوتر -->
-        <div class="footer">
-            <div>© ٢٠٢٤ مركز يثرب الخيري التخصصي - جميع الحقوق محفوظة</div>
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                <div class="left-section">
+                    <!-- اللوجو ثلاثي الأبعاد -->
+                    <div class="logo-container" id="logoContainer">
+                        <div class="logo-3d" id="logo3d">
+                            <div class="logo-face logo-front">
+                                <img src="https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7" alt="مركز يثرب الخيري التخصصي">
+                            </div>
+                            <div class="logo-face logo-back">
+                                <i class="fas fa-heart"></i>
+                                <span style="font-size: 1.8rem; margin-top: 20px;">يثرب الخيري</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الفوتر -->
+            <div class="footer">
+                <div>© ٢٠٢٦ مركز يثرب الخيري التخصصي - جميع الحقوق محفوظة</div>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/ythrb.altkhssy" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // تأثيرات اللوجو 3D
+        // ===== شاشة التحميل =====
+        const splashScreen = document.getElementById('splashScreen');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const mainSite = document.getElementById('mainSite');
+        
+        let progress = 0;
+        
+        // إخفاء المحتوى الرئيسي في البداية
+        mainSite.style.opacity = '0';
+        
+        // زيادة التحميل
+        const interval = setInterval(() => {
+            progress += 1;
+            progressBar.style.width = progress + '%';
+            progressText.innerHTML = progress + '<span>%</span>';
+            
+            if (progress >= 100) {
+                clearInterval(interval);
+                
+                // بعد اكتمال التحميل
+                setTimeout(() => {
+                    splashScreen.classList.add('hidden');
+                    mainSite.style.opacity = '1';
+                }, 500);
+            }
+        }, 30); // 30ms * 100 = 3 ثواني
+
+        // ===== تأثيرات اللوجو 3D =====
         const logoContainer = document.getElementById('logoContainer');
         const logo3d = document.getElementById('logo3d');
         
-        // الفلوب عند التحميل
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                logo3d.style.transform = 'rotateY(180deg)';
-                setTimeout(() => {
-                    logo3d.style.transform = 'rotateY(0deg)';
-                }, 1500);
-            }, 500);
-        });
-
         // الهروب عند hover
         logoContainer.addEventListener('mouseenter', () => {
             logo3d.style.transform = 'rotateY(180deg)';
@@ -610,9 +738,8 @@
             }, 600);
         });
 
-        // العد التنازلي (افتراضي 30 يوم من اليوم)
+        // ===== العد التنازلي =====
         function updateCountdown() {
-            // تاريخ الافتتاح (بعد 30 يوم من اليوم)
             const now = new Date();
             const openingDate = new Date(now);
             openingDate.setDate(now.getDate() + 30);
@@ -632,15 +759,6 @@
 
         setInterval(updateCountdown, 1000);
         updateCountdown();
-
-        // دالة الإشعار
-        function notifyMe() {
-            const email = document.getElementById('notifyEmail').value;
-            if(email) {
-                alert(`✅ شكراً لك ${email}\nسيتم إشعارك عند افتتاح المركز`);
-                document.getElementById('notifyEmail').value = '';
-            }
-        }
 
         // تحويل الأرقام للعربية
         function toArabicNumbers(text) {
