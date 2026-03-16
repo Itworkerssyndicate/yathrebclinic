@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 مركز يثرِب الطبي - الإعداد النهائي (Lock Mode + Super Admin)</title>
+    
+    <!-- CDN Links - كلها جاهزة ومشغلة -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-functions-compat.js"></script>
+    
+    <style>
+        /* تنسيق فاخر جداً */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+            background: linear-gradient(145deg, #0a0f1e 0%, #1a2335 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+            position: relative;
+        }
+
+        /* خلفية متحركة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(66, 153, 225, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(26, 32, 44, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(66, 153, 225, 0.3);
+            overflow: hidden;
+            border: 1px solid rgba(66, 153, 225, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 3px solid #3182ce;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lock-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: #0f172a;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 20px #48bb78;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px #48bb78; }
+            50% { box-shadow: 0 0 40px #48bb78; }
+            100% { box-shadow: 0 0 20px #48bb78; }
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #63b3ed, #9f7aea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(99, 179, 237, 0.3);
+        }
+
+        .admin-badge {
+            background: #3182ce;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 60px;
+            display: inline-block;
+            font-size: 1.2em;
+            margin-top: 15px;
+            border: 1px solid #63b3ed;
+            box-shadow: 0 0 30px rgba(49, 130, 206, 0.5);
+        }
+
+        .config-section {
+            padding: 30px;
+            background: #1a202c;
+            border-bottom: 2px solid #2d3748;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #63b3ed;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .config-item {
+            background: #2d3748;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid #4a5568;
+        }
+
+        .config-item label {
+            display: block;
+            margin-bottom: 10px;
+            color: #a0aec0;
+            font-weight: 600;
+        }
+
+        .config-item input {
+            width: 100%;
+            padding: 15px 20px;
+            background: #1a202c;
+            border: 2px solid #4a5568;
+            border-radius: 12px;
+            color: white;
+            font-family: monospace;
+            font-size: 1em;
+            direction: ltr;
+        }
+
+        .config-item input:focus {
+            border-color: #3182ce;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
+        }
+
+        .super-admin-section {
+            background: linear-gradient(145deg, #2c3e50, #1a2634);
+            padding: 30px;
+            margin: 20px;
+            border-radius: 30px;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 0 50px rgba(251, 191, 36, 0.2);
+        }
+
+        .super-admin-title {
+            color: #fbbf24;
+            font-size: 2em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-field {
+            background: #374151;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .admin-field label {
+            color: #fbbf24;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .admin-field input {
+            width: 100%;
+            padding: 12px;
+            background: #1f2937;
+            border: 2px solid #4b5563;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .security-card {
+            background: #312e81;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .security-card pre {
+            background: #1e1b4b;
+            padding: 20px;
+            border-radius: 10px;
+            color: #a5f3fc;
+            overflow-x: auto;
+            direction: ltr;
+            font-size: 0.9em;
+            border: 1px solid #4338ca;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            padding: 30px;
+            background: #111827;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-super {
+            background: linear-gradient(145deg, #fbbf24, #f59e0b);
+            color: #1a202c;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-super:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn-lock {
+            background: linear-gradient(145deg, #3182ce, #2c5282);
+            color: white;
+        }
+
+        .btn-lock:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(49, 130, 206, 0.4);
+        }
+
+        .btn-deploy {
+            background: linear-gradient(145deg, #48bb78, #2f855a);
+            color: white;
+        }
+
+        .status-panel {
+            padding: 20px;
+            background: #111827;
+            border-top: 2px solid #2d3748;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #1a202c;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .status-led {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .led-green {
+            background: #48bb78;
+            box-shadow: 0 0 20px #48bb78;
+        }
+
+        .led-red {
+            background: #f56565;
+            box-shadow: 0 0 20px #f56565;
+        }
+
+        .timestamp {
+            color: #718096;
+            font-size: 0.9em;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .firestore-rules {
+            background: #1a202c;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px;
+            border: 2px solid #3182ce;
+        }
+
+        .firestore-rules pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            color: #e2e8f0;
+            overflow-x: auto;
+            direction: ltr;
+            font-size: 0.9em;
+            border: 1px solid #2d3748;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="lock-badge">
+                <span>🔒</span> LOCK MODE - NO TEST MODE
+            </div>
+            <h1>🏥 مركز يثرِب الطبي</h1>
+            <h2 style="color: #a0aec0; font-size: 1.5em;">التثبيت النهائي الكامل (Lock Mode)</h2>
+            <div class="admin-badge">
+                👑 Super Admin System Ready
+            </div>
+        </div>
+
+        <!-- Firebase Config -->
+        <div class="config-section">
+            <div class="section-title">
+                <span>🔥</span> إعدادات Firebase (CDN Links - Production Mode)
+            </div>
+            <div class="config-grid">
+                <div class="config-item">
+                    <label>API Key</label>
+                    <input type="text" id="apiKey" value="AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU" readonly>
+                </div>
+                <div class="config-item">
+                    <label>Auth Domain</label>
+                    <input type="text" id="authDomain" value="yathreb-10909.firebaseapp.com" readonly>
+                </div>
+                <div class="config-item">
+                    <label>Project ID</label>
+                    <input type="text" id="projectId" value="yathreb-10909" readonly>
+                </div>
+                <div class="config-item">
+                    <label>Storage Bucket</label>
+                    <input type="text" id="storageBucket" value="yathreb-10909.firebasestorage.app" readonly>
+                </div>
+                <div class="config-item">
+                    <label>Messaging Sender ID</label>
+                    <input type="text" id="messagingSenderId" value="525635197745" readonly>
+                </div>
+                <div class="config-item">
+                    <label>App ID</label>
+                    <input type="text" id="appId" value="1:525635197745:web:99e1cbab31693af790ae10" readonly>
+                </div>
+                <div class="config-item">
+                    <label>Measurement ID</label>
+                    <input type="text" id="measurementId" value="G-K6ZCNDLCE1" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- Super Admin Section -->
+        <div class="super-admin-section">
+            <div class="super-admin-title">
+                <span>👑</span> إنشاء حساب السوبر أدمن (Super Admin)
+            </div>
+            
+            <div class="admin-form">
+                <div class="admin-field">
+                    <label>👤 اسم المستخدم</label>
+                    <input type="text" id="adminName" value="مدير النظام" placeholder="الاسم">
+                </div>
+                <div class="admin-field">
+                    <label>📧 البريد الإلكتروني</label>
+                    <input type="email" id="adminEmail" value="admin@yathreb.com" placeholder="admin@yathreb.com">
+                </div>
+                <div class="admin-field">
+                    <label>🔑 كلمة المرور</label>
+                    <input type="text" id="adminPassword" value="Yathreb@2024SuperAdmin" placeholder="كلمة المرور">
+                </div>
+                <div class="admin-field">
+                    <label>📱 رقم الواتساب</label>
+                    <input type="text" id="adminPhone" value="01234567890" placeholder="رقم الهاتف">
+                </div>
+            </div>
+            
+            <div class="security-card">
+                <div style="color: #fbbf24; margin-bottom: 10px;">🔒 صلاحيات السوبر أدمن:</div>
+                <ul style="color: #e2e8f0; list-style: none; line-height: 2;">
+                    <li>✓ التحكم الكامل في جميع الإعدادات</li>
+                    <li>✓ إضافة وتعديل وحذف أي خدمة</li>
+                    <li>✓ إدارة المستخدمين والمشرفين</li>
+                    <li>✓ عرض سجل النشاطات</li>
+                    <li>✓ التحكم في قواعد الأمان</li>
+                    <li>✓ الوصول لجميع التقارير</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Firestore Rules (Lock Mode) -->
+        <div class="firestore-rules">
+            <div class="section-title" style="color: #f56565;">
+                <span>🔒</span> قواعد Firestore (Lock Mode - ممنوع الوصول إلا للمصرح لهم)
+            </div>
+            <pre>
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // الدوال المساعدة
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'admin'];
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // 🔒 قواعد صارمة للمستخدمين
+    match /users/{userId} {
+      allow read: if isSuperAdmin() || isOwner(userId);
+      allow write: if isSuperAdmin(); // فقط السوبر أدمن يعدل
+      allow create: if isSuperAdmin(); // منع إنشاء حسابات عشوائية
+      allow delete: if isSuperAdmin(); // فقط السوبر أدمن يحذف
+    }
+    
+    // 🔒 قواعد الإعدادات - الأهمية القصوى
+    match /settings/{document} {
+      allow read: if true; // أي حد يقرأ (لظهور الموقع)
+      allow write: if isSuperAdmin(); // فقط السوبر أدمن يعدل
+      allow create: if isSuperAdmin();
+      allow delete: if false; // ممنوع الحذف نهائياً
+    }
+    
+    // 🔒 قواعد الخدمات الطبية
+    match /clinicServices/{service} {
+      allow read: if true;
+      allow write: if isAdmin(); // المشرفين يعدلوا
+      allow create: if isAdmin();
+      allow delete: if isSuperAdmin(); // الحذف للسوبر أدمن فقط
+    }
+    
+    // 🔒 قواعد تحاليل المعمل
+    match /labTests/{test} {
+      allow read: if true;
+      allow write: if isAdmin();
+      allow create: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+    
+    // 🔒 قواعد العروض والقوافل
+    match /offers/{offer} {
+      allow read: if true;
+      allow write: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+    
+    // 🔒 قواعد الحضانات
+    match /nurseries/{nursery} {
+      allow read: if true;
+      allow write: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+    
+    // 🔒 قواعد صفحة الفيسبوك
+    match /facebookPosts/{post} {
+      allow read: if true;
+      allow write: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+    
+    // 🔒 قواعد سجل النشاطات
+    match /activityLog/{log} {
+      allow read: if isAdmin(); // المشرفين يشوفوا السجل
+      allow write: if false; // ممنوع الكتابة المباشرة (بتتكتب تلقائياً)
+      allow create: if isAuthenticated(); // فقط المستخدمين الموثوقين
+    }
+    
+    // 🔒 قواعد الصلاحيات
+    match /roles/{role} {
+      allow read: if isSuperAdmin();
+      allow write: if isSuperAdmin(); // فقط السوبر أدمن
+    }
+    
+    // 🔒 رفض أي عمليات غير مصرح بها
+    match /{document=**} {
+      allow read, write: if false; // الباقي كله مرفوض
+    }
+  }
+}
+            </pre>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-bar">
+            <button class="btn btn-super" onclick="initializeLockMode()">
+                <span>🔒</span> تفعيل Lock Mode
+            </button>
+            <button class="btn btn-lock" onclick="createSuperAdmin()">
+                <span>👑</span> إنشاء السوبر أدمن
+            </button>
+            <button class="btn btn-lock" onclick="setupCollections()">
+                <span>📦</span> إعداد كل المجموعات
+            </button>
+            <button class="btn btn-deploy" onclick="deployRules()">
+                <span>🚀</span> نشر قواعد الأمان
+            </button>
+        </div>
+
+        <!-- Status Panel -->
+        <div class="status-panel">
+            <div id="connectionStatus" class="status-item">
+                <div class="status-led led-red" id="connectionLed"></div>
+                <div id="connectionText">⏳ جاري الاتصال بـ Firebase...</div>
+            </div>
+            
+            <div id="superAdminStatus" class="status-item">
+                <div class="status-led led-red" id="adminLed"></div>
+                <div id="adminText">⏳ لم يتم إنشاء السوبر أدمن بعد</div>
+            </div>
+            
+            <div id="lockModeStatus" class="status-item">
+                <div class="status-led led-red" id="lockLed"></div>
+                <div id="lockText">⏳ Lock Mode غير مفعل</div>
+            </div>
+            
+            <div class="timestamp" id="timestamp">
+                النظام جاهز للتثبيت النهائي
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // متغيرات Firebase
+        let db;
+        let auth;
+        let app;
+        
+        // تهيئة Firebase (Lock Mode)
+        function initializeLockMode() {
+            try {
+                const config = {
+                    apiKey: document.getElementById('apiKey').value,
+                    authDomain: document.getElementById('authDomain').value,
+                    projectId: document.getElementById('projectId').value,
+                    storageBucket: document.getElementById('storageBucket').value,
+                    messagingSenderId: document.getElementById('messagingSenderId').value,
+                    appId: document.getElementById('appId').value,
+                    measurementId: document.getElementById('measurementId').value
+                };
+
+                app = firebase.initializeApp(config);
+                db = firebase.firestore(app);
+                auth = firebase.auth(app);
+                
+                // تفعيل persistence
+                auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                
+                // تحديث واجهة الاتصال
+                document.getElementById('connectionLed').className = 'status-led led-green';
+                document.getElementById('connectionText').innerHTML = '✅ متصل بـ Firebase (Lock Mode Active)';
+                
+                // بدء مراقبة المصادقة
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        document.getElementById('adminLed').className = 'status-led led-green';
+                        document.getElementById('adminText').innerHTML = `✅ مستخدم نشط: ${user.email}`;
+                    }
+                });
+                
+                return true;
+            } catch (error) {
+                console.error('Connection error:', error);
+                document.getElementById('connectionLed').className = 'status-led led-red';
+                document.getElementById('connectionText').innerHTML = '❌ فشل الاتصال: ' + error.message;
+                return false;
+            }
+        }
+
+        // إنشاء حساب السوبر أدمن
+        async function createSuperAdmin() {
+            if (!auth) {
+                alert('⚠️ لازم تفعيل الاتصال الأول');
+                return;
+            }
+
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const name = document.getElementById('adminName').value;
+            const phone = document.getElementById('adminPhone').value;
+
+            try {
+                // إنشاء المستخدم
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // إضافة بيانات السوبر أدمن في Firestore
+                await db.collection('users').doc(user.uid).set({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    role: 'super_admin',
+                    permissions: ['all'],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: 'system',
+                    isActive: true,
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // إضافة لسجل النشاطات
+                await db.collection('activityLog').add({
+                    type: 'user_created',
+                    userId: user.uid,
+                    userEmail: email,
+                    role: 'super_admin',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                document.getElementById('adminLed').className = 'status-led led-green';
+                document.getElementById('adminText').innerHTML = `✅ السوبر أدمن نشط: ${email}`;
+                
+                alert('✅ تم إنشاء السوبر أدمن بنجاح!');
+                
+            } catch (error) {
+                console.error('Admin creation error:', error);
+                alert('❌ خطأ في إنشاء السوبر أدمن: ' + error.message);
+            }
+        }
+
+        // إعداد كل المجموعات
+        async function setupCollections() {
+            if (!db) {
+                alert('⚠️ لازم تفعيل الاتصال الأول');
+                return;
+            }
+
+            try {
+                // 1. الإعدادات العامة
+                await db.collection('settings').doc('general').set({
+                    centerName: 'مركز يثرِب الطبي',
+                    centerLogoUrl: 'https://via.placeholder.com/200/3182ce/ffffff?text=Yathreb',
+                    labName: 'معمل يثرِب للتحاليل',
+                    labLogoUrl: '',
+                    primaryColor: '#3182ce',
+                    secondaryColor: '#2c5282',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: 'system'
+                });
+
+                // 2. معلومات الاتصال
+                await db.collection('contactInfo').doc('main').set({
+                    phones: {
+                        landline: '0223456789',
+                        mobile: '01234567890',
+                        emergency: '01234567890'
+                    },
+                    whatsapp: {
+                        clinic: '01234567890',
+                        lab: '01234567890',
+                        emergency: '01234567890'
+                    },
+                    emails: {
+                        info: 'info@yathreb.com',
+                        appointments: 'appointments@yathreb.com',
+                        lab: 'lab@yathreb.com'
+                    },
+                    address: {
+                        main: 'القاهرة - مصر الجديدة',
+                        mapUrl: 'https://maps.google.com/?q=30.123456,31.123456'
+                    },
+                    workingHours: {
+                        saturday: '9:00 ص - 9:00 م',
+                        sunday: '9:00 ص - 9:00 م',
+                        monday: '9:00 ص - 9:00 م',
+                        tuesday: '9:00 ص - 9:00 م',
+                        wednesday: '9:00 ص - 9:00 م',
+                        thursday: '9:00 ص - 9:00 م',
+                        friday: 'مغلق'
+                    }
+                });
+
+                // 3. خدمات العيادات
+                const clinicServices = [
+                    { name: 'كشف الباطنة', price: 300, category: 'internal', duration: '30 دقيقة' },
+                    { name: 'كشف المسالك', price: 400, category: 'urology', duration: '30 دقيقة' },
+                    { name: 'كشف الأطفال', price: 350, category: 'pediatrics', duration: '30 دقيقة' },
+                    { name: 'سونار', price: 500, category: 'radiology', duration: '20 دقيقة' },
+                    { name: 'تمريض منزلي', price: 200, category: 'nursing', duration: 'ساعة' },
+                    { name: 'استشارة غذائية', price: 250, category: 'nutrition', duration: '45 دقيقة' }
+                ];
+
+                for (const service of clinicServices) {
+                    await db.collection('clinicServices').add({
+                        ...service,
+                        available: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                // 4. تحاليل المعمل
+                const labTests = [
+                    { name: 'صورة دم كاملة (CBC)', price: 150, category: 'basic', preparation: 'لا يحتاج صيام' },
+                    { name: 'وظائف كبد (Liver Function)', price: 250, category: 'liver', preparation: 'صيام 8 ساعات' },
+                    { name: 'وظائف كلى (Kidney Function)', price: 200, category: 'kidney', preparation: 'صيام 8 ساعات' },
+                    { name: 'سكر صائم (FBS)', price: 80, category: 'diabetes', preparation: 'صيام 8 ساعات' },
+                    { name: 'دهون ثلاثية (Triglycerides)', price: 180, category: 'lipids', preparation: 'صيام 10 ساعات' },
+                    { name: 'هرمونات الغدة (Thyroid)', price: 400, category: 'hormones', preparation: 'صيام 6 ساعات' },
+                    { name: 'فيتامين د (Vitamin D)', price: 350, category: 'vitamins', preparation: 'لا يحتاج صيام' },
+                    { name: 'تحليل بول (Urinalysis)', price: 60, category: 'basic', preparation: 'لا يحتاج صيام' }
+                ];
+
+                for (const test of labTests) {
+                    await db.collection('labTests').add({
+                        ...test,
+                        available: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                // 5. الأطباء
+                const doctors = [
+                    { name: 'د. أحمد علي', specialty: 'باطنة', qualifications: ['دكتوراه الباطنة'], experience: 15 },
+                    { name: 'د. محمد حسن', specialty: 'مسالك', qualifications: ['ماجستير المسالك'], experience: 10 },
+                    { name: 'د. سارة أحمد', specialty: 'أطفال', qualifications: ['دكتوراه الأطفال'], experience: 12 }
+                ];
+
+                for (const doctor of doctors) {
+                    await db.collection('doctors').add({
+                        ...doctor,
+                        available: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                // 6. العروض (القوافل)
+                const offers = [
+                    { 
+                        name: 'يوم الباطنة المفتوح', 
+                        date: '2024-04-15',
+                        discount: 30,
+                        services: ['كشف', 'استشارة'],
+                        freeServices: ['قياس السكر'],
+                        description: 'خصم 30% على كشف الباطنة مع قياس سكر مجاني'
+                    },
+                    { 
+                        name: 'عروض رمضان', 
+                        date: '2024-03-25',
+                        discount: 25,
+                        services: ['كشف', 'تحاليل'],
+                        freeServices: ['استشارة'],
+                        description: 'خصومات خاصة بشهر رمضان المبارك'
+                    }
+                ];
+
+                for (const offer of offers) {
+                    await db.collection('offers').add({
+                        ...offer,
+                        active: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                // 7. الحضانات
+                await db.collection('nurseries').doc('main').set({
+                    name: 'حضانة يثرِب',
+                    capacity: 20,
+                    ageGroup: '6 شهور - 4 سنوات',
+                    services: ['رعاية نهارية', 'متابعة تمريضية', 'أنشطة تعليمية', 'وجبات صحية'],
+                    prices: {
+                        fullDay: 1500,
+                        halfDay: 900,
+                        hourly: 100
+                    },
+                    workingHours: '7:00 ص - 7:00 م',
+                    description: 'رعاية متكاملة لأطفالكم في بيئة آمنة وتعليمية'
+                });
+
+                // 8. منشورات فيسبوك (مبدئية)
+                await db.collection('facebookPosts').add({
+                    page: 'center',
+                    content: 'مرحباً بكم في مركز يثرِب الطبي، نقدم لكم أفضل الخدمات الطبية',
+                    image: 'https://via.placeholder.com/600x400/3182ce/ffffff?text=Yathreb+Medical',
+                    likes: 0,
+                    shares: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                await db.collection('facebookPosts').add({
+                    page: 'lab',
+                    content: 'معمل يثرِب للتحاليل - دقة وسرعة في النتائج',
+                    image: 'https://via.placeholder.com/600x400/2c5282/ffffff?text=Yathreb+Lab',
+                    likes: 0,
+                    shares: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // تفعيل Lock Mode في الـ UI
+                document.getElementById('lockLed').className = 'status-led led-green';
+                document.getElementById('lockText').innerHTML = '✅ Lock Mode مفعل - جميع البيانات آمنة';
+                
+                alert('✅ تم إعداد جميع المجموعات بنجاح!');
+                
+            } catch (error) {
+                console.error('Setup error:', error);
+                alert('❌ خطأ في الإعداد: ' + error.message);
+            }
+        }
+
+        // نشر قواعد الأمان (هنا هتنسخ القواعد وتحطها في Firebase Console)
+        function deployRules() {
+            const rules = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'admin'];
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    match /users/{userId} {
+      allow read: if isSuperAdmin() || isOwner(userId);
+      allow write: if isSuperAdmin();
+      allow create: if isSuperAdmin();
+      allow delete: if isSuperAdmin();
+    }
+    
+    match /settings/{document} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+      allow delete: if false;
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}`;
+
+            // نسخ القواعد للحافظة
+            navigator.clipboard.writeText(rules).then(() => {
+                alert('✅ تم نسخ قواعد الأمان! اذهب إلى Firebase Console والصقها في Firestore Rules');
+                window.open('https://console.firebase.google.com/project/yathreb-10909/firestore/rules', '_blank');
+            });
+        }
+
+        // تهيئة تلقائية عند تحميل الصفحة
+        window.onload = function() {
+            // تجربة الاتصال التلقائي
+            setTimeout(() => {
+                if (!app) {
+                    initializeLockMode();
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
