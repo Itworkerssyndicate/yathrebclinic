@@ -8,12 +8,11 @@
     <!-- ===== الأمان السيبراني ===== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' https:;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.youtube.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src 'self' data: https:;
-        media-src 'self' https: https://www.youtube.com;
-        frame-src 'self' https://www.youtube.com;
+        media-src 'self' https: blob:;
         connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
     ">
     
@@ -61,37 +60,87 @@
             background: var(--dark);
         }
 
-        /* ===== خلفية فيديو طبية من YouTube ===== */
-        .video-background {
+        /* ===== خلفية ثابتة مع تأثير طبي ===== */
+        .medical-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
+            background: linear-gradient(145deg, #0a1f2f, #1a4b6d);
             overflow: hidden;
         }
 
-        .video-background iframe {
+        .medical-particles {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            opacity: 0.25;
-        }
-
-        .video-overlay {
-            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, rgba(10,31,47,0.6), rgba(10,31,47,0.7));
-            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatParticle 20s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        .medical-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(251,191,36,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14,124,158,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 30s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .medical-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+        }
+
+        .medical-icon {
+            position: absolute;
+            color: rgba(251,191,36,0.05);
+            font-size: 4rem;
+            animation: iconFloat 15s infinite alternate;
+        }
+
+        .medical-icon:nth-child(1) { top: 10%; left: 5%; animation-duration: 12s; }
+        .medical-icon:nth-child(2) { bottom: 20%; right: 8%; animation-duration: 18s; }
+        .medical-icon:nth-child(3) { top: 40%; right: 15%; animation-duration: 14s; }
+        .medical-icon:nth-child(4) { bottom: 30%; left: 10%; animation-duration: 16s; }
+        .medical-icon:nth-child(5) { top: 70%; left: 20%; animation-duration: 20s; }
+        .medical-icon:nth-child(6) { bottom: 10%; right: 25%; animation-duration: 13s; }
+
+        @keyframes iconFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(30px, -30px) rotate(10deg); }
         }
 
         /* ===== شاشة الترحيب ===== */
@@ -655,11 +704,19 @@
     </style>
 </head>
 <body>
-    <!-- خلفية فيديو طبية من YouTube (مباشرة) -->
-    <div class="video-background">
-        <iframe src="https://www.youtube.com/embed/_TzNc9zUZkA?autoplay=1&mute=1&loop=1&playlist=_TzNc9zUZkA&controls=0&showinfo=0&modestbranding=1&iv_load_policy=3&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <!-- خلفية طبية متحركة (بدون فيديو) -->
+    <div class="medical-background">
+        <div class="medical-grid"></div>
+        <div class="medical-icons">
+            <div class="medical-icon"><i class="fas fa-heartbeat"></i></div>
+            <div class="medical-icon"><i class="fas fa-stethoscope"></i></div>
+            <div class="medical-icon"><i class="fas fa-caduceus"></i></div>
+            <div class="medical-icon"><i class="fas fa-pills"></i></div>
+            <div class="medical-icon"><i class="fas fa-syringe"></i></div>
+            <div class="medical-icon"><i class="fas fa-microscope"></i></div>
+        </div>
+        <div class="medical-particles" id="particles"></div>
     </div>
-    <div class="video-overlay"></div>
 
     <!-- شاشة الترحيب -->
     <div class="splash-screen" id="splashScreen">
@@ -786,6 +843,20 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+
+        // ===== جسيمات الخلفية =====
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
 
         // ===== شاشة الترحيب =====
         const splashScreen = document.getElementById('splashScreen');
