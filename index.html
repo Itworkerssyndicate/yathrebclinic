@@ -2,35 +2,72 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>مركز يثرب الخيري التخصصي | قريباً</title>
     
-    <!-- Font Awesome 6 -->
+    <!-- ===== الأمان السيبراني ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://itworkerssyndicate.github.io;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+        frame-src 'none';
+        object-src 'none';
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
     <style>
+        /* ===== RESET متقدم ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --primary-light: #1a9bc2;
+            --secondary: #fbbf24;
+            --accent: #10b981;
+            --dark: #0a1a2f;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gradient: linear-gradient(145deg, var(--primary), var(--primary-dark));
+        }
+
         body {
-            font-family: 'Tajawal', 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, #0a1a2f 0%, #1a3a5a 100%);
             min-height: 100vh;
-            background: #f8fafc;
+            color: var(--light);
             position: relative;
             overflow-x: hidden;
         }
 
-        /* ===== شاشة التحميل الترحيبية ===== */
+        /* ===== شاشة الترحيب (Splash Screen) ===== */
         .splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, #0a5d7a, #0e7c9e);
+            background: linear-gradient(145deg, #0a1a2f, #1a3a5a);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -47,12 +84,17 @@
             text-align: center;
             max-width: 600px;
             padding: 30px;
+            animation: splashPulse 3s infinite;
         }
 
-        /* اللوجو في شاشة التحميل */
+        @keyframes splashPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
         .splash-logo {
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             margin: 0 auto 40px;
             position: relative;
             perspective: 2000px;
@@ -63,12 +105,13 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            animation: splashFlip 2s ease-in-out forwards;
+            animation: splashFlip 2.5s ease-in-out forwards;
         }
 
         @keyframes splashFlip {
             0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(180deg); }
+            50% { transform: rotateY(180deg); }
+            100% { transform: rotateY(360deg); }
         }
 
         .splash-logo-face {
@@ -80,239 +123,373 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 4px rgba(251,191,36,0.3);
             overflow: hidden;
         }
 
         .splash-logo-front {
-            background: white;
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
             transform: rotateY(0deg);
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
         }
 
         .splash-logo-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            border-radius: 50%;
         }
 
         .splash-logo-back {
-            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            background: linear-gradient(145deg, var(--secondary), #f59e0b);
             transform: rotateY(180deg);
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            display: flex;
             flex-direction: column;
-            color: #0e7c9e;
+            color: var(--dark);
         }
 
         .splash-logo-back i {
-            font-size: 5rem;
+            font-size: 6rem;
             margin-bottom: 20px;
         }
 
         .splash-logo-back span {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 2.5rem;
+            font-weight: 900;
         }
 
-        /* عنوان التحميل */
         .splash-title {
             color: white;
-            font-size: 2.2rem;
+            font-size: 3rem;
             margin-bottom: 30px;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 0 20px var(--primary);
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
         }
 
-        /* شريط التحميل */
-        .progress-container {
+        .splash-progress {
             width: 100%;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
             overflow: hidden;
             margin: 30px 0;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.2s forwards;
         }
 
-        .progress-bar {
+        .splash-progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #ffd700, #fbbf24);
-            border-radius: 30px;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 20px #fbbf24;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.3s;
+            box-shadow: 0 0 20px var(--secondary);
         }
 
-        .progress-text {
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            direction: ltr;
+        .splash-percentage {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--secondary);
+            text-shadow: 0 0 20px var(--secondary);
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.4s forwards;
         }
 
-        .progress-text span {
-            font-size: 1.2rem;
+        .splash-percentage span {
+            font-size: 1.5rem;
+            color: var(--light);
             margin-right: 5px;
-            color: #ffd700;
         }
 
-        /* ===== المحتوى الرئيسي (يظهر بعد الاختفاء) ===== */
-        .main-site {
-            opacity: 1;
-            transition: opacity 1s;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* خلفية متحركة */
-        .bg-pattern {
+        /* ===== خلفية متحركة بالجسيمات ===== */
+        .particles {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background: linear-gradient(145deg, #e8f0fe 0%, #d9e9fa 100%);
-            overflow: hidden;
-        }
-
-        .bg-pattern::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: radial-gradient(circle at 30% 30%, rgba(14, 116, 144, 0.03) 0%, transparent 30%),
-                        radial-gradient(circle at 70% 80%, rgba(2, 84, 109, 0.03) 0%, transparent 35%),
-                        repeating-linear-gradient(45deg, rgba(14, 116, 144, 0.02) 0px, rgba(14, 116, 144, 0.02) 2px, transparent 2px, transparent 8px);
-            animation: slowShift 40s infinite alternate;
-        }
-
-        @keyframes slowShift {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-2%, -2%) rotate(0.5deg); }
-        }
-
-        /* عناصر طبية عائمة */
-        .floating-medical {
-            position: fixed;
-            pointer-events: none;
             z-index: 0;
-            opacity: 0.1;
+            pointer-events: none;
         }
 
-        .float-item {
+        .particle {
             position: absolute;
-            color: #0e4d73;
-            filter: drop-shadow(0 10px 15px rgba(0,100,120,0.1));
-            animation: float 18s infinite;
+            width: 6px;
+            height: 6px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 20s infinite linear;
         }
-
-        .float-item:nth-child(1) { top: 10%; left: 5%; font-size: 6rem; animation-delay: 0s; }
-        .float-item:nth-child(2) { bottom: 15%; right: 3%; font-size: 8rem; animation-delay: -3s; }
-        .float-item:nth-child(3) { top: 40%; right: 12%; font-size: 5rem; animation-delay: -7s; }
-        .float-item:nth-child(4) { bottom: 25%; left: 8%; font-size: 7rem; animation-delay: -11s; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(3deg); }
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
-        /* الحاوية الرئيسية */
+        /* ===== الحاوية الرئيسية ===== */
         .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 30px 20px;
             position: relative;
             z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        /* شريط العلوي */
+        .container.visible {
+            opacity: 1;
+        }
+
+        /* ===== شريط الاتصال العلوي ===== */
         .top-bar {
+            background: rgba(10, 26, 47, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 100px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 30px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 60px;
-            margin-bottom: 50px;
-            box-shadow: 0 10px 40px rgba(0, 50, 70, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateY(0);
+            transition: transform 0.3s;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .top-bar:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
         }
 
         .contact-info {
             display: flex;
-            gap: 30px;
-            color: #155e75;
+            gap: 25px;
+            flex-wrap: wrap;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--light);
             font-size: 1.1rem;
+            transition: all 0.3s;
+            padding: 5px 15px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .contact-item:hover {
+            background: var(--primary);
+            transform: scale(1.05);
         }
 
         .contact-item i {
-            font-size: 1.3rem;
-            color: #0e7c9e;
+            color: var(--secondary);
+            font-size: 1.2rem;
         }
 
-        .lang-switch {
+        .social-links {
             display: flex;
-            gap: 5px;
-            background: #edf2f7;
-            padding: 5px;
-            border-radius: 40px;
+            gap: 15px;
         }
 
-        .lang-btn {
-            padding: 8px 18px;
-            border-radius: 40px;
-            border: none;
-            background: transparent;
-            color: #2d3748;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .lang-btn.active {
-            background: #0e7c9e;
-            color: white;
-            box-shadow: 0 5px 15px rgba(14, 124, 158, 0.3);
-        }
-
-        /* المحتوى الرئيسي */
-        .main-content {
-            flex: 1;
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            color: var(--light);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .social-link:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        /* ===== المحتوى الرئيسي ===== */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 50px;
-            padding: 40px 20px;
+            align-items: center;
+            margin: 40px 0;
         }
 
+        /* ===== الجزء الأيمن ===== */
         .right-section {
-            flex: 1.2;
+            animation: slideInRight 1s ease;
         }
 
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .coming-badge {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(14,124,158,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coming-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            100% { left: 100%; }
+        }
+
+        .main-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .main-title .highlight {
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .main-title .small {
+            font-size: 2.5rem;
+            display: block;
+            color: var(--light);
+            opacity: 0.9;
+        }
+
+        .description {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        /* ===== العد التنازلي ===== */
+        .countdown {
+            display: flex;
+            gap: 20px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 25px 20px;
+            min-width: 120px;
+            text-align: center;
+            border: 1px solid rgba(251,191,36,0.3);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .countdown-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        .countdown-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: var(--secondary);
+            box-shadow: 0 20px 40px rgba(251,191,36,0.2);
+        }
+
+        .countdown-number {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--secondary);
+            line-height: 1;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .countdown-label {
+            font-size: 1.2rem;
+            color: var(--light);
+            opacity: 0.8;
+        }
+
+        .countdown-comment {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            text-align: center;
+            background: rgba(251,191,36,0.1);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(251,191,36,0.3);
+            backdrop-filter: blur(10px);
+            width: fit-content;
+        }
+
+        /* ===== الجزء الأيسر ===== */
         .left-section {
-            flex: 0.8;
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: slideInLeft 1s ease;
         }
 
-        /* شعار 3D */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
         .logo-container {
-            width: 350px;
-            height: 350px;
+            width: 500px;
+            height: 500px;
             position: relative;
-            perspective: 1500px;
+            perspective: 2000px;
             cursor: pointer;
         }
 
@@ -321,7 +498,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.5s;
+            transition: transform 0.8s;
         }
 
         .logo-face {
@@ -333,217 +510,289 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 30px 50px rgba(0, 80, 100, 0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 3px rgba(251,191,36,0.3);
             overflow: hidden;
         }
 
         .logo-front {
-            background: white;
-            border: 3px solid rgba(14, 124, 158, 0.3);
             transform: rotateY(0deg);
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+            padding: 20px;
         }
 
         .logo-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            border-radius: 50%;
+            transition: transform 0.5s;
         }
 
         .logo-back {
-            background: linear-gradient(145deg, #0e7c9e, #0a5d7a);
-            color: white;
             transform: rotateY(180deg);
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: flex;
+            background: linear-gradient(145deg, var(--secondary), #f59e0b);
+            color: var(--dark);
+            font-size: 3rem;
+            font-weight: 900;
             flex-direction: column;
+            gap: 20px;
         }
 
         .logo-back i {
-            font-size: 5rem;
-            margin-bottom: 20px;
+            font-size: 6rem;
+            color: var(--dark);
         }
 
-        /* النصوص الرئيسية */
-        .coming-badge {
-            display: inline-block;
-            background: linear-gradient(145deg, #0e7c9e, #0a5d7a);
-            color: white;
-            padding: 10px 30px;
-            border-radius: 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 25px rgba(14,124,158,0.4);
-            letter-spacing: 1px;
+        /* ===== الخدمات ===== */
+        .services-section {
+            margin-top: 80px;
+            animation: fadeInUp 1s ease 0.5s both;
         }
 
-        h1 {
-            font-size: 4.5rem;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            color: #0a2a3b;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .highlight {
-            background: linear-gradient(145deg, #0e7c9e, #0a5d7a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-        }
-
-        .subtitle {
-            font-size: 1.4rem;
-            color: #2d5a73;
-            margin-bottom: 40px;
-            max-width: 600px;
-            line-height: 1.6;
-        }
-
-        /* كاونتر العد التنازلي */
-        .countdown {
-            display: flex;
-            gap: 20px;
-            margin: 40px 0;
-        }
-
-        .count-item {
-            background: white;
-            border-radius: 20px;
-            padding: 20px 15px;
-            min-width: 100px;
+        .services-title {
+            font-size: 2.5rem;
             text-align: center;
-            box-shadow: 0 20px 35px rgba(0, 70, 100, 0.15);
-            border: 1px solid rgba(14,124,158,0.2);
-            transition: transform 0.3s;
+            margin-bottom: 50px;
+            position: relative;
         }
 
-        .count-item:hover {
-            transform: translateY(-5px);
+        .services-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--secondary);
+            border-radius: 3px;
         }
 
-        .count-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #0e7c9e;
-            line-height: 1;
-        }
-
-        .count-label {
-            font-size: 1rem;
-            color: #2d5a73;
-            font-weight: 600;
-        }
-
-        /* بطاقات الخدمات */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 20px;
         }
 
         .service-card {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
-            padding: 25px 15px;
-            border-radius: 30px;
+            border-radius: 40px;
+            padding: 40px 25px;
             text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 30px rgba(0, 50, 70, 0.1);
+            transition: all 0.4s;
+            border: 1px solid rgba(251,191,36,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(14,124,158,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
         }
 
         .service-card:hover {
-            transform: translateY(-10px);
-            background: white;
-            border-color: #0e7c9e;
-            box-shadow: 0 20px 40px rgba(14,124,158,0.2);
+            transform: translateY(-20px) scale(1.05);
+            border-color: var(--secondary);
+            box-shadow: 0 30px 50px rgba(251,191,36,0.2);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
         }
 
         .service-icon {
-            font-size: 2.8rem;
-            color: #0e7c9e;
-            margin-bottom: 15px;
-        }
-
-        .service-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #0a2a3b;
-            margin-bottom: 5px;
-        }
-
-        .service-desc {
-            color: #2d5a73;
-            font-size: 0.95rem;
-        }
-
-        /* الفوتر */
-        .footer {
-            margin-top: 60px;
-            padding: 30px 0;
-            border-top: 1px solid rgba(14,124,158,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #2d5a73;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: white;
-            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient);
+            border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #0e7c9e;
-            font-size: 1.3rem;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .social-link:hover {
-            background: #0e7c9e;
+            margin: 0 auto 25px;
+            font-size: 3.5rem;
             color: white;
-            transform: translateY(-3px);
+            transition: all 0.4s;
+            box-shadow: 0 20px 30px rgba(14,124,158,0.3);
         }
 
-        /* استجابة للجوال */
+        .service-card:hover .service-icon {
+            transform: rotateY(180deg) scale(1.1);
+            background: linear-gradient(145deg, var(--secondary), #f59e0b);
+        }
+
+        .service-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .service-comment {
+            color: var(--gray);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== الفوتر ===== */
+        .footer {
+            margin-top: 80px;
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        /* ===== استجابة للجوال ===== */
         @media (max-width: 1024px) {
-            h1 { font-size: 3.5rem; }
-            .services-grid { grid-template-columns: repeat(2, 1fr); }
-            .main-content { flex-direction: column; text-align: center; }
-            .right-section { text-align: center; }
-            .countdown { justify-content: center; }
-            .splash-logo { width: 220px; height: 220px; }
+            .main-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .main-title {
+                font-size: 3.5rem;
+            }
+
+            .description {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .countdown {
+                justify-content: center;
+            }
+
+            .countdown-comment {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .logo-container {
+                width: 400px;
+                height: 400px;
+                margin: 0 auto;
+            }
+
+            .splash-logo {
+                width: 250px;
+                height: 250px;
+            }
         }
 
-        @media (max-width: 640px) {
-            h1 { font-size: 2.5rem; }
-            .countdown { flex-wrap: wrap; }
-            .services-grid { grid-template-columns: 1fr; }
-            .top-bar { flex-direction: column; gap: 15px; }
-            .splash-logo { width: 180px; height: 180px; }
-            .splash-title { font-size: 1.8rem; }
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .contact-info {
+                justify-content: center;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .main-title .small {
+                font-size: 1.8rem;
+            }
+
+            .logo-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .splash-logo {
+                width: 200px;
+                height: 200px;
+            }
+
+            .splash-title {
+                font-size: 2rem;
+            }
+
+            .countdown-item {
+                min-width: 80px;
+                padding: 15px;
+            }
+
+            .countdown-number {
+                font-size: 2.5rem;
+            }
+
+            .countdown-label {
+                font-size: 1rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .splash-logo {
+                width: 150px;
+                height: 150px;
+            }
+
+            .splash-title {
+                font-size: 1.5rem;
+            }
+
+            .contact-item {
+                font-size: 0.9rem;
+                padding: 5px 10px;
+            }
+
+            .countdown {
+                gap: 10px;
+            }
+
+            .countdown-item {
+                min-width: 60px;
+                padding: 10px;
+            }
+
+            .countdown-number {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- شاشة التحميل الترحيبية -->
+    <!-- ===== شاشة الترحيب (Splash Screen) ===== -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-content">
             <div class="splash-logo">
                 <div class="splash-logo-3d" id="splashLogo">
                     <div class="splash-logo-face splash-logo-front">
-                        <img src="https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7" alt="مركز يثرب الخيري التخصصي">
+                        <img src="" alt="مركز يثرب الخيري التخصصي" id="splashLogoImg">
                     </div>
                     <div class="splash-logo-face splash-logo-back">
                         <i class="fas fa-heart"></i>
@@ -551,216 +800,160 @@
                     </div>
                 </div>
             </div>
-            <h2 class="splash-title">مركز يثرب الخيري التخصصي</h2>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
+            <h2 class="splash-title" id="splashTitle">مركز يثرب الخيري التخصصي</h2>
+            <div class="splash-progress">
+                <div class="splash-progress-bar" id="splashProgress"></div>
             </div>
-            <div class="progress-text" id="progressText">0<span>%</span></div>
+            <div class="splash-percentage" id="splashPercentage">0<span>%</span></div>
         </div>
     </div>
 
+    <!-- جسيمات الخلفية -->
+    <div class="particles" id="particles"></div>
+
     <!-- المحتوى الرئيسي -->
-    <div class="main-site" id="mainSite">
-        <!-- خلفية متحركة -->
-        <div class="bg-pattern"></div>
-        
-        <!-- عناصر طبية عائمة -->
-        <div class="floating-medical">
-            <div class="float-item"><i class="fas fa-heartbeat"></i></div>
-            <div class="float-item"><i class="fas fa-stethoscope"></i></div>
-            <div class="float-item"><i class="fas fa-caduceus"></i></div>
-            <div class="float-item"><i class="fas fa-pills"></i></div>
+    <div class="container" id="mainContainer">
+        <!-- الشريط العلوي -->
+        <div class="top-bar">
+            <div class="contact-info">
+                <div class="contact-item" id="phoneDisplay">
+                    <i class="fas fa-phone"></i>
+                    <span>...</span>
+                </div>
+                <div class="contact-item" id="addressDisplay">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>...</span>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link" id="facebookLink" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </div>
         </div>
 
-        <div class="container">
-            <!-- الشريط العلوي -->
-            <div class="top-bar">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <span>⁦+201115349779⁩</span>
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content">
+            <div class="right-section">
+                <div class="coming-badge">
+                    <i class="fas fa-calendar-alt"></i> الافتتاح قريباً
+                </div>
+                
+                <h1 class="main-title">
+                    <span class="highlight">مركز يثرب الخيري</span>
+                    <span class="small">التخصصي</span>
+                </h1>
+                
+                <p class="description" id="description">
+                    صرح طبي متكامل يقدم خدمات صحية متميزة بمعايير عالمية وكوادر بشرية متخصصة، بروح خيرية أصيلة
+                </p>
+
+                <!-- العد التنازلي -->
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="days">٠٠</div>
+                        <div class="countdown-label">يوم</div>
                     </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>خلف 13 شارع الكسائي زعربانه - امتداد شارع مركز شباب الظاهرية</span>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="hours">٠٠</div>
+                        <div class="countdown-label">ساعة</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="minutes">٠٠</div>
+                        <div class="countdown-label">دقيقة</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-number" id="seconds">٠٠</div>
+                        <div class="countdown-label">ثانية</div>
                     </div>
                 </div>
-                <div class="lang-switch">
-                    <button class="lang-btn active">العربية</button>
-                    <button class="lang-btn">English</button>
-                </div>
+
+                <div class="countdown-comment" id="countdownComment"></div>
             </div>
 
-            <!-- المحتوى الرئيسي -->
-            <div class="main-content">
-                <div class="right-section">
-                    <div class="coming-badge">
-                        <i class="fas fa-calendar-alt" style="margin-left: 10px;"></i>
-                        الافتتاح قريباً
-                    </div>
-                    
-                    <h1>
-                        مركز <span class="highlight">يثرب الخيري</span><br>
-                        التخصصي
-                    </h1>
-                    
-                    <p class="subtitle">
-                        صرح طبي متكامل يقدم خدمات صحية متميزة بمعايير عالمية 
-                        وكوادر بشرية متخصصة، بروح خيرية أصيلة
-                    </p>
-
-                    <!-- العد التنازلي -->
-                    <div class="countdown">
-                        <div class="count-item">
-                            <div class="count-number" id="days">٠٠</div>
-                            <div class="count-label">يوم</div>
+            <div class="left-section">
+                <!-- اللوجو ثلاثي الأبعاد -->
+                <div class="logo-container" id="logoContainer">
+                    <div class="logo-3d" id="logo3d">
+                        <div class="logo-face logo-front">
+                            <img src="" alt="مركز يثرب الخيري التخصصي" id="mainLogo">
                         </div>
-                        <div class="count-item">
-                            <div class="count-number" id="hours">٠٠</div>
-                            <div class="count-label">ساعة</div>
-                        </div>
-                        <div class="count-item">
-                            <div class="count-number" id="minutes">٠٠</div>
-                            <div class="count-label">دقيقة</div>
-                        </div>
-                        <div class="count-item">
-                            <div class="count-number" id="seconds">٠٠</div>
-                            <div class="count-label">ثانية</div>
-                        </div>
-                    </div>
-
-                    <!-- بطاقات الخدمات -->
-                    <div class="services-grid">
-                        <div class="service-card">
-                            <div class="service-icon"><i class="fas fa-user-md"></i></div>
-                            <div class="service-title">عيادات تخصصية</div>
-                            <div class="service-desc">باطنة - مسالك - أطفال</div>
-                        </div>
-                        <div class="service-card">
-                            <div class="service-icon"><i class="fas fa-flask"></i></div>
-                            <div class="service-title">معمل متطور</div>
-                            <div class="service-desc">تحاليل دقيقة وسريعة</div>
-                        </div>
-                        <div class="service-card">
-                            <div class="service-icon"><i class="fas fa-baby"></i></div>
-                            <div class="service-title">حضانات أطفال</div>
-                            <div class="service-desc">رعاية متكاملة</div>
-                        </div>
-                        <div class="service-card">
-                            <div class="service-icon"><i class="fas fa-hand-holding-heart"></i></div>
-                            <div class="service-title">خدمات خيرية</div>
-                            <div class="service-desc">بأسعار مخفضة</div>
-                        </div>
-                        <!-- بطاقة التمريض الجديدة -->
-                        <div class="service-card">
-                            <div class="service-icon"><i class="fas fa-user-nurse"></i></div>
-                            <div class="service-title">تمريض منزلي</div>
-                            <div class="service-desc">رعاية تمريضية في المنزل</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="left-section">
-                    <!-- اللوجو ثلاثي الأبعاد -->
-                    <div class="logo-container" id="logoContainer">
-                        <div class="logo-3d" id="logo3d">
-                            <div class="logo-face logo-front">
-                                <img src="https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7" alt="مركز يثرب الخيري التخصصي">
-                            </div>
-                            <div class="logo-face logo-back">
-                                <i class="fas fa-heart"></i>
-                                <span style="font-size: 1.8rem; margin-top: 20px;">يثرب الخيري</span>
-                            </div>
+                        <div class="logo-face logo-back">
+                            <i class="fas fa-heart"></i>
+                            <span>يثرب الخيري</span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- الفوتر -->
-            <div class="footer">
-                <div>© ٢٠٢٦ مركز يثرب الخيري التخصصي - جميع الحقوق محفوظة</div>
-                <div class="social-links">
-                    <a href="https://www.facebook.com/ythrb.altkhssy" target="_blank" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                </div>
+        <!-- الخدمات -->
+        <div class="services-section">
+            <h2 class="services-title">خدماتنا</h2>
+            <div class="services-grid" id="servicesGrid">
+                <!-- الخدمات هتتحمل من Firebase -->
             </div>
+        </div>
+
+        <!-- الفوتر -->
+        <div class="footer">
+            <i class="fas fa-code"></i> تصميم وتطوير BASHA | جميع الحقوق محفوظة © ٢٠٢٦
         </div>
     </div>
 
     <script>
-        // ===== شاشة التحميل =====
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909",
+            storageBucket: "yathreb-10909.firebasestorage.app",
+            messagingSenderId: "525635197745",
+            appId: "1:525635197745:web:99e1cbab31693af790ae10"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ===== شاشة الترحيب =====
         const splashScreen = document.getElementById('splashScreen');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const mainSite = document.getElementById('mainSite');
+        const splashProgress = document.getElementById('splashProgress');
+        const splashPercentage = document.getElementById('splashPercentage');
+        const mainContainer = document.getElementById('mainContainer');
         
         let progress = 0;
-        
-        // إخفاء المحتوى الرئيسي في البداية
-        mainSite.style.opacity = '0';
-        
-        // زيادة التحميل
         const interval = setInterval(() => {
-            progress += 1;
-            progressBar.style.width = progress + '%';
-            progressText.innerHTML = progress + '<span>%</span>';
+            progress += 2;
+            splashProgress.style.width = progress + '%';
+            splashPercentage.innerHTML = progress + '<span>%</span>';
             
             if (progress >= 100) {
                 clearInterval(interval);
-                
-                // بعد اكتمال التحميل
                 setTimeout(() => {
                     splashScreen.classList.add('hidden');
-                    mainSite.style.opacity = '1';
+                    mainContainer.classList.add('visible');
+                    loadData();
                 }, 500);
             }
-        }, 30); // 30ms * 100 = 3 ثواني
+        }, 50);
 
-        // ===== تأثيرات اللوجو 3D =====
-        const logoContainer = document.getElementById('logoContainer');
-        const logo3d = document.getElementById('logo3d');
-        
-        // الهروب عند hover
-        logoContainer.addEventListener('mouseenter', () => {
-            logo3d.style.transform = 'rotateY(180deg)';
-            logo3d.style.transition = 'transform 0.3s';
-        });
-
-        logoContainer.addEventListener('mouseleave', () => {
-            logo3d.style.transform = 'rotateY(0deg)';
-        });
-
-        // flip as coin عند الك lick
-        logoContainer.addEventListener('click', () => {
-            logo3d.style.transform = 'rotateY(360deg)';
-            logo3d.style.transition = 'transform 0.6s';
-            setTimeout(() => {
-                logo3d.style.transform = 'rotateY(0deg)';
-            }, 600);
-        });
-
-        // ===== العد التنازلي =====
-        function updateCountdown() {
-            const now = new Date();
-            const openingDate = new Date(now);
-            openingDate.setDate(now.getDate() + 30);
-            
-            const diff = openingDate - now;
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        // ===== جسيمات الخلفية =====
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.width = (2 + Math.random() * 6) + 'px';
+                particle.style.height = particle.style.width;
+                particlesContainer.appendChild(particle);
+            }
         }
+        createParticles();
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-        // تحويل الأرقام للعربية
+        // ===== تحويل الأرقام للعربية =====
         function toArabicNumbers(text) {
             const arabicNumbers = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
             return text.toString().replace(/[0-9]/g, function(d) {
@@ -768,25 +961,125 @@
             });
         }
 
-        // مراقبة التغيير في العد التنازلي وتحويله للعربية
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                    const element = mutation.target;
-                    if (element.id === 'days' || element.id === 'hours' || element.id === 'minutes' || element.id === 'seconds') {
-                        const num = parseInt(element.textContent);
-                        if (!isNaN(num)) {
-                            element.textContent = toArabicNumbers(num.toString().padStart(2, '0'));
-                        }
+        // ===== تحديث العد التنازلي =====
+        function updateCountdown(targetDate) {
+            const now = new Date();
+            const target = new Date(targetDate);
+            const diff = target - now;
+            
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '٠٠';
+                document.getElementById('hours').textContent = '٠٠';
+                document.getElementById('minutes').textContent = '٠٠';
+                document.getElementById('seconds').textContent = '٠٠';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = toArabicNumbers(days);
+            document.getElementById('hours').textContent = toArabicNumbers(hours);
+            document.getElementById('minutes').textContent = toArabicNumbers(minutes);
+            document.getElementById('seconds').textContent = toArabicNumbers(seconds);
+        }
+
+        // ===== تحميل البيانات من Firebase =====
+        async function loadData() {
+            try {
+                const doc = await db.collection('settings').doc('comingSoon').get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    // اسم المركز
+                    document.getElementById('splashTitle').textContent = data.centerName || 'مركز يثرب الخيري التخصصي';
+                    
+                    // اللوجو
+                    if (data.logoUrl) {
+                        document.getElementById('splashLogoImg').src = data.logoUrl;
+                        document.getElementById('mainLogo').src = data.logoUrl;
+                    }
+                    
+                    // رقم التليفون
+                    document.querySelector('#phoneDisplay span').textContent = data.phone || '١٥٠٠٠';
+                    
+                    // العنوان
+                    document.querySelector('#addressDisplay span').textContent = data.address || 'المدينة المنورة';
+                    
+                    // فيسبوك
+                    if (data.facebook) {
+                        document.getElementById('facebookLink').href = data.facebook;
+                    }
+                    
+                    // الوصف
+                    if (data.description) {
+                        document.getElementById('description').textContent = data.description;
+                    }
+                    
+                    // الكومنت تحت الكاونتر
+                    if (data.comment) {
+                        document.getElementById('countdownComment').textContent = data.comment;
+                    }
+                    
+                    // العد التنازلي
+                    if (data.completionDate) {
+                        const targetDate = data.completionDate + 'T' + (data.deliveryTime || '12:00') + ':00';
+                        updateCountdown(targetDate);
+                        setInterval(() => updateCountdown(targetDate), 1000);
+                    }
+                    
+                    // الخدمات
+                    if (data.services && data.services.length > 0) {
+                        const servicesGrid = document.getElementById('servicesGrid');
+                        servicesGrid.innerHTML = '';
+                        
+                        data.services.forEach(service => {
+                            const card = document.createElement('div');
+                            card.className = 'service-card';
+                            card.innerHTML = `
+                                <div class="service-icon">
+                                    <i class="fas ${service.icon || 'fa-stethoscope'}"></i>
+                                </div>
+                                <div class="service-name">${service.name || 'خدمة'}</div>
+                                <div class="service-comment">${service.comment || ''}</div>
+                            `;
+                            servicesGrid.appendChild(card);
+                        });
                     }
                 }
-            });
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // ===== تأثيرات اللوجو 3D =====
+        const logoContainer = document.getElementById('logoContainer');
+        const logo3d = document.getElementById('logo3d');
+
+        logoContainer.addEventListener('mouseenter', () => {
+            logo3d.style.transform = 'rotateY(180deg)';
         });
 
-        ['days', 'hours', 'minutes', 'seconds'].forEach(id => {
-            const el = document.getElementById(id);
-            observer.observe(el, { childList: true, characterData: true, subtree: true });
+        logoContainer.addEventListener('mouseleave', () => {
+            logo3d.style.transform = 'rotateY(0deg)';
         });
+
+        logoContainer.addEventListener('click', () => {
+            logo3d.style.transform = 'rotateY(360deg)';
+            setTimeout(() => {
+                logo3d.style.transform = 'rotateY(0deg)';
+            }, 800);
+        });
+
+        // ===== تحميل البيانات لو شاشة الترحيب اختفت قبل التحميل =====
+        setTimeout(() => {
+            if (!mainContainer.classList.contains('visible')) {
+                loadData();
+            }
+        }, 3000);
     </script>
 </body>
 </html>
