@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ السيت أب السحري الكامل - مركز يثرب الخيري التخصصي</title>
+    <title>⚡ السيت أب السحري - صفحة قريباً</title>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     
     <style>
         * {
@@ -26,7 +25,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -41,7 +40,7 @@
         }
 
         .header h1 {
-            font-size: 3.5em;
+            font-size: 3em;
             margin-bottom: 10px;
             background: linear-gradient(135deg, #63b3ed, #9f7aea);
             -webkit-background-clip: text;
@@ -58,9 +57,9 @@
             background: linear-gradient(145deg, #fbbf24, #d97706);
             color: #0f172a;
             border: none;
-            padding: 35px 80px;
-            border-radius: 80px;
-            font-size: 3em;
+            padding: 30px 60px;
+            border-radius: 60px;
+            font-size: 2.5em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -74,10 +73,6 @@
         .btn-magic:hover {
             transform: translateY(-5px) scale(1.02);
             box-shadow: 0 30px 70px rgba(251, 191, 36, 0.7);
-        }
-
-        .btn-magic:active {
-            transform: translateY(2px);
         }
 
         .status-panel {
@@ -107,10 +102,6 @@
             border-color: #fbbf24;
         }
 
-        .status-error {
-            border-color: #ef4444;
-        }
-
         .progress-bar {
             height: 20px;
             background: #2d3748;
@@ -131,7 +122,7 @@
             border-radius: 15px;
             padding: 20px;
             font-family: monospace;
-            max-height: 300px;
+            max-height: 200px;
             overflow-y: auto;
             direction: ltr;
         }
@@ -146,29 +137,12 @@
             color: #10b981;
         }
 
-        .log-error {
-            color: #ef4444;
-        }
-
-        .final-rules {
-            background: #312e81;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            direction: ltr;
-            font-family: monospace;
-            white-space: pre-wrap;
-            color: #a5f3fc;
-            display: none;
-        }
-
         .summary-box {
             background: #0a2a3a;
             border-radius: 15px;
             padding: 20px;
             margin-top: 20px;
             border: 2px solid #0e7c9e;
-            display: none;
         }
 
         .summary-title {
@@ -177,16 +151,11 @@
             margin-bottom: 15px;
         }
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-
         .summary-item {
             background: #1e293b;
-            padding: 15px;
+            padding: 10px 15px;
             border-radius: 10px;
+            margin-bottom: 10px;
             border-right: 3px solid #fbbf24;
         }
 
@@ -197,7 +166,7 @@
 
         .summary-value {
             color: white;
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
             margin-top: 5px;
             word-break: break-all;
@@ -207,8 +176,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚡ مركز يثرب الخيري التخصصي</h1>
-            <p>السيت أب السحري الكامل - ضغطة واحدة تنشئ كل حاجة</p>
+            <h1>⚡ السيت أب السحري</h1>
+            <p>لصفحة "قريباً" - مركز يثرب الخيري التخصصي</p>
         </div>
 
         <!-- الزر السحري -->
@@ -234,38 +203,40 @@
 
         <!-- سجل التنفيذ -->
         <div class="log-box" id="logBox">
-            <div class="log-entry">✨ اضغط على الزر السحري لبدء كل شيء</div>
+            <div class="log-entry">✨ اضغط على الزر السحري لبدء تهيئة البيانات</div>
         </div>
 
-        <!-- ملخص البيانات اللي اتنشأت -->
-        <div class="summary-box" id="summaryBox">
-            <div class="summary-title">📋 ملخص البيانات التي تم إنشاؤها</div>
-            <div class="summary-grid" id="summaryGrid">
-                <!-- هتتعبأ من الجافاسكريبت -->
-            </div>
-        </div>
-
-        <!-- القواعد النهائية -->
-        <div class="final-rules" id="finalRules">
-            // هتظهر هنا بعد ما نخلص
+        <!-- ملخص البيانات -->
+        <div class="summary-box" id="summaryBox" style="display: none;">
+            <div class="summary-title">📋 البيانات التي تم حفظها</div>
+            <div id="summaryContent"></div>
         </div>
     </div>
 
     <script>
-        let db, auth;
-        let logEntries = [];
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909",
+            storageBucket: "yathreb-10909.firebasestorage.app",
+            messagingSenderId: "525635197745",
+            appId: "1:525635197745:web:99e1cbab31693af790ae10"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         let currentStep = 0;
-        const totalSteps = 15; // زودنا الخطوات
+        const totalSteps = 5;
 
         function addLog(message, type = 'info') {
             const logBox = document.getElementById('logBox');
             const entry = document.createElement('div');
-            entry.className = `log-entry ${type === 'success' ? 'log-success' : type === 'error' ? 'log-error' : ''}`;
+            entry.className = `log-entry ${type === 'success' ? 'log-success' : ''}`;
             entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
             logBox.appendChild(entry);
             logBox.scrollTop = logBox.scrollHeight;
-            
-            logEntries.push({ message, type });
         }
 
         function updateStep(stepNumber, message, status) {
@@ -279,7 +250,6 @@
             }
             
             stepDiv.className = `status-item status-${status}`;
-            
             const icon = status === 'success' ? '✅' : status === 'working' ? '⏳' : '❌';
             stepDiv.innerHTML = `<span>${icon}</span> ${message}`;
         }
@@ -291,12 +261,11 @@
 
         function showSummary(data) {
             const summaryBox = document.getElementById('summaryBox');
-            const summaryGrid = document.getElementById('summaryGrid');
+            const summaryContent = document.getElementById('summaryContent');
             
-            summaryGrid.innerHTML = '';
-            
+            let html = '';
             for (const [key, value] of Object.entries(data)) {
-                summaryGrid.innerHTML += `
+                html += `
                     <div class="summary-item">
                         <div class="summary-label">${key}</div>
                         <div class="summary-value">${value}</div>
@@ -304,6 +273,7 @@
                 `;
             }
             
+            summaryContent.innerHTML = html;
             summaryBox.style.display = 'block';
         }
 
@@ -312,7 +282,7 @@
             btn.disabled = true;
             btn.innerHTML = '<span>⚡</span> جاري التنفيذ... <span>⏳</span>';
             
-            addLog('🪄 بدأ السيت أب السحري الكامل...', 'info');
+            addLog('🪄 بدأ تهيئة بيانات صفحة قريباً...', 'info');
             
             try {
                 // ===== 1. تهيئة Firebase =====
@@ -321,18 +291,10 @@
                 updateStep(1, 'تهيئة Firebase...', 'working');
                 addLog('جاري تهيئة Firebase...', 'info');
                 
-                const config = {
-                    apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
-                    authDomain: "yathreb-10909.firebaseapp.com",
-                    projectId: "yathreb-10909",
-                    storageBucket: "yathreb-10909.firebasestorage.app",
-                    messagingSenderId: "525635197745",
-                    appId: "1:525635197745:web:99e1cbab31693af790ae10"
-                };
-
-                const app = firebase.initializeApp(config);
-                db = firebase.firestore(app);
-                auth = firebase.auth(app);
+                // اختبار الاتصال
+                await db.collection('test').doc('connection').set({
+                    timestamp: new Date().toISOString()
+                });
                 
                 updateStep(1, '✅ تم تهيئة Firebase', 'success');
                 addLog('✅ Firebase initialized', 'success');
@@ -352,610 +314,120 @@
                     updateStep(2, '✅ تم فتح القواعد', 'success');
                 } catch (e) {
                     addLog('⚠️ القواعد مفتوحة بالفعل', 'success');
-                    updateStep(2, '✅ القواعد مفتوحة', 'success');
+                    updateStep(2, '✅ القواعد جاهزة', 'success');
                 }
 
-                // ===== 3. إنشاء الإعدادات العامة (كل حاجة هتتحط في شاشة الإعدادات) =====
+                // ===== 3. إنشاء الإعدادات الأساسية =====
                 currentStep = 3;
                 updateProgress(currentStep);
-                updateStep(3, 'إنشاء الإعدادات العامة...', 'working');
+                updateStep(3, 'حفظ الإعدادات الأساسية...', 'working');
                 
-                const settingsData = {
-                    // هوية المركز
+                // البيانات الأساسية للصفحة
+                const settings = {
+                    // اسم المركز
                     centerName: 'مركز يثرب الخيري التخصصي',
-                    centerNameEn: 'Yathreb Specialized Medical Center',
-                    centerLogoUrl: 'https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7',
                     
-                    // هوية المعمل
-                    labName: 'معمل يثرب للتحاليل',
-                    labNameEn: 'Yathreb Lab',
-                    labLogoUrl: '',
+                    // رابط اللوجو
+                    logoUrl: 'https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7',
                     
-                    // روابط التواصل الاجتماعي (كلها هتتحط في شاشة الإعدادات)
-                    socialLinks: {
-                        facebook: {
-                            center: 'https://www.facebook.com/ythrb.altkhssy',
-                            lab: 'https://www.facebook.com/ythrb.lab'
-                        },
-                        instagram: 'https://instagram.com/yathreb.med',
-                        twitter: 'https://twitter.com/yathreb_med',
-                        youtube: 'https://youtube.com/@yathreb',
-                        linkedin: 'https://linkedin.com/company/yathreb',
-                        snapchat: 'https://snapchat.com/add/yathreb',
-                        tiktok: 'https://tiktok.com/@yathreb',
-                        telegram: 'https://t.me/yathreb'
-                    },
+                    // رقم التليفون
+                    phone: '١٥٠٠٠',
                     
-                    // أرقام التواصل
-                    contacts: {
-                        phones: {
-                            landline1: '0141234567',
-                            landline2: '0147654321',
-                            mobile1: '0500000000',
-                            mobile2: '0511111111',
-                            mobile3: '0522222222',
-                            fax: '0141234568'
+                    // العنوان
+                    address: 'المدينة المنورة - المملكة العربية السعودية',
+                    
+                    // تاريخ الانتهاء (للكاونتر)
+                    completionDate: '2026-01-01',
+                    
+                    // وقت التسليم
+                    deliveryTime: '12:00',
+                    
+                    // الكومنت تحت الكاونتر
+                    comment: 'استعدوا معنا لأكبر افتتاح طبي في المدينة المنورة',
+                    
+                    // فيسبوك
+                    facebook: 'https://www.facebook.com/ythrb.altkhssy',
+                    
+                    // خدمات سريعة
+                    services: [
+                        {
+                            icon: 'user-md',
+                            name: 'عيادات تخصصية',
+                            comment: 'باطنة - مسالك - أطفال'
                         },
-                        whatsapp: {
-                            clinic: '966500000000',
-                            lab: '966511111111',
-                            emergency: '966522222222'
+                        {
+                            icon: 'flask',
+                            name: 'معمل متطور',
+                            comment: 'تحاليل دقيقة وسريعة'
                         },
-                        emails: {
-                            info: 'info@yathreb.com',
-                            appointments: 'appointments@yathreb.com',
-                            lab: 'lab@yathreb.com',
-                            support: 'support@yathreb.com'
+                        {
+                            icon: 'baby',
+                            name: 'حضانات أطفال',
+                            comment: 'رعاية متكاملة'
+                        },
+                        {
+                            icon: 'user-nurse',
+                            name: 'تمريض منزلي',
+                            comment: 'رعاية تمريضية في المنزل'
+                        },
+                        {
+                            icon: 'heartbeat',
+                            name: 'أشعة وتشخيص',
+                            comment: 'سونار - رسم قلب'
+                        },
+                        {
+                            icon: 'hand-holding-heart',
+                            name: 'خدمات خيرية',
+                            comment: 'بأسعار مخفضة'
                         }
-                    },
+                    ],
                     
-                    // العنوان والموقع
-                    address: {
-                        full: 'المدينة المنورة - المملكة العربية السعودية',
-                        street: 'طريق الملك عبدالله',
-                        building: 'برج يثرب الطبي',
-                        maps: 'https://maps.google.com/?q=24.524654,39.569184',
-                        mapsEmbed: 'https://www.google.com/maps/embed?pb=...'
-                    },
-                    
-                    // مواعيد العمل (كل يوم على حدة)
-                    workingHours: {
-                        saturday: '٩:٠٠ ص - ٩:٠٠ م',
-                        sunday: '٩:٠٠ ص - ٩:٠٠ م',
-                        monday: '٩:٠٠ ص - ٩:٠٠ م',
-                        tuesday: '٩:٠٠ ص - ٩:٠٠ م',
-                        wednesday: '٩:٠٠ ص - ٩:٠٠ م',
-                        thursday: '٩:٠٠ ص - ٩:٠٠ م',
-                        friday: 'مغلق',
-                        ramadan: {
-                            morning: '١٠:٠٠ ص - ٣:٠٠ م',
-                            evening: '٨:٠٠ م - ١:٠٠ ص'
-                        },
-                        eid: 'مغلق'
-                    },
-                    
-                    // إعدادات متقدمة (هتتحط في شاشة الإعدادات)
-                    advanced: {
-                        gaId: 'G-XXXXXXXXXX',
-                        fbPixel: '123456789012345',
-                        gtm: 'GTM-XXXXXX',
-                        hotjar: '1234567',
-                        primaryColor: '#0e7c9e',
-                        secondaryColor: '#fbbf24',
-                        accentColor: '#10b981',
-                        maintenanceMode: false,
-                        sessionDuration: 60,
-                        maxBookings: 50
-                    },
-                    
-                    // سياسات وشروط (هتتحط في شاشة الإعدادات)
-                    policies: {
-                        privacy: 'نحن في مركز يثرب الخيري التخصصي نلتزم بحماية خصوصية بياناتكم...',
-                        terms: 'باستخدامك لهذا الموقع فإنك توافق على الشروط والأحكام التالية...',
-                        refund: 'سياسة الاسترداد والاسترجاع...'
-                    },
-                    
-                    // تواريخ مهمة
-                    dates: {
-                        opening: '2026-01-01',
-                        openingTime: '09:00',
-                        established: '2024',
-                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-                    },
-                    
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    آخرتحديث: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                await db.collection('settings').doc('general').set(settingsData);
-                addLog('✅ الإعدادات العامة الكاملة تم إنشاؤها', 'success');
-                updateStep(3, '✅ تم إنشاء الإعدادات', 'success');
+                await db.collection('settings').doc('comingSoon').set(settings, { merge: true });
+                
+                addLog('✅ تم حفظ الإعدادات الأساسية', 'success');
+                updateStep(3, '✅ تم حفظ الإعدادات', 'success');
 
-                // ===== 4. إنشاء خدمات العيادات =====
+                // ===== 4. فحص البيانات =====
                 currentStep = 4;
                 updateProgress(currentStep);
-                updateStep(4, 'إنشاء خدمات العيادات...', 'working');
+                updateStep(4, 'فحص البيانات...', 'working');
                 
-                const clinicServices = [
-                    { 
-                        name: 'عيادة الباطنة', 
-                        desc: 'تشخيص وعلاج أمراض الباطنة', 
-                        icon: 'user-md', 
-                        price: 300,
-                        category: 'internal',
-                        duration: '30 دقيقة',
-                        available: true
-                    },
-                    { 
-                        name: 'عيادة المسالك', 
-                        desc: 'أمراض المسالك البولية', 
-                        icon: 'kidney', 
-                        price: 400,
-                        category: 'urology',
-                        duration: '30 دقيقة',
-                        available: true
-                    },
-                    { 
-                        name: 'عيادة الأطفال', 
-                        desc: 'صحة الطفل', 
-                        icon: 'baby', 
-                        price: 350,
-                        category: 'pediatrics',
-                        duration: '30 دقيقة',
-                        available: true
-                    },
-                    { 
-                        name: 'سونار', 
-                        desc: 'تشخيص بالسونار', 
-                        icon: 'ultrasound', 
-                        price: 500,
-                        category: 'radiology',
-                        duration: '20 دقيقة',
-                        available: true
-                    },
-                    { 
-                        name: 'تمريض منزلي', 
-                        desc: 'رعاية تمريضية في المنزل', 
-                        icon: 'user-nurse', 
-                        price: 200,
-                        category: 'nursing',
-                        duration: 'ساعة',
-                        available: true
-                    },
-                    { 
-                        name: 'استشارة غذائية', 
-                        desc: 'تغذية علاجية', 
-                        icon: 'apple-alt', 
-                        price: 250,
-                        category: 'nutrition',
-                        duration: '45 دقيقة',
-                        available: true
-                    },
-                    { 
-                        name: 'علاج طبيعي', 
-                        desc: 'جلسات علاج طبيعي', 
-                        icon: 'bone', 
-                        price: 300,
-                        category: 'physiotherapy',
-                        duration: '45 دقيقة',
-                        available: true
-                    },
-                    { 
-                        name: 'تخطيط قلب', 
-                        desc: 'رسم قلب', 
-                        icon: 'heartbeat', 
-                        price: 200,
-                        category: 'cardiology',
-                        duration: '20 دقيقة',
-                        available: true
-                    }
-                ];
-                
-                for (const service of clinicServices) {
-                    await db.collection('clinicServices').add({
-                        ...service,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                const doc = await db.collection('settings').doc('comingSoon').get();
+                if (doc.exists) {
+                    addLog('✅ البيانات موجودة ومتاحة', 'success');
+                    updateStep(4, '✅ فحص ناجح', 'success');
+                    
+                    // عرض الملخص
+                    showSummary({
+                        'اسم المركز': settings.centerName,
+                        'رقم التليفون': settings.phone,
+                        'العنوان': settings.address,
+                        'تاريخ الانتهاء': settings.completionDate,
+                        'وقت التسليم': settings.deliveryTime,
+                        'عدد الخدمات': `${settings.services.length} خدمة`
                     });
                 }
-                addLog(`✅ ${clinicServices.length} خدمة تم إنشاؤها`, 'success');
-                updateStep(4, '✅ تم إنشاء خدمات العيادات', 'success');
 
-                // ===== 5. إنشاء تحاليل المعمل =====
+                // ===== 5. إغلاق القواعد =====
                 currentStep = 5;
                 updateProgress(currentStep);
-                updateStep(5, 'إنشاء تحاليل المعمل...', 'working');
-                
-                const labTests = [
-                    { name: 'صورة دم كاملة (CBC)', price: 150, category: 'basic', preparation: 'لا يحتاج صيام' },
-                    { name: 'وظائف كبد (Liver Function)', price: 250, category: 'liver', preparation: 'صيام 8 ساعات' },
-                    { name: 'وظائف كلى (Kidney Function)', price: 200, category: 'kidney', preparation: 'صيام 8 ساعات' },
-                    { name: 'سكر صائم (FBS)', price: 80, category: 'diabetes', preparation: 'صيام 8 ساعات' },
-                    { name: 'سكر عشوائي (RBS)', price: 60, category: 'diabetes', preparation: 'لا يحتاج صيام' },
-                    { name: 'دهون ثلاثية (Triglycerides)', price: 180, category: 'lipids', preparation: 'صيام 10 ساعات' },
-                    { name: 'كولسترول كلي', price: 150, category: 'lipids', preparation: 'صيام 10 ساعات' },
-                    { name: 'هرمونات الغدة (Thyroid)', price: 400, category: 'hormones', preparation: 'صيام 6 ساعات' },
-                    { name: 'فيتامين د (Vitamin D)', price: 350, category: 'vitamins', preparation: 'لا يحتاج صيام' },
-                    { name: 'فيتامين ب12', price: 300, category: 'vitamins', preparation: 'صيام 8 ساعات' },
-                    { name: 'تحليل بول (Urinalysis)', price: 60, category: 'basic', preparation: 'لا يحتاج صيام' },
-                    { name: 'تحليل براز', price: 80, category: 'basic', preparation: 'لا يحتاج صيام' },
-                    { name: 'سيولة الدم', price: 200, category: 'coagulation', preparation: 'صيام 6 ساعات' },
-                    { name: 'هرمونات الحليب', price: 280, category: 'hormones', preparation: 'صيام 8 ساعات' },
-                    { name: 'هرمون الذكورة', price: 320, category: 'hormones', preparation: 'صيام 8 ساعات' },
-                    { name: 'هرمون الأنوثة', price: 340, category: 'hormones', preparation: 'صيام 8 ساعات' },
-                    { name: 'تحليل حمل', price: 70, category: 'pregnancy', preparation: 'لا يحتاج صيام' },
-                    { name: 'زراعة بول', price: 220, category: 'culture', preparation: 'لا يحتاج صيام' }
-                ];
-                
-                for (const test of labTests) {
-                    await db.collection('labTests').add({
-                        ...test,
-                        available: true,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                addLog(`✅ ${labTests.length} تحليل تم إنشاؤها`, 'success');
-                updateStep(5, '✅ تم إنشاء تحاليل المعمل', 'success');
-
-                // ===== 6. إنشاء فئات التحاليل =====
-                currentStep = 6;
-                updateProgress(currentStep);
-                updateStep(6, 'إنشاء فئات التحاليل...', 'working');
-                
-                const testCategories = [
-                    { name: 'basic', displayName: 'تحاليل أساسية', icon: 'flask', order: 1 },
-                    { name: 'liver', displayName: 'وظائف كبد', icon: 'liver', order: 2 },
-                    { name: 'kidney', displayName: 'وظائف كلى', icon: 'kidney', order: 3 },
-                    { name: 'diabetes', displayName: 'سكر', icon: 'droplet', order: 4 },
-                    { name: 'lipids', displayName: 'دهون', icon: 'oil-can', order: 5 },
-                    { name: 'hormones', displayName: 'هرمونات', icon: 'wave-square', order: 6 },
-                    { name: 'vitamins', displayName: 'فيتامينات', icon: 'tablets', order: 7 },
-                    { name: 'coagulation', displayName: 'سيولة', icon: 'tint', order: 8 },
-                    { name: 'pregnancy', displayName: 'حمل', icon: 'baby', order: 9 },
-                    { name: 'culture', displayName: 'زراعة', icon: 'microscope', order: 10 }
-                ];
-                
-                for (const category of testCategories) {
-                    await db.collection('testCategories').add({
-                        ...category,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                addLog(`✅ ${testCategories.length} فئة تم إنشاؤها`, 'success');
-                updateStep(6, '✅ تم إنشاء فئات التحاليل', 'success');
-
-                // ===== 7. إنشاء المستخدم الأول (سوبر أدمن) =====
-                currentStep = 7;
-                updateProgress(currentStep);
-                updateStep(7, 'إنشاء المستخدم الأول...', 'working');
-                
-                try {
-                    const userCredential = await auth.createUserWithEmailAndPassword(
-                        'admin@yathreb.com',
-                        'Yathreb@2024'
-                    );
-                    
-                    await db.collection('users').doc(userCredential.user.uid).set({
-                        email: 'admin@yathreb.com',
-                        role: 'super_admin',
-                        name: 'مدير النظام',
-                        permissions: ['all'],
-                        isActive: true,
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    addLog('✅ Super admin created', 'success');
-                    updateStep(7, '✅ تم إنشاء المستخدم', 'success');
-                } catch (e) {
-                    addLog('⚠️ المستخدم موجود بالفعل', 'success');
-                    updateStep(7, '✅ المستخدم موجود', 'success');
-                }
-
-                // ===== 8. إنشاء العروض =====
-                currentStep = 8;
-                updateProgress(currentStep);
-                updateStep(8, 'إنشاء العروض...', 'working');
-                
-                const offers = [
-                    {
-                        name: 'عرض الافتتاح الكبير',
-                        discount: 30,
-                        description: 'خصم 30% على جميع الخدمات الطبية والتحاليل',
-                        startDate: new Date().toISOString(),
-                        endDate: new Date(Date.now() + 30*24*60*60*1000).toISOString(),
-                        services: ['clinic', 'lab'],
-                        code: 'OPEN2024',
-                        active: true
-                    },
-                    {
-                        name: 'عرض العائلة',
-                        discount: 25,
-                        description: 'خصم 25% للعائلات على الكشوفات',
-                        startDate: new Date().toISOString(),
-                        endDate: new Date(Date.now() + 60*24*60*60*1000).toISOString(),
-                        services: ['clinic'],
-                        code: 'FAMILY25',
-                        active: true
-                    },
-                    {
-                        name: 'باقة التحاليل الشاملة',
-                        discount: 40,
-                        description: 'خصم 40% على باقة التحاليل الشاملة',
-                        startDate: new Date().toISOString(),
-                        endDate: new Date(Date.now() + 45*24*60*60*1000).toISOString(),
-                        services: ['lab'],
-                        code: 'LAB40',
-                        active: true
-                    }
-                ];
-                
-                for (const offer of offers) {
-                    await db.collection('offers').add({
-                        ...offer,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                addLog(`✅ ${offers.length} عرض تم إنشاؤها`, 'success');
-                updateStep(8, '✅ تم إنشاء العروض', 'success');
-
-                // ===== 9. إنشاء الحضانات =====
-                currentStep = 9;
-                updateProgress(currentStep);
-                updateStep(9, 'إنشاء الحضانات...', 'working');
-                
-                const nurseries = [
-                    {
-                        name: 'حضانة يثرب النموذجية',
-                        capacity: 20,
-                        ageGroup: '6 شهور - 4 سنوات',
-                        services: ['رعاية نهارية', 'متابعة تمريضية', 'أنشطة تعليمية', 'وجبات صحية'],
-                        prices: {
-                            fullDay: 1500,
-                            halfDay: 900,
-                            hourly: 100
-                        },
-                        workingHours: '٧:٠٠ ص - ٧:٠٠ م',
-                        description: 'رعاية متكاملة لأطفالكم في بيئة آمنة وتعليمية',
-                        features: ['كاميرات مراقبة', 'ممرضة مقيمة', 'أنشطة ترفيهية'],
-                        available: true
-                    }
-                ];
-                
-                for (const nursery of nurseries) {
-                    await db.collection('nurseries').add({
-                        ...nursery,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                addLog(`✅ ${nurseries.length} حضانة تم إنشاؤها`, 'success');
-                updateStep(9, '✅ تم إنشاء الحضانات', 'success');
-
-                // ===== 10. إنشاء الأطباء =====
-                currentStep = 10;
-                updateProgress(currentStep);
-                updateStep(10, 'إنشاء الأطباء...', 'working');
-                
-                const doctors = [
-                    {
-                        name: 'د. أحمد محمد علي',
-                        specialty: 'باطنة',
-                        qualifications: ['دكتوراه الباطنة - جامعة القاهرة', 'ماجستير أمراض السكر'],
-                        experience: 15,
-                        languages: ['العربية', 'الإنجليزية'],
-                        workingDays: ['السبت', 'الأحد', 'الثلاثاء', 'الأربعاء'],
-                        workingHours: '١٠ص - ٢م',
-                        price: 300,
-                        available: true,
-                        image: ''
-                    },
-                    {
-                        name: 'د. سارة عبدالله',
-                        specialty: 'أطفال',
-                        qualifications: ['دكتوراه الأطفال - جامعة الملك سعود', 'زمالة طب الأطفال'],
-                        experience: 12,
-                        languages: ['العربية', 'الإنجليزية'],
-                        workingDays: ['الأحد', 'الإثنين', 'الأربعاء', 'الخميس'],
-                        workingHours: '٤م - ٨م',
-                        price: 350,
-                        available: true,
-                        image: ''
-                    },
-                    {
-                        name: 'د. خالد عمر',
-                        specialty: 'مسالك',
-                        qualifications: ['دكتوراه المسالك - جامعة عين شمس', 'زمالة جراحة المناظير'],
-                        experience: 18,
-                        languages: ['العربية', 'الإنجليزية'],
-                        workingDays: ['السبت', 'الإثنين', 'الثلاثاء', 'الخميس'],
-                        workingHours: '٥م - ٩م',
-                        price: 400,
-                        available: true,
-                        image: ''
-                    }
-                ];
-                
-                for (const doctor of doctors) {
-                    await db.collection('doctors').add({
-                        ...doctor,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                addLog(`✅ ${doctors.length} طبيب تم إنشاؤهم`, 'success');
-                updateStep(10, '✅ تم إنشاء الأطباء', 'success');
-
-                // ===== 11. إنشاء منشورات فيسبوك تجريبية =====
-                currentStep = 11;
-                updateProgress(currentStep);
-                updateStep(11, 'إنشاء منشورات فيسبوك تجريبية...', 'working');
-                
-                const fbPosts = [
-                    {
-                        page: 'center',
-                        content: 'نحن سعداء بالإعلان عن افتتاح مركز يثرب الخيري التخصصي قريباً',
-                        image: '',
-                        likes: 0,
-                        shares: 0,
-                        date: new Date().toISOString(),
-                        active: true
-                    },
-                    {
-                        page: 'center',
-                        content: 'عياداتنا تضم نخبة من الاستشاريين في جميع التخصصات',
-                        image: '',
-                        likes: 0,
-                        shares: 0,
-                        date: new Date().toISOString(),
-                        active: true
-                    },
-                    {
-                        page: 'lab',
-                        content: 'معمل يثرب للتحاليل مجهز بأحدث الأجهزة لضمان دقة النتائج',
-                        image: '',
-                        likes: 0,
-                        shares: 0,
-                        date: new Date().toISOString(),
-                        active: true
-                    }
-                ];
-                
-                for (const post of fbPosts) {
-                    await db.collection('facebookPosts').add({
-                        ...post,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-                addLog(`✅ ${fbPosts.length} منشور تم إنشاؤهم`, 'success');
-                updateStep(11, '✅ تم إنشاء منشورات فيسبوك', 'success');
-
-                // ===== 12. الفحص الشامل =====
-                currentStep = 12;
-                updateProgress(currentStep);
-                updateStep(12, 'جاري فحص النظام...', 'working');
-                
-                const checks = [
-                    'settings', 'clinicServices', 'labTests', 
-                    'offers', 'nurseries', 'users', 'doctors',
-                    'facebookPosts', 'testCategories'
-                ];
-                
-                let successCount = 0;
-                const summary = {};
-                
-                for (const check of checks) {
-                    try {
-                        const snapshot = await db.collection(check).get();
-                        addLog(`✅ ${check}: ${snapshot.size} مستند`, 'success');
-                        successCount++;
-                        summary[check] = `${snapshot.size} مستند`;
-                    } catch (e) {
-                        addLog(`⚠️ ${check}: ${e.message}`, 'error');
-                        summary[check] = 'خطأ في القراءة';
-                    }
-                }
-                
-                if (successCount === checks.length) {
-                    updateStep(12, '✅ الفحص ناجح - كل شيء يعمل', 'success');
-                } else {
-                    updateStep(12, `⚠️ الفحص: ${successCount}/${checks.length} يعمل`, 'warning');
-                }
-
-                // ===== 13. إغلاق القواعد =====
-                currentStep = 13;
-                updateProgress(currentStep);
-                updateStep(13, 'إغلاق القواعد...', 'working');
+                updateStep(5, 'إغلاق القواعد...', 'working');
                 
                 try {
                     await db.collection('_temp').doc('_open').delete();
-                    addLog('✅ Temporary rules closed', 'success');
-                    updateStep(13, '✅ تم إغلاق القواعد', 'success');
+                    addLog('✅ تم إغلاق القواعد', 'success');
+                    updateStep(5, '✅ القواعد مقفولة', 'success');
                 } catch (e) {
-                    addLog('⚠️ No temp collection to delete', 'success');
-                    updateStep(13, '✅ القواعد جاهزة', 'success');
+                    addLog('✅ القواعد جاهزة', 'success');
+                    updateStep(5, '✅ تم', 'success');
                 }
 
-                // ===== 14. عرض القواعد النهائية والملخص =====
-                currentStep = 14;
-                updateProgress(currentStep);
-                updateStep(14, 'تجهيز القواعد النهائية...', 'working');
-                
-                const finalRules = `rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // السماح بالقراءة للجميع (لظهور الموقع)
-    match /settings/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /clinicServices/{service} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /labTests/{test} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /offers/{offer} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /nurseries/{nursery} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /doctors/{doctor} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /facebookPosts/{post} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    // المستخدمين - للمصادق عليهم فقط
-    match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-    }
-    
-    // الباقي مرفوض
-    match /{document=**} {
-      allow read, write: if false;
-    }
-  }
-}`;
-
-                document.getElementById('finalRules').style.display = 'block';
-                document.getElementById('finalRules').textContent = finalRules;
-                
-                // عرض الملخص
-                showSummary({
-                    'الإعدادات العامة': '✅ تم',
-                    'خدمات العيادات': `${clinicServices.length} خدمة`,
-                    'تحاليل المعمل': `${labTests.length} تحليل`,
-                    'فئات التحاليل': `${testCategories.length} فئة`,
-                    'الأطباء': `${doctors.length} طبيب`,
-                    'العروض': `${offers.length} عرض`,
-                    'الحضانات': `${nurseries.length} حضانة`,
-                    'منشورات فيسبوك': `${fbPosts.length} منشور`,
-                    'المستخدم الرئيسي': 'admin@yathreb.com',
-                    'كلمة المرور': 'Yathreb@2024'
-                });
-                
-                updateStep(14, '✅ القواعد النهائية والملخص جاهزين', 'success');
-                addLog('✅ Final rules and summary displayed', 'success');
-
-                // ===== 15. اكتمال المهمة =====
-                currentStep = 15;
-                updateProgress(currentStep);
-                updateStep(15, '✨ اكتمل السيت أب السحري الكامل!', 'success');
-                
-                addLog('🎉 تم إنشاء كل شيء بنجاح!', 'success');
-                addLog('🔒 القواعد النهائية في الأسفل - انسخها والصقها في Firebase Console', 'info');
-                addLog('📋 بيانات الدخول: admin@yathreb.com / Yathreb@2024', 'info');
+                // اكتمال المهمة
+                addLog('🎉 تم تهيئة كل البيانات بنجاح!', 'success');
+                addLog('📱 البيانات جاهزة لصفحة "قريباً"', 'success');
                 
                 btn.innerHTML = '<span>✅</span> تم بنجاح <span>✨</span>';
                 
