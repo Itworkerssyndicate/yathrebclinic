@@ -8,15 +8,13 @@
     <!-- ===== الأمان السيبراني ===== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' https:;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://player.vimeo.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src 'self' data: https:;
-        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://firestore.googleapis.com;
-        frame-src 'none';
-        object-src 'none';
-        base-uri 'self';
-        form-action 'self';
+        media-src 'self' https:;
+        frame-src 'self' https://player.vimeo.com https://www.youtube.com;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
     ">
     
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -29,15 +27,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- ===== Three.js للخلفية الطبية ===== -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
     <!-- ===== Firebase SDK ===== -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* ===== RESET متقدم ===== */
+        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
@@ -49,13 +44,12 @@
             --primary-dark: #0a5d7a;
             --primary-light: #1a9bc2;
             --secondary: #fbbf24;
-            --accent: #10b981;
-            --dark: #0a1a2f;
             --light: #f8fafc;
+            --dark: #0a1f2f;
             --gray: #94a3b8;
             --gradient-primary: linear-gradient(145deg, var(--primary), var(--primary-dark));
             --gradient-secondary: linear-gradient(145deg, var(--secondary), #f59e0b);
-            --gradient-medical: linear-gradient(145deg, #0a1a2f, #1a4b6d, #0e7c9e);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         body {
@@ -67,19 +61,53 @@
             background: var(--dark);
         }
 
-        /* ===== شاشة الترحيب ===== */
+        /* ===== خلفية فيديو طبية ===== */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.15;
+            filter: blur(2px) grayscale(30%);
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, rgba(10,31,47,0.85), rgba(10,31,47,0.9));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ===== شاشة الترحيب (مُحسّنة) ===== */
         .splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--gradient-medical);
+            background: var(--dark);
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1.5s ease, visibility 1.5s;
+            transition: opacity 1s ease, visibility 1s ease;
         }
 
         .splash-screen.hidden {
@@ -89,108 +117,50 @@
 
         .splash-content {
             text-align: center;
-            max-width: 800px;
+            max-width: 600px;
             padding: 30px;
         }
 
         .splash-logo {
-            width: 350px;
-            height: 350px;
-            margin: 0 auto 40px;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 30px;
             position: relative;
-            perspective: 2500px;
-        }
-
-        .splash-logo-3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: splashRotate 2.5s ease-out forwards;
-        }
-
-        @keyframes splashRotate {
-            0% { transform: rotateY(0deg) scale(0.8); opacity: 0; }
-            30% { transform: rotateY(180deg) scale(1); opacity: 1; }
-            60% { transform: rotateY(360deg) scale(1); }
-            100% { transform: rotateY(720deg) scale(1); }
-        }
-
-        .splash-logo-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
             border-radius: 50%;
-            backface-visibility: hidden;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(251,191,36,0.3);
+            animation: logoPulse 2s infinite alternate;
+            background: var(--gradient-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 0 4px var(--secondary), 0 0 50px var(--secondary);
-            overflow: hidden;
-            background: var(--gradient-primary);
         }
 
-        .splash-logo-front {
-            transform: rotateY(0deg);
-            padding: 25px;
+        @keyframes logoPulse {
+            0% { box-shadow: 0 0 30px rgba(14,124,158,0.3); }
+            100% { box-shadow: 0 0 60px rgba(251,191,36,0.5); }
         }
 
-        .splash-logo-front img {
+        .splash-logo img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
-        }
-
-        .splash-logo-back {
-            transform: rotateY(180deg);
-            background: var(--gradient-secondary);
-            flex-direction: column;
-            color: var(--dark);
-        }
-
-        .splash-logo-back i {
-            font-size: 6rem;
-            margin-bottom: 20px;
-            animation: heartbeat 2s infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .splash-logo-back span {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: rgba(0,0,0,0.3);
-            padding: 10px 30px;
-            border-radius: 50px;
-            color: white;
+            object-fit: cover;
         }
 
         .splash-title {
             color: white;
-            font-size: 3rem;
+            font-size: 2.5rem;
             margin-bottom: 30px;
-            text-shadow: 0 0 20px var(--primary), 0 0 40px var(--secondary);
-            opacity: 0;
-            animation: fadeIn 1s ease 1.5s forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            font-weight: 700;
         }
 
         .splash-progress {
             width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            height: 8px;
+            height: 6px;
             background: rgba(255,255,255,0.1);
             border-radius: 10px;
             overflow: hidden;
+            margin: 20px 0;
         }
 
         .splash-progress-bar {
@@ -198,25 +168,13 @@
             width: 0%;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             transition: width 0.3s;
-            box-shadow: 0 0 30px var(--secondary);
+            border-radius: 10px;
         }
 
         .splash-percentage {
-            font-size: 3rem;
-            font-weight: 900;
+            font-size: 2.5rem;
+            font-weight: 700;
             color: var(--secondary);
-            margin-top: 20px;
-        }
-
-        /* ===== خلفية طبية 3D ===== */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
         }
 
         /* ===== المحتوى الرئيسي ===== */
@@ -234,7 +192,7 @@
             pointer-events: all;
         }
 
-        .content-overlay {
+        .container {
             position: relative;
             z-index: 20;
             max-width: 1400px;
@@ -243,22 +201,20 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: rgba(10, 26, 47, 0.2);
-            backdrop-filter: blur(3px);
         }
 
-        /* ===== الشريط العلوي ===== */
+        /* ===== شريط العلوي ===== */
         .top-bar {
-            background: rgba(10, 26, 47, 0.7);
+            background: rgba(10, 31, 47, 0.7);
             backdrop-filter: blur(20px);
-            border-radius: 100px;
+            border-radius: 60px;
             padding: 15px 30px;
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid rgba(251, 191, 36, 0.2);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            box-shadow: var(--shadow);
             flex-wrap: wrap;
             gap: 15px;
         }
@@ -276,8 +232,14 @@
             color: var(--light);
             font-size: 1.1rem;
             padding: 8px 20px;
-            border-radius: 50px;
+            border-radius: 40px;
             background: rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            background: var(--gradient-primary);
+            transform: translateY(-3px);
         }
 
         .contact-item i {
@@ -286,7 +248,7 @@
 
         .social-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .social-link {
@@ -300,7 +262,7 @@
             color: var(--light);
             font-size: 1.2rem;
             transition: all 0.3s;
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            border: 1px solid rgba(251,191,36,0.2);
         }
 
         .social-link:hover {
@@ -316,7 +278,16 @@
             grid-template-columns: 1fr 1fr;
             gap: 50px;
             align-items: center;
-            margin: 40px 0;
+            margin: 30px 0;
+        }
+
+        .right-section {
+            animation: slideRight 1s ease;
+        }
+
+        @keyframes slideRight {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .coming-badge {
@@ -329,6 +300,7 @@
             font-weight: 600;
             margin-bottom: 25px;
             box-shadow: 0 10px 30px rgba(14,124,158,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .main-title {
@@ -357,10 +329,10 @@
             margin-bottom: 40px;
             max-width: 600px;
             line-height: 1.8;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             padding: 20px 25px;
             border-radius: 30px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -379,8 +351,9 @@
             padding: 25px 20px;
             min-width: 120px;
             text-align: center;
-            border: 1px solid rgba(251,191,36,0.3);
+            border: 1px solid rgba(251,191,36,0.2);
             transition: all 0.3s;
+            box-shadow: var(--shadow);
         }
 
         .countdown-item:hover {
@@ -421,11 +394,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: slideLeft 1s ease;
+        }
+
+        @keyframes slideLeft {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .logo-container {
-            width: 500px;
-            height: 500px;
+            width: 450px;
+            height: 450px;
             position: relative;
             perspective: 2000px;
             cursor: pointer;
@@ -448,14 +427,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 3px var(--secondary), 0 0 50px var(--secondary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 3px var(--secondary);
             overflow: hidden;
         }
 
         .logo-front {
             transform: rotateY(0deg);
             background: var(--gradient-primary);
-            padding: 20px;
+            padding: 15px;
         }
 
         .logo-front img {
@@ -473,16 +452,21 @@
         }
 
         .logo-back i {
-            font-size: 6rem;
+            font-size: 5rem;
             margin-bottom: 20px;
             animation: heartbeat 2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
         .logo-back span {
             font-size: 2rem;
             font-weight: 900;
             background: rgba(0,0,0,0.3);
-            padding: 15px 30px;
+            padding: 10px 25px;
             border-radius: 50px;
             color: white;
             text-align: center;
@@ -516,7 +500,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
-            padding: 20px;
         }
 
         .service-card {
@@ -526,7 +509,8 @@
             padding: 40px 25px;
             text-align: center;
             transition: all 0.4s;
-            border: 1px solid rgba(251,191,36,0.2);
+            border: 1px solid rgba(251,191,36,0.1);
+            box-shadow: var(--shadow);
         }
 
         .service-card:hover {
@@ -597,12 +581,12 @@
             border: 1px solid var(--secondary);
             z-index: 1000;
             display: none;
+            align-items: center;
+            gap: 10px;
         }
 
         .loading-data.visible {
             display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .loading-spinner {
@@ -628,22 +612,23 @@
             .description { margin: 0 auto; }
             .countdown { justify-content: center; }
             .countdown-comment { margin: 20px auto 0; }
-            .logo-container { width: 400px; height: 400px; margin: 0 auto; }
-            .splash-logo { width: 250px; height: 250px; }
+            .logo-container { width: 350px; height: 350px; margin: 0 auto; }
+            .splash-logo { width: 220px; height: 220px; }
         }
 
         @media (max-width: 768px) {
             .top-bar { flex-direction: column; }
             .main-title { font-size: 2.8rem; }
             .main-title .small { font-size: 2rem; }
-            .logo-container { width: 300px; height: 300px; }
-            .splash-logo { width: 200px; height: 200px; }
+            .logo-container { width: 280px; height: 280px; }
+            .splash-logo { width: 180px; height: 180px; }
+            .splash-title { font-size: 2rem; }
             .countdown-item { min-width: 90px; padding: 20px; }
             .countdown-number { font-size: 3rem; }
         }
 
         @media (max-width: 480px) {
-            .logo-container { width: 250px; height: 250px; }
+            .logo-container { width: 220px; height: 220px; }
             .splash-logo { width: 150px; height: 150px; }
             .countdown-item { min-width: 70px; padding: 15px; }
             .countdown-number { font-size: 2.2rem; }
@@ -651,19 +636,17 @@
     </style>
 </head>
 <body>
+    <!-- خلفية فيديو طبية -->
+    <div class="video-background">
+        <iframe src="https://player.vimeo.com/video/266172816?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+    <div class="video-overlay"></div>
+
     <!-- شاشة الترحيب -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-content">
             <div class="splash-logo">
-                <div class="splash-logo-3d" id="splashLogo">
-                    <div class="splash-logo-face splash-logo-front">
-                        <img src="" alt="مركز يثرب الخيري التخصصي" id="splashLogoImg">
-                    </div>
-                    <div class="splash-logo-face splash-logo-back">
-                        <i class="fas fa-heartbeat"></i>
-                        <span id="splashLogoText">يثرب الخيري</span>
-                    </div>
-                </div>
+                <img src="" alt="مركز يثرب الخيري التخصصي" id="splashLogoImg">
             </div>
             <h2 class="splash-title" id="splashTitle">مركز يثرب الخيري التخصصي</h2>
             <div class="splash-progress">
@@ -673,9 +656,6 @@
         </div>
     </div>
 
-    <!-- خلفية طبية 3D -->
-    <div id="canvas-container"></div>
-
     <!-- مؤشر تحميل البيانات -->
     <div class="loading-data" id="loadingData">
         <div class="loading-spinner"></div>
@@ -684,7 +664,7 @@
 
     <!-- المحتوى الرئيسي -->
     <div class="main-site" id="mainSite">
-        <div class="content-overlay">
+        <div class="container">
             <!-- الشريط العلوي -->
             <div class="top-bar">
                 <div class="contact-info">
@@ -744,7 +724,7 @@
                 </div>
 
                 <div class="left-section">
-                    <!-- اللوجو ثلاثي الأبعاد -->
+                    <!-- اللوجو 3D -->
                     <div class="logo-container" id="logoContainer">
                         <div class="logo-3d" id="logo3d">
                             <div class="logo-face logo-front">
@@ -763,7 +743,7 @@
             <div class="services-section">
                 <h2 class="services-title">خدماتنا</h2>
                 <div class="services-grid" id="servicesGrid">
-                    <!-- الخدمات هتتحمل من Firebase -->
+                    <!-- الخدمات من Firebase -->
                 </div>
             </div>
 
@@ -788,13 +768,39 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ===== شاشة الترحيب =====
+        // ===== شاشة الترحيب (تحميل سريع للوجو) =====
         const splashScreen = document.getElementById('splashScreen');
         const splashProgress = document.getElementById('splashProgress');
         const splashPercentage = document.getElementById('splashPercentage');
+        const splashLogoImg = document.getElementById('splashLogoImg');
+        const mainLogo = document.getElementById('mainLogo');
         const mainSite = document.getElementById('mainSite');
         const loadingData = document.getElementById('loadingData');
+
+        // تحميل اللوجو أولاً
+        async function preloadLogo() {
+            try {
+                const doc = await db.collection('settings').doc('comingSoon').get();
+                if (doc.exists && doc.data().logoUrl) {
+                    const logoUrl = doc.data().logoUrl;
+                    
+                    // تحميل الصورة في الخلفية
+                    const img = new Image();
+                    img.src = logoUrl;
+                    img.onload = () => {
+                        splashLogoImg.src = logoUrl;
+                        mainLogo.src = logoUrl;
+                    };
+                }
+            } catch (error) {
+                console.log('Logo preload error:', error);
+            }
+        }
         
+        // بدأ تحميل اللوجو فوراً
+        preloadLogo();
+
+        // شريط التقدم
         let progress = 0;
         const interval = setInterval(() => {
             progress += 1;
@@ -809,83 +815,6 @@
                 }, 500);
             }
         }, 25);
-
-        // ===== خلفية طبية 3D =====
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0a1a2f);
-        
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
-
-        // إضاءة
-        const ambientLight = new THREE.AmbientLight(0x404060);
-        scene.add(ambientLight);
-        
-        const pointLight1 = new THREE.PointLight(0x0e7c9e, 1, 20);
-        pointLight1.position.set(2, 3, 4);
-        scene.add(pointLight1);
-        
-        const pointLight2 = new THREE.PointLight(0xfbbf24, 1, 20);
-        pointLight2.position.set(-3, -1, 2);
-        scene.add(pointLight2);
-
-        // جسيمات طبية
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 1000;
-        const posArray = new Float32Array(particlesCount * 3);
-        
-        for(let i = 0; i < particlesCount * 3; i += 3) {
-            posArray[i] = (Math.random() - 0.5) * 30;
-            posArray[i+1] = (Math.random() - 0.5) * 30;
-            posArray[i+2] = (Math.random() - 0.5) * 30;
-        }
-        
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.1,
-            color: 0x0e7c9e,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending
-        });
-        
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
-
-        // حلقة طبية
-        const ringGeometry = new THREE.TorusGeometry(5, 0.1, 16, 100);
-        const ringMaterial = new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xd97706, transparent: true, opacity: 0.2 });
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring.rotation.x = Math.PI / 2;
-        scene.add(ring);
-
-        camera.position.z = 15;
-
-        // Animation
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            particlesMesh.rotation.y += 0.0005;
-            particlesMesh.rotation.x += 0.0003;
-            
-            ring.rotation.z += 0.002;
-            
-            renderer.render(scene, camera);
-        }
-        
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
 
         // ===== تحويل الأرقام للعربية =====
         function toArabicNumbers(text) {
@@ -920,7 +849,7 @@
             document.getElementById('seconds').textContent = toArabicNumbers(seconds);
         }
 
-        // ===== تحميل البيانات من Firebase =====
+        // ===== تحميل باقي البيانات =====
         async function loadData() {
             loadingData.classList.add('visible');
             
@@ -933,16 +862,7 @@
                     // اسم المركز
                     const centerName = data.centerName || 'مركز يثرب الخيري التخصصي';
                     document.getElementById('splashTitle').textContent = centerName;
-                    
-                    // تحديث نص اللوجو الخلفي
-                    document.getElementById('splashLogoText').textContent = centerName;
                     document.getElementById('logoBackText').textContent = centerName;
-                    
-                    // اللوجو
-                    if (data.logoUrl) {
-                        document.getElementById('splashLogoImg').src = data.logoUrl;
-                        document.getElementById('mainLogo').src = data.logoUrl;
-                    }
                     
                     // رقم التليفون
                     if (data.phone) {
@@ -1002,8 +922,8 @@
             }
         }
 
-        // تحميل البيانات بعد 2 ثانية
-        setTimeout(loadData, 2000);
+        // تحميل البيانات بعد ثانية
+        setTimeout(loadData, 1000);
 
         // ===== تأثيرات اللوجو =====
         const logoContainer = document.getElementById('logoContainer');
