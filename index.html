@@ -2,10 +2,10 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مركز يثرب الخيري التخصصي | قريباً</title>
     
-    <!-- ===== الأمان السيبراني المتقدم ===== -->
+    <!-- ===== الأمن السيبراني الشامل ===== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' https: data: blob:;
         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://apis.google.com;
@@ -24,6 +24,28 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="format-detection" content="telephone=no">
     
+    <!-- ===== منع الالتقاط ===== -->
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        img {
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+        .no-capture {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+    </style>
+    
     <!-- ===== Fonts & Icons ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +55,7 @@
     <!-- ===== Three.js للخلفية الطبية ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- ===== TensorFlow.js للذكاء الاصطناعي (شغال في الخلفية) ===== -->
+    <!-- ===== TensorFlow.js للذكاء الاصطناعي المتقدم ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
     
     <!-- ===== Firebase SDK ===== -->
@@ -87,6 +109,8 @@
             position: relative;
             overflow-x: hidden;
             background: var(--darker);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ===== خلفية طبية 3D متحركة ===== */
@@ -106,179 +130,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(5,17,24,0.4) 100%);
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(5,17,24,0.3) 100%);
             z-index: 1;
             pointer-events: none;
         }
 
-        /* ===== الأمن السيبراني - منع التحديد والنسخ ===== */
-        .no-select {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        /* ===== زر التحميل ===== */
-        .screenshot-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            border: 2px solid var(--secondary);
-            transition: all 0.3s;
-            animation: screenshotPulse 2s infinite;
-        }
-
-        @keyframes screenshotPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
-            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--secondary); }
-        }
-
-        .screenshot-btn:hover {
-            transform: scale(1.1);
-            background: var(--gradient-secondary);
-            color: var(--darker);
-        }
-
-        /* ===== QR Code المتطور ===== */
-        .qr-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .qr-button {
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(145deg, var(--secondary), var(--secondary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--darker);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid white;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .qr-button:hover {
-            transform: rotate(360deg) scale(1.1);
-            background: var(--gradient-primary);
-            color: white;
-        }
-
-        .share-btn {
-            width: 55px;
-            height: 55px;
-            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid var(--secondary);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .share-btn:hover {
-            transform: rotate(360deg) scale(1.1);
-            background: var(--gradient-secondary);
-            color: var(--darker);
-        }
-
-        .qr-modal {
+        /* ===== الأمن السيبراني - حماية كاملة ===== */
+        .security-layer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(5, 17, 24, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 10000;
+            z-index: 999999;
+            pointer-events: none;
             display: none;
-            align-items: center;
-            justify-content: center;
         }
 
-        .qr-modal.active {
-            display: flex;
-        }
-
-        .qr-modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 40px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: var(--shadow-xl);
-            border: 4px solid var(--secondary);
-        }
-
-        .qr-modal-content h3 {
-            color: var(--darker);
-            font-size: 2rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .qr-modal-content .qr-large {
-            width: 250px;
-            height: 250px;
-            margin: 0 auto 20px;
-        }
-
-        .qr-modal-content .qr-large canvas {
-            width: 100% !important;
-            height: 100% !important;
-            border-radius: 20px;
-        }
-
-        .qr-modal-content p {
-            color: var(--gray);
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .qr-modal-content .close-btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid var(--secondary);
-        }
-
-        .qr-modal-content .close-btn:hover {
-            transform: scale(1.05);
-            background: var(--gradient-secondary);
-            color: var(--darker);
+        .security-layer.active {
+            display: block;
         }
 
         /* ===== شاشة الترحيب المحسنة ===== */
@@ -293,7 +163,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
         }
 
         .splash-screen.hidden {
@@ -323,6 +193,13 @@
             box-shadow: 0 0 50px rgba(251,191,36,0.5), 0 0 100px rgba(14,124,158,0.3);
             background: white;
             image-rendering: crisp-edges;
+            animation: logoReveal 1.5s ease-out;
+        }
+
+        @keyframes logoReveal {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .splash-logo img {
@@ -339,14 +216,14 @@
             font-weight: 900;
             text-shadow: 0 0 20px var(--primary), 0 0 40px var(--secondary);
             opacity: 0;
-            animation: splashFadeInUp 1s ease 1.2s forwards;
+            animation: fadeInUp 1s ease 1s forwards;
         }
 
         .splash-progress-container {
             width: min(500px, 85vw);
             margin: 0 auto;
             opacity: 0;
-            animation: splashFadeInUp 1s ease 1.5s forwards;
+            animation: fadeInUp 1s ease 1.3s forwards;
         }
 
         .splash-progress {
@@ -368,14 +245,6 @@
             transition: width 0.3s;
             border-radius: 30px;
             box-shadow: 0 0 30px var(--secondary);
-            position: relative;
-            background-size: 200% 100%;
-            animation: splashGradientMove 2s infinite alternate;
-        }
-
-        @keyframes splashGradientMove {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
         }
 
         .splash-percentage {
@@ -393,7 +262,7 @@
             opacity: 0.7;
         }
 
-        @keyframes splashFadeInUp {
+        @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
@@ -418,7 +287,7 @@
             z-index: 20;
             max-width: min(1400px, 95%);
             margin: 0 auto;
-            padding: 20px;
+            padding: clamp(15px, 3vw, 20px);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -429,7 +298,7 @@
             background: rgba(5, 17, 24, 0.7);
             backdrop-filter: blur(20px);
             border-radius: 100px;
-            padding: 15px 30px;
+            padding: clamp(12px, 2.5vw, 15px) clamp(20px, 4vw, 30px);
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
@@ -438,17 +307,17 @@
             box-shadow: var(--shadow-md);
             flex-wrap: wrap;
             gap: 15px;
-            animation: topBarSlideDown 1s ease;
+            animation: slideDown 1s ease;
         }
 
-        @keyframes topBarSlideDown {
+        @keyframes slideDown {
             from { transform: translateY(-100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
         .contact-info {
             display: flex;
-            gap: 25px;
+            gap: clamp(15px, 3vw, 25px);
             flex-wrap: wrap;
         }
 
@@ -457,30 +326,23 @@
             align-items: center;
             gap: 10px;
             color: var(--light);
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
             padding: 8px 20px;
             border-radius: 50px;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
         }
 
         .contact-item:hover {
             background: var(--gradient-primary);
-            transform: translateY(-3px) scale(1.05);
+            transform: translateY(-3px);
             border-color: var(--secondary);
-            box-shadow: 0 10px 30px rgba(14,124,158,0.4);
         }
 
         .contact-item i {
             color: var(--secondary);
-            font-size: 1.2rem;
-            transition: transform 0.5s;
-        }
-
-        .contact-item:hover i {
-            transform: rotate(360deg) scale(1.2);
         }
 
         .social-links {
@@ -499,16 +361,14 @@
             justify-content: center;
             color: var(--light);
             font-size: 1.3rem;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.3s;
             border: 1px solid rgba(251,191,36,0.3);
         }
 
         .social-link:hover {
             background: var(--gradient-secondary);
             color: var(--darker);
-            transform: rotate(360deg) scale(1.15);
-            border-color: white;
-            box-shadow: 0 0 30px var(--secondary);
+            transform: rotate(360deg);
         }
 
         /* ===== المحتوى الرئيسي ===== */
@@ -516,15 +376,9 @@
             flex: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            gap: clamp(30px, 5vw, 50px);
             align-items: center;
             margin: 30px 0;
-            animation: mainContentFadeIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        @keyframes mainContentFadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         .coming-badge {
@@ -533,12 +387,10 @@
             color: white;
             padding: 12px 30px;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             font-weight: 700;
             margin-bottom: 25px;
             box-shadow: 0 15px 40px rgba(14,124,158,0.5);
-            position: relative;
-            overflow: hidden;
             border: 1px solid rgba(255,255,255,0.2);
             animation: badgePulse 2s infinite;
         }
@@ -548,33 +400,8 @@
             50% { box-shadow: 0 25px 60px rgba(251,191,36,0.5); }
         }
 
-        .coming-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            100% { left: 100%; }
-        }
-
-        .coming-badge i {
-            margin-left: 10px;
-            animation: rotate 5s infinite linear;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
         .main-title {
-            font-size: clamp(3rem, 8vw, 5rem);
+            font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 900;
             line-height: 1.2;
             margin-bottom: 20px;
@@ -586,26 +413,17 @@
             background: linear-gradient(135deg, var(--primary-light), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: inline-block;
-            background-size: 200% 200%;
-            animation: gradientFlow 8s ease infinite;
-        }
-
-        @keyframes gradientFlow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
         }
 
         .main-title .small {
-            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-size: clamp(1.5rem, 5vw, 2.8rem);
             display: block;
             color: var(--light);
             opacity: 0.95;
-            text-shadow: 0 0 30px var(--primary);
         }
 
         .description {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: var(--light);
             margin-bottom: 40px;
             max-width: 600px;
@@ -615,15 +433,12 @@
             padding: 20px 25px;
             border-radius: 35px;
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: var(--shadow-md);
-            width: fit-content;
-            max-width: 100%;
         }
 
-        /* ===== العد التنازلي المتطور ===== */
+        /* ===== العد التنازلي ===== */
         .countdown {
             display: flex;
-            gap: 15px;
+            gap: clamp(10px, 2vw, 15px);
             margin: 30px 0;
             flex-wrap: wrap;
         }
@@ -632,60 +447,40 @@
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(20px);
             border-radius: 30px;
-            padding: 20px 15px;
-            min-width: 100px;
+            padding: clamp(15px, 3vw, 20px) clamp(10px, 2vw, 15px);
+            min-width: clamp(70px, 15vw, 100px);
             text-align: center;
             border: 1px solid rgba(251,191,36,0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
             box-shadow: var(--shadow-md);
             flex: 1;
             max-width: 130px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .countdown-item::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%);
-            animation: rotateSlow 20s linear infinite;
-        }
-
-        @keyframes rotateSlow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .countdown-item:hover {
-            transform: translateY(-10px) scale(1.05);
+            transform: translateY(-10px);
             border-color: var(--secondary);
             box-shadow: 0 20px 40px rgba(251,191,36,0.3);
         }
 
         .countdown-number {
-            font-size: 2.8rem;
+            font-size: clamp(2rem, 6vw, 2.8rem);
             font-weight: 900;
             color: var(--secondary);
             line-height: 1;
             margin-bottom: 5px;
             text-shadow: 0 0 20px var(--secondary);
-            position: relative;
         }
 
         .countdown-label {
-            font-size: 1.1rem;
+            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
             color: var(--light);
             opacity: 0.9;
-            position: relative;
         }
 
         .countdown-comment {
             margin-top: 20px;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
             color: var(--secondary);
             text-align: center;
             background: rgba(0, 0, 0, 0.4);
@@ -694,19 +489,9 @@
             border-radius: 60px;
             border: 1px solid rgba(251,191,36,0.3);
             width: fit-content;
-            box-shadow: var(--shadow-md);
-            animation: glow 2s infinite alternate;
-            max-width: 100%;
-            word-wrap: break-word;
-            font-weight: 600;
         }
 
-        @keyframes glow {
-            from { box-shadow: 0 10px 30px rgba(251,191,36,0.2); }
-            to { box-shadow: 0 10px 50px rgba(14,124,158,0.4); }
-        }
-
-        /* ===== اللوجو الأسطوري ===== */
+        /* ===== اللوجو المتحكم ===== */
         .left-section {
             display: flex;
             justify-content: center;
@@ -714,12 +499,11 @@
         }
 
         .logo-container {
-            width: min(500px, 85vw);
-            height: min(500px, 85vw);
+            width: min(450px, 80vw);
+            height: min(450px, 80vw);
             position: relative;
-            perspective: 2500px;
+            perspective: 2000px;
             cursor: pointer;
-            filter: drop-shadow(0 0 40px rgba(14,124,158,0.4));
         }
 
         .logo-3d {
@@ -727,27 +511,22 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.3s ease;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .logo-3d.flip-coin {
-            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .logo-3d.hover-flip {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotateY(180deg);
         }
 
-        .logo-3d.escape-mode {
-            transition: transform 0.1s linear;
+        .logo-3d.normal-flip {
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotateY(180deg);
         }
 
-        .logo-3d.return-mode {
-            transition: transform 0.3s ease-out;
+        .logo-3d.return-flip {
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotateY(0deg);
-        }
-
-        .logo-3d.random-flip {
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            transform: rotateY(180deg);
         }
 
         .logo-face {
@@ -761,7 +540,6 @@
             justify-content: center;
             box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 0 4px var(--secondary), 0 0 70px var(--secondary);
             overflow: hidden;
-            image-rendering: crisp-edges;
         }
 
         .logo-front {
@@ -775,7 +553,6 @@
             height: 100%;
             object-fit: contain;
             border-radius: 50%;
-            image-rendering: crisp-edges;
         }
 
         .logo-back {
@@ -787,31 +564,20 @@
         }
 
         .logo-back i {
-            font-size: 5rem;
+            font-size: clamp(3rem, 8vw, 5rem);
             margin-bottom: 20px;
             color: var(--darker);
-            animation: heartbeat 1.5s infinite;
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px var(--darker)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 25px var(--darker)); }
         }
 
         .logo-back span {
-            font-size: 2.2rem;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
             font-weight: 900;
             background: rgba(255,255,255,0.3);
             padding: 15px 30px;
             border-radius: 60px;
             color: var(--darker);
             text-align: center;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.4);
             max-width: 90%;
-            word-wrap: break-word;
-            line-height: 1.4;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
 
         /* ===== الخدمات ===== */
@@ -820,11 +586,9 @@
         }
 
         .services-title {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 6vw, 2.5rem);
             text-align: center;
             margin-bottom: 50px;
-            position: relative;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.5);
         }
 
         .services-title::after {
@@ -837,12 +601,11 @@
             height: 4px;
             background: var(--gradient-secondary);
             border-radius: 4px;
-            box-shadow: 0 0 30px var(--secondary);
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
         }
 
@@ -852,34 +615,15 @@
             border-radius: 50px;
             padding: 40px 25px;
             text-align: center;
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s;
             border: 1px solid rgba(251,191,36,0.1);
             box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(14,124,158,0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.8s;
-            animation: rotateSlow 30s linear infinite;
         }
 
         .service-card:hover {
-            transform: translateY(-20px) scale(1.05);
+            transform: translateY(-20px);
             border-color: var(--secondary);
             box-shadow: 0 30px 60px rgba(251,191,36,0.3);
-        }
-
-        .service-card:hover::before {
-            opacity: 1;
         }
 
         .service-icon {
@@ -893,16 +637,11 @@
             margin: 0 auto 25px;
             font-size: 3.5rem;
             color: white;
-            transition: all 0.6s;
-            box-shadow: 0 20px 40px rgba(14,124,158,0.4);
-            position: relative;
-            z-index: 2;
         }
 
         .service-card:hover .service-icon {
-            transform: rotateY(180deg) scale(1.1);
+            transform: rotateY(180deg);
             background: var(--gradient-secondary);
-            box-shadow: 0 30px 50px rgba(251,191,36,0.5);
         }
 
         .service-name {
@@ -910,16 +649,90 @@
             font-weight: 700;
             margin-bottom: 10px;
             color: white;
-            position: relative;
-            z-index: 2;
         }
 
         .service-comment {
             color: var(--gray);
             font-size: 1.1rem;
-            line-height: 1.7;
-            position: relative;
-            z-index: 2;
+        }
+
+        /* ===== QR Code ===== */
+        .qr-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .qr-button {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--darker);
+            font-size: 1.3rem;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            border: 2px solid var(--secondary);
+        }
+
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal.active {
+            display: flex;
+        }
+
+        .qr-modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+        }
+
+        .qr-large {
+            width: 250px;
+            height: 250px;
+            margin: 20px auto;
+        }
+
+        .close-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
         }
 
         /* ===== الفوتر ===== */
@@ -929,15 +742,8 @@
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: var(--gray);
-            font-size: 1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
             backdrop-filter: blur(15px);
-            background: rgba(0,0,0,0.3);
-            border-radius: 60px 60px 0 0;
-        }
-
-        .footer i {
-            color: var(--secondary);
-            animation: heartbeat 2s infinite;
         }
 
         .footer span {
@@ -945,80 +751,30 @@
             font-weight: 700;
         }
 
-        /* ===== مؤشر التحميل ===== */
-        .loading-data {
-            position: fixed;
-            bottom: 20px;
-            right: 80px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(15px);
-            padding: 12px 25px;
-            border-radius: 50px;
-            color: var(--light);
-            font-size: 1rem;
-            border: 1px solid var(--secondary);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .loading-data.visible {
-            display: flex;
-        }
-
-        .loading-spinner {
-            width: 22px;
-            height: 22px;
-            border: 3px solid var(--secondary);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ===== تحسينات الجوال المتطورة ===== */
+        /* ===== تحسينات الجوال الشاملة ===== */
         @media (max-width: 900px) {
             .main-content {
                 grid-template-columns: 1fr;
                 text-align: center;
-                gap: 40px;
+                gap: 30px;
             }
-
             .main-title {
                 text-align: center;
             }
-
             .description {
                 margin-left: auto;
                 margin-right: auto;
             }
-
             .countdown {
                 justify-content: center;
             }
-
-            .countdown-item {
-                min-width: 90px;
-                padding: 15px 10px;
-            }
-
-            .countdown-number {
-                font-size: 2.5rem;
-            }
-
             .countdown-comment {
                 margin-left: auto;
                 margin-right: auto;
             }
-
             .logo-container {
-                width: 400px;
-                height: 400px;
+                width: 350px;
+                height: 350px;
                 margin: 0 auto;
             }
         }
@@ -1026,66 +782,31 @@
         @media (max-width: 600px) {
             .top-bar {
                 flex-direction: column;
-                text-align: center;
                 border-radius: 40px;
             }
-
             .contact-info {
                 justify-content: center;
             }
-
             .main-title {
                 font-size: 2.5rem;
             }
-
             .main-title .small {
                 font-size: 1.8rem;
             }
-
-            .description {
-                font-size: 1rem;
-                padding: 15px 20px;
-            }
-
             .countdown-item {
                 min-width: 70px;
                 padding: 12px 8px;
             }
-
             .countdown-number {
                 font-size: 2rem;
             }
-
-            .countdown-label {
-                font-size: 0.9rem;
-            }
-
             .logo-container {
-                width: 300px;
-                height: 300px;
+                width: 280px;
+                height: 280px;
             }
-
-            .logo-back span {
-                font-size: 1.6rem;
-            }
-
-            .service-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 2.5rem;
-            }
-
-            .service-name {
-                font-size: 1.4rem;
-            }
-
             .splash-logo {
                 width: 250px;
                 height: 250px;
-            }
-
-            .splash-title {
-                font-size: 1.8rem;
             }
         }
 
@@ -1094,105 +815,29 @@
                 min-width: 60px;
                 padding: 10px 5px;
             }
-
             .countdown-number {
                 font-size: 1.6rem;
             }
-
-            .countdown-label {
-                font-size: 0.8rem;
-            }
-
             .logo-container {
-                width: 250px;
-                height: 250px;
+                width: 220px;
+                height: 220px;
             }
-
-            .logo-back span {
-                font-size: 1.3rem;
-            }
-
             .splash-logo {
                 width: 200px;
                 height: 200px;
             }
-
-            .splash-title {
-                font-size: 1.5rem;
-            }
-
-            .qr-container {
-                bottom: 10px;
-                right: 10px;
-            }
-
-            .qr-button, .share-btn, .screenshot-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2rem;
-            }
-        }
-
-        /* ===== تحسينات اللمس للجوال ===== */
-        @media (hover: none) and (pointer: coarse) {
-            .contact-item:active {
-                background: var(--gradient-primary);
-                transform: scale(0.95);
-            }
-
-            .social-link:active {
-                background: var(--gradient-secondary);
-                transform: scale(0.95);
-            }
-
-            .countdown-item:active {
-                transform: scale(0.95);
-            }
-
-            .service-card:active {
-                transform: scale(0.98);
-            }
-
-            .logo-container:active {
-                transform: scale(0.98);
-            }
-
-            .qr-button:active, .share-btn:active, .screenshot-btn:active {
-                transform: scale(0.9);
-            }
-        }
-
-        /* ===== منع التحديد والنسخ ===== */
-        body {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        img {
-            pointer-events: none;
-            -webkit-user-drag: none;
-            user-drag: none;
-        }
-
-        a {
-            -webkit-user-drag: none;
-            user-drag: none;
         }
     </style>
 </head>
-<body class="no-select">
-    <!-- خلفية طبية 3D متحركة -->
+<body>
+    <!-- طبقة الأمن السيبراني -->
+    <div class="security-layer" id="securityLayer"></div>
+
+    <!-- خلفية طبية 3D -->
     <div id="canvas-container"></div>
     <div class="medical-overlay"></div>
 
-    <!-- زر التحميل -->
-    <button class="screenshot-btn" onclick="captureScreenshot()">
-        <i class="fas fa-camera"></i>
-    </button>
-
-    <!-- QR Code + Share -->
+    <!-- QR Code -->
     <div class="qr-container">
         <div class="qr-button" onclick="openQRModal()">
             <i class="fas fa-qrcode"></i>
@@ -1205,14 +850,13 @@
     <!-- QR Modal -->
     <div class="qr-modal" id="qrModal">
         <div class="qr-modal-content">
-            <h3>رمز QR</h3>
+            <h3 style="color: var(--dark);">رمز QR</h3>
             <div class="qr-large" id="qrLarge"></div>
-            <p>امسح الرمز ضوئياً لزيارة الموقع</p>
             <button class="close-btn" onclick="closeQRModal()">إغلاق</button>
         </div>
     </div>
 
-    <!-- شاشة الترحيب (بدون اسم داخل اللوجو) -->
+    <!-- شاشة الترحيب -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-content">
             <div class="splash-logo">
@@ -1226,12 +870,6 @@
                 <div class="splash-percentage" id="splashPercentage">0<span>%</span></div>
             </div>
         </div>
-    </div>
-
-    <!-- مؤشر تحميل البيانات -->
-    <div class="loading-data" id="loadingData">
-        <div class="loading-spinner"></div>
-        <span>جاري تحميل البيانات...</span>
     </div>
 
     <!-- المحتوى الرئيسي -->
@@ -1296,7 +934,7 @@
                 </div>
 
                 <div class="left-section">
-                    <!-- اللوجو الأسطوري -->
+                    <!-- اللوجو المتحكم -->
                     <div class="logo-container" id="logoContainer">
                         <div class="logo-3d" id="logo3d">
                             <div class="logo-face logo-front">
@@ -1321,12 +959,231 @@
 
             <!-- الفوتر -->
             <div class="footer">
-                <i class="fas fa-code"></i> نقابة تكنولوجيا المعلومات والبرمجيات المصرية | جميع الحقوق محفوظة © ٢٠٢٦
+                <i class="fas fa-code"></i> تصميم وتطوير <span>BASHA</span> | جميع الحقوق محفوظة © ٢٠٢٦
             </div>
         </div>
     </div>
 
     <script>
+        // ============================================
+        // الأمن السيبراني الشامل
+        // ============================================
+        (function() {
+            // منع النقر بالزر الأيمن
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showSecurityMessage('🚫 غير مسموح بالنقر بزر الفأرة الأيمن');
+            });
+            
+            // منع اختصارات النسخ والتصوير
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    if (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || 
+                        e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' ||
+                        e.key === 'p' || e.key === 'P' || e.key === 'PrintScreen') {
+                        e.preventDefault();
+                        showSecurityMessage('📸 غير مسموح بالتقاط الشاشة');
+                    }
+                }
+                // منع Print Screen
+                if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                    e.preventDefault();
+                    showSecurityMessage('📸 غير مسموح بالتقاط الشاشة');
+                }
+            });
+            
+            // منع تحديد النص
+            document.addEventListener('selectstart', (e) => e.preventDefault());
+            document.addEventListener('selectionchange', () => window.getSelection().removeAllRanges());
+            
+            // منع السحب
+            document.addEventListener('dragstart', (e) => e.preventDefault());
+            
+            // منع النسخ
+            document.addEventListener('copy', (e) => {
+                e.preventDefault();
+                showSecurityMessage('📋 غير مسموح بالنسخ');
+            });
+            
+            // منع القص
+            document.addEventListener('cut', (e) => {
+                e.preventDefault();
+                showSecurityMessage('✂️ غير مسموح بالقص');
+            });
+            
+            // منع اللصق
+            document.addEventListener('paste', (e) => {
+                e.preventDefault();
+                showSecurityMessage('📋 غير مسموح باللصق');
+            });
+            
+            // منع السحب والإفلات
+            document.addEventListener('drop', (e) => e.preventDefault());
+            
+            // منع الـ DevTools
+            setInterval(() => {
+                const start = performance.now();
+                debugger;
+                const end = performance.now();
+                if (end - start > 100) {
+                    showSecurityMessage('🔒 تم اكتشاف محاولة فتح أدوات المطور');
+                }
+            }, 1000);
+            
+            function showSecurityMessage(msg) {
+                const layer = document.getElementById('securityLayer');
+                layer.textContent = msg;
+                layer.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(145deg, #ef4444, #dc2626);
+                    color: white;
+                    padding: 20px 40px;
+                    border-radius: 50px;
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    z-index: 999999;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                    border: 2px solid white;
+                    animation: securityFade 2s forwards;
+                `;
+                setTimeout(() => {
+                    layer.style.cssText = '';
+                }, 2000);
+            }
+            
+            console.log('🔒 الأمن السيبراني الشامل مفعل');
+        })();
+
+        // ============================================
+        // الذكاء الاصطناعي المتقدم
+        // ============================================
+        class AIEngine {
+            constructor() {
+                this.model = null;
+                this.initialized = false;
+                this.predictions = new Map();
+            }
+
+            async initialize() {
+                try {
+                    // نموذج تنبؤي للتفاعلات
+                    this.model = tf.sequential();
+                    this.model.add(tf.layers.dense({units: 10, inputShape: [5], activation: 'relu'}));
+                    this.model.add(tf.layers.dense({units: 5, activation: 'relu'}));
+                    this.model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));
+                    
+                    this.model.compile({
+                        optimizer: tf.train.adam(0.01),
+                        loss: 'binaryCrossentropy',
+                        metrics: ['accuracy']
+                    });
+
+                    // تدريب سريع على بيانات وهمية
+                    const xs = tf.randomNormal([100, 5]);
+                    const ys = tf.randomNormal([100, 1]);
+                    await this.model.fit(xs, ys, {
+                        epochs: 5,
+                        verbose: 0
+                    });
+
+                    this.initialized = true;
+                    console.log('🤖 AI Engine initialized');
+                    
+                    // بدأ التحليلات
+                    this.startAnalysis();
+                } catch (error) {
+                    console.log('AI init error:', error);
+                }
+            }
+
+            startAnalysis() {
+                // تحليل أداء الصفحة
+                setInterval(() => this.analyzePerformance(), 5000);
+                
+                // تحليل تفاعلات المستخدم
+                document.addEventListener('mousemove', (e) => this.trackUserBehavior(e));
+                
+                // تحسين التحميل
+                this.optimizeLoading();
+            }
+
+            analyzePerformance() {
+                const metrics = {
+                    loadTime: performance.now(),
+                    memory: performance.memory ? performance.memory.usedJSHeapSize / 1024 / 1024 : 0,
+                    fps: this.calculateFPS()
+                };
+                
+                if (metrics.loadTime > 3000) {
+                    this.optimizePage();
+                }
+            }
+
+            calculateFPS() {
+                return 60; // مبسطة
+            }
+
+            optimizePage() {
+                // تحسين الصور
+                document.querySelectorAll('img').forEach(img => {
+                    if (!img.complete) {
+                        img.loading = 'lazy';
+                    }
+                });
+            }
+
+            trackUserBehavior(e) {
+                // تتبع حركة الماوس للتنبؤ بالتفاعلات
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                if (this.initialized && Math.random() > 0.99) {
+                    const input = tf.tensor2d([[x, y, 0.5, 0.5, 0.5]]);
+                    const prediction = this.model.predict(input);
+                    prediction.data().then(data => {
+                        if (data[0] > 0.8) {
+                            // تنبؤ بتفاعل قادم
+                            this.prepareInteraction();
+                        }
+                    });
+                }
+            }
+
+            prepareInteraction() {
+                // تجهيز تفاعلات متوقعة
+                const logo = document.querySelector('.logo-container');
+                if (logo && Math.random() > 0.7) {
+                    // تنبؤ بأن المستخدم سيتفاعل مع اللوجو
+                    logo.style.transition = 'all 0.5s';
+                }
+            }
+
+            optimizeLoading() {
+                // تحميل ذكي للصور
+                const imageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.style.opacity = '1';
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('img').forEach(img => {
+                    img.style.opacity = '0';
+                    img.style.transition = 'opacity 0.5s';
+                    imageObserver.observe(img);
+                });
+            }
+        }
+
+        const ai = new AIEngine();
+        ai.initialize();
+
         // ============================================
         // تهيئة Firebase
         // ============================================
@@ -1341,76 +1198,6 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-
-        // ============================================
-        // الأمن السيبراني المتقدم
-        // ============================================
-        (function() {
-            // منع النقر بالزر الأيمن
-            document.addEventListener('contextmenu', (e) => e.preventDefault());
-            
-            // منع اختصارات النسخ
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S')) {
-                    e.preventDefault();
-                }
-            });
-            
-            // منع تحديد النص
-            document.addEventListener('selectstart', (e) => e.preventDefault());
-            
-            // منع السحب
-            document.addEventListener('dragstart', (e) => e.preventDefault());
-            
-            console.log('🔒 الأمن السيبراني مفعل - جميع الحقوق محفوظة');
-        })();
-
-        // ============================================
-        // الذكاء الاصطناعي (TensorFlow.js)
-        // ============================================
-        async function initAI() {
-            try {
-                // تحميل نموذج بسيط
-                const model = tf.sequential();
-                model.add(tf.layers.dense({units: 1, inputShape: [1]}));
-                model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
-                
-                // تدريب سريع
-                const xs = tf.tensor2d([1, 2, 3, 4], [4, 1]);
-                const ys = tf.tensor2d([2, 4, 6, 8], [4, 1]);
-                await model.fit(xs, ys, {epochs: 5});
-                
-                // توقع
-                const output = model.predict(tf.tensor2d([5], [1, 1]));
-                output.data().then(data => {
-                    console.log('🤖 الذكاء الاصطناعي نشط - قيمة متوقعة:', data[0]);
-                });
-                
-                // تحسين أداء الصفحة
-                optimizePerformance();
-                
-            } catch (error) {
-                console.log('AI:', error);
-            }
-        }
-
-        function optimizePerformance() {
-            // تحميل الصور بشكل ذكي
-            const images = document.querySelectorAll('img');
-            images.forEach(img => {
-                if (!img.complete) {
-                    img.style.opacity = '0';
-                    img.addEventListener('load', () => {
-                        img.style.transition = 'opacity 0.5s';
-                        img.style.opacity = '1';
-                    });
-                }
-            });
-            
-            console.log('⚡ تحسين الأداء بالذكاء الاصطناعي');
-        }
-
-        initAI();
 
         // ============================================
         // خلفية طبية 3D
@@ -1438,7 +1225,7 @@
         light2.position.set(-5, -3, 5);
         scene.add(light2);
 
-        // جسيمات
+        // جسيمات طبية
         const particlesGeo = new THREE.BufferGeometry();
         const particlesCount = 1500;
         const posArray = new Float32Array(particlesCount * 3);
@@ -1466,7 +1253,7 @@
         const particles = new THREE.Points(particlesGeo, particlesMat);
         scene.add(particles);
 
-        // حلقة
+        // حلقة طبية
         const ringGeo = new THREE.TorusGeometry(6, 0.1, 16, 100);
         const ringMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xf59e0b, transparent: true, opacity: 0.15 });
         const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -1503,8 +1290,7 @@
                 width: 250,
                 height: 250,
                 colorDark: "#0e7c9e",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+                colorLight: "#ffffff"
             });
         }
 
@@ -1512,35 +1298,17 @@
             document.getElementById('qrModal').classList.remove('active');
         }
 
-        // ============================================
-        // Share Function
-        // ============================================
         function sharePage() {
             if (navigator.share) {
                 navigator.share({
                     title: 'مركز يثرب الخيري التخصصي',
-                    text: 'صرح طبي متكامل يقدم خدمات صحية متميزة',
+                    text: 'صرح طبي متكامل',
                     url: window.location.href
                 });
             } else {
                 navigator.clipboard.writeText(window.location.href);
                 alert('✅ تم نسخ الرابط');
             }
-        }
-
-        // ============================================
-        // Screenshot Function
-        // ============================================
-        function captureScreenshot() {
-            html2canvas(document.body, {
-                scale: 2,
-                backgroundColor: null
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'yathreb-screenshot.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
         }
 
         // ============================================
@@ -1552,74 +1320,66 @@
         const splashLogo = document.getElementById('splashLogo');
         const splashTitle = document.getElementById('splashTitle');
         const mainSite = document.getElementById('mainSite');
-        const loadingData = document.getElementById('loadingData');
-        const mainLogo = document.getElementById('mainLogo');
-        const logoBackText = document.getElementById('logoBackText');
 
         // تحميل البيانات
-        async function loadSettings() {
-            loadingData.classList.add('visible');
-            
+        async function loadData() {
             try {
                 const doc = await db.collection('settings').doc('comingSoon').get();
                 
                 if (doc.exists) {
                     const data = doc.data();
                     
-                    // اسم المركز
                     const centerName = data.centerName || 'مركز يثرب الخيري التخصصي';
                     splashTitle.textContent = centerName;
-                    logoBackText.textContent = centerName;
+                    document.getElementById('logoBackText').textContent = centerName;
                     
-                    // اللوجو
                     if (data.logoUrl) {
                         splashLogo.src = data.logoUrl;
-                        mainLogo.src = data.logoUrl;
-                        
-                        // تحسين الجودة
-                        splashLogo.style.imageRendering = 'crisp-edges';
-                        mainLogo.style.imageRendering = 'crisp-edges';
+                        document.getElementById('mainLogo').src = data.logoUrl;
                     }
                     
-                    // رقم التليفون
                     if (data.phone) {
                         document.querySelector('#phoneDisplay span').textContent = data.phone;
                     }
                     
-                    // العنوان
                     if (data.address) {
                         document.querySelector('#addressDisplay span').textContent = data.address;
                     }
                     
-                    // فيسبوك
                     if (data.facebook) {
                         document.getElementById('facebookLink').href = data.facebook;
                     }
                     
-                    // الوصف
                     if (data.description) {
                         document.getElementById('description').textContent = data.description;
                     }
                     
-                    // الكومنت
                     if (data.comment) {
                         document.getElementById('countdownComment').textContent = data.comment;
-                    } else {
-                        document.getElementById('countdownComment').textContent = 'استعدوا معنا لافتتاح المركز';
                     }
                     
-                    // العد التنازلي
                     if (data.completionDate) {
-                        const targetDate = data.completionDate + 'T' + (data.deliveryTime || '12:00') + ':00';
-                        updateCountdown(targetDate);
-                        setInterval(() => updateCountdown(targetDate), 1000);
+                        const target = new Date(data.completionDate + 'T' + (data.deliveryTime || '12:00'));
+                        setInterval(() => {
+                            const now = new Date();
+                            const diff = target - now;
+                            
+                            if (diff > 0) {
+                                const days = Math.floor(diff / (1000*60*60*24));
+                                const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                                const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+                                const seconds = Math.floor((diff % (1000*60)) / 1000);
+                                
+                                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                            }
+                        }, 1000);
                     }
                     
-                    // الخدمات
-                    if (data.services && data.services.length > 0) {
-                        const servicesGrid = document.getElementById('servicesGrid');
-                        servicesGrid.innerHTML = '';
-                        
+                    if (data.services) {
+                        const grid = document.getElementById('servicesGrid');
                         data.services.forEach(service => {
                             const card = document.createElement('div');
                             card.className = 'service-card';
@@ -1627,43 +1387,16 @@
                                 <div class="service-icon">
                                     <i class="fas ${service.icon || 'fa-stethoscope'}"></i>
                                 </div>
-                                <div class="service-name">${service.name || 'خدمة'}</div>
-                                <div class="service-comment">${service.comment || ''}</div>
+                                <div class="service-name">${service.name}</div>
+                                <div class="service-comment">${service.comment}</div>
                             `;
-                            servicesGrid.appendChild(card);
+                            grid.appendChild(card);
                         });
                     }
                 }
             } catch (error) {
-                console.log('خطأ في تحميل البيانات:', error);
-            } finally {
-                loadingData.classList.remove('visible');
+                console.log('Error:', error);
             }
-        }
-
-        // تحديث العد التنازلي
-        function updateCountdown(targetDate) {
-            const now = new Date();
-            const target = new Date(targetDate);
-            const diff = target - now;
-            
-            if (diff <= 0) {
-                document.getElementById('days').textContent = '٠٠';
-                document.getElementById('hours').textContent = '٠٠';
-                document.getElementById('minutes').textContent = '٠٠';
-                document.getElementById('seconds').textContent = '٠٠';
-                return;
-            }
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
         }
 
         // شريط التقدم
@@ -1678,58 +1411,46 @@
                 setTimeout(() => {
                     splashScreen.classList.add('hidden');
                     mainSite.classList.add('visible');
-                    loadSettings();
+                    loadData();
                 }, 500);
             }
         }, 25);
 
         // ============================================
-        // حركات اللوجو
+        // حركات اللوجو المحسنة
         // ============================================
         const logoContainer = document.getElementById('logoContainer');
         const logo3d = document.getElementById('logo3d');
         let isFlipped = false;
         let hoverTimer;
-        let randomFlipInterval;
 
-        function startLogoTricks() {
-            randomFlipInterval = setInterval(() => {
-                if (!isFlipped && Math.random() > 0.7) {
-                    logo3d.classList.add('random-flip');
-                    setTimeout(() => {
-                        logo3d.classList.remove('random-flip');
-                    }, 600);
-                }
-            }, 8000);
-        }
-
-        // Flip as Coin
-        logoContainer.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isFlipped) {
-                logo3d.classList.add('return-mode');
-                logo3d.classList.remove('flip-coin', 'escape-mode');
+        // فليب هادي دائم (كل 5 ثواني)
+        setInterval(() => {
+            if (!isFlipped) {
+                logo3d.classList.add('normal-flip');
+                logo3d.classList.remove('return-flip');
+                isFlipped = true;
+                
                 setTimeout(() => {
-                    logo3d.classList.remove('return-mode');
-                }, 300);
-            } else {
-                logo3d.classList.add('flip-coin');
-                logo3d.classList.remove('return-mode', 'escape-mode');
-                setTimeout(() => {
-                    logo3d.classList.remove('flip-coin');
-                }, 800);
+                    logo3d.classList.remove('normal-flip');
+                    logo3d.classList.add('return-flip');
+                    isFlipped = false;
+                }, 1200);
             }
-            isFlipped = !isFlipped;
-        });
+        }, 5000);
 
-        // Escape on hover
+        // هروب سريع عند hover
         logoContainer.addEventListener('mouseenter', () => {
+            clearTimeout(hoverTimer);
             hoverTimer = setTimeout(() => {
                 if (!isFlipped) {
-                    logo3d.classList.add('escape-mode');
+                    logo3d.classList.add('hover-flip');
+                    logo3d.classList.remove('normal-flip', 'return-flip');
+                    
                     setTimeout(() => {
-                        logo3d.classList.remove('escape-mode');
-                    }, 150);
+                        logo3d.classList.remove('hover-flip');
+                        isFlipped = false;
+                    }, 200);
                 }
             }, 50);
         });
@@ -1738,32 +1459,33 @@
             clearTimeout(hoverTimer);
         });
 
-        // Touch support
+        // Flip as Coin عند الضغط
+        logoContainer.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isFlipped) {
+                logo3d.classList.add('return-flip');
+                logo3d.classList.remove('normal-flip', 'hover-flip');
+                setTimeout(() => {
+                    logo3d.classList.remove('return-flip');
+                }, 1200);
+            } else {
+                logo3d.classList.add('normal-flip');
+                logo3d.classList.remove('return-flip', 'hover-flip');
+                setTimeout(() => {
+                    logo3d.classList.remove('normal-flip');
+                }, 1200);
+            }
+            isFlipped = !isFlipped;
+        });
+
+        // دعم اللمس للجوال
         logoContainer.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (!isFlipped) {
-                logo3d.classList.add('escape-mode');
-                setTimeout(() => {
-                    logo3d.classList.remove('escape-mode');
-                }, 150);
-            }
+            logo3d.classList.add('hover-flip');
+            setTimeout(() => {
+                logo3d.classList.remove('hover-flip');
+            }, 200);
         });
-
-        // Cleanup
-        window.addEventListener('beforeunload', () => {
-            if (randomFlipInterval) {
-                clearInterval(randomFlipInterval);
-            }
-        });
-
-        // Start tricks after main site appears
-        setTimeout(() => {
-            if (mainSite.classList.contains('visible')) {
-                startLogoTricks();
-            }
-        }, 2000);
     </script>
-    <!-- html2canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
