@@ -167,7 +167,7 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
 
-        /* ===== شاشة الترحيب (أبطأ) ===== */
+        /* ===== شاشة الترحيب (مضمونة 100%) ===== */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -203,13 +203,19 @@
             box-shadow: 0 0 50px rgba(251,191,36,0.5), 0 0 80px rgba(14,124,158,0.3);
             opacity: 0;
             transform: scale(0.5);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            background: transparent;
+            position: relative;
+        }
+
+        .splash-logo.loaded {
             animation: logoAppear 2s ease-out forwards;
         }
 
         @keyframes logoAppear {
             0% { opacity: 0; transform: scale(0.3) rotate(-15deg); }
-            30% { opacity: 0.4; transform: scale(0.6) rotate(-8deg); }
-            60% { opacity: 0.8; transform: scale(1.1) rotate(3deg); }
+            30% { opacity: 0.5; transform: scale(0.6) rotate(-8deg); }
+            60% { opacity: 0.9; transform: scale(1.1) rotate(3deg); }
             100% { opacity: 1; transform: scale(1) rotate(0); }
         }
 
@@ -217,6 +223,29 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+        }
+
+        .splash-logo-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+            border-radius: 50%;
+        }
+
+        .splash-logo-placeholder.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .splash-title {
@@ -227,11 +256,12 @@
             text-shadow: 0 0 20px var(--primary), 0 0 40px var(--secondary);
             opacity: 0;
             transform: translateY(20px);
-            animation: titleAppear 1.2s ease 0.8s forwards;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        @keyframes titleAppear {
-            to { opacity: 1; transform: translateY(0); }
+        .splash-title.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .splash-progress-container {
@@ -239,11 +269,12 @@
             margin: 0 auto;
             opacity: 0;
             transform: translateY(20px);
-            animation: progressAppear 1.2s ease 1.2s forwards;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        @keyframes progressAppear {
-            to { opacity: 1; transform: translateY(0); }
+        .splash-progress-container.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .splash-progress {
@@ -841,14 +872,17 @@
         </div>
     </div>
 
-    <!-- شاشة الترحيب (أبطأ) -->
+    <!-- شاشة الترحيب (مضمونة 100%) -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-content">
-            <div class="splash-logo">
-                <img src="" alt="مركز يثرب" id="splashLogo">
+            <div class="splash-logo" id="splashLogoContainer">
+                <div class="splash-logo-placeholder" id="logoPlaceholder">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <img src="" alt="مركز يثرب" id="splashLogo" style="display: none;">
             </div>
             <h2 class="splash-title" id="splashTitle">مركز يثرب الخيري التخصصي</h2>
-            <div class="splash-progress-container">
+            <div class="splash-progress-container" id="splashProgressContainer">
                 <div class="splash-progress">
                     <div class="splash-progress-bar" id="splashProgress"></div>
                 </div>
@@ -992,16 +1026,9 @@
             }
 
             init() {
-                // حركات العد التنازلي
                 setInterval(() => this.animateCountdown(), 1000);
-                
-                // حركات أيقونات الخدمات
                 setInterval(() => this.animateServiceIcons(), 1000);
-                
-                // حركات اللوجو العشوائية
                 setInterval(() => this.animateLogo(), 2000);
-                
-                // حركات عشوائية أخرى
                 setInterval(() => this.randomEffects(), 3000);
             }
 
@@ -1058,15 +1085,12 @@
                 const random = Math.random();
                 
                 if (random < 0.3) {
-                    // حركة Flip
                     this.logo.classList.add('ai-flip');
                     setTimeout(() => this.logo.classList.remove('ai-flip'), 800);
                 } else if (random < 0.6) {
-                    // حركة Rotate
                     this.logo.classList.add('ai-rotate');
                     setTimeout(() => this.logo.classList.remove('ai-rotate'), 600);
                 } else {
-                    // حركة Shake
                     this.logo.classList.add('ai-shake');
                     setTimeout(() => this.logo.classList.remove('ai-shake'), 500);
                 }
@@ -1104,87 +1128,96 @@
         const db = firebase.firestore();
 
         // ============================================
-        // تحميل اللوجو
+        // تحميل اللوجو بشكل مضمون 100%
         // ============================================
         const splashLogo = document.getElementById('splashLogo');
         const mainLogo = document.getElementById('mainLogo');
+        const splashLogoContainer = document.getElementById('splashLogoContainer');
+        const logoPlaceholder = document.getElementById('logoPlaceholder');
+        const splashTitle = document.getElementById('splashTitle');
+        const splashProgressContainer = document.getElementById('splashProgressContainer');
+        
+        let logoLoaded = false;
+        let logoUrl = null;
 
-        async function preloadLogo() {
+        // دالة لتحميل اللوجو مع ضمان الظهور
+        async function loadLogoWithGuarantee() {
             try {
+                // جلب البيانات من Firebase
                 const doc = await db.collection('settings').doc('comingSoon').get();
+                
                 if (doc.exists && doc.data().logoUrl) {
-                    const url = doc.data().logoUrl;
-                    splashLogo.src = url;
-                    mainLogo.src = url;
+                    logoUrl = doc.data().logoUrl;
+                    
+                    // إنشاء كائن Image لتحميل الصورة
+                    const img = new Image();
+                    img.crossOrigin = "Anonymous";
+                    
+                    img.onload = function() {
+                        // الصورة تحملت بنجاح
+                        splashLogo.src = logoUrl;
+                        mainLogo.src = logoUrl;
+                        splashLogo.style.display = 'block';
+                        logoPlaceholder.classList.add('hidden');
+                        splashLogoContainer.classList.add('loaded');
+                        logoLoaded = true;
+                        
+                        // إظهار العناصر الأخرى
+                        setTimeout(() => {
+                            splashTitle.classList.add('visible');
+                            splashProgressContainer.classList.add('visible');
+                        }, 500);
+                    };
+                    
+                    img.onerror = function() {
+                        // فشل تحميل الصورة - نستخدم placeholder
+                        console.log('فشل تحميل الصورة، نستخدم الأيقونة');
+                        logoPlaceholder.innerHTML = '<i class="fas fa-heartbeat"></i>';
+                        splashLogoContainer.classList.add('loaded');
+                        logoLoaded = true;
+                        
+                        setTimeout(() => {
+                            splashTitle.classList.add('visible');
+                            splashProgressContainer.classList.add('visible');
+                        }, 500);
+                    };
+                    
+                    img.src = logoUrl;
+                } else {
+                    // لا يوجد رابط - نستخدم placeholder
+                    logoPlaceholder.innerHTML = '<i class="fas fa-heartbeat"></i>';
+                    splashLogoContainer.classList.add('loaded');
+                    logoLoaded = true;
+                    
+                    setTimeout(() => {
+                        splashTitle.classList.add('visible');
+                        splashProgressContainer.classList.add('visible');
+                    }, 500);
                 }
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.log('خطأ في تحميل اللوجو:', error);
+                // في حالة الخطأ، نستخدم placeholder
+                logoPlaceholder.innerHTML = '<i class="fas fa-heartbeat"></i>';
+                splashLogoContainer.classList.add('loaded');
+                logoLoaded = true;
+                
+                setTimeout(() => {
+                    splashTitle.classList.add('visible');
+                    splashProgressContainer.classList.add('visible');
+                }, 500);
             }
         }
-        preloadLogo();
+
+        // بدأ تحميل اللوجو فوراً
+        loadLogoWithGuarantee();
 
         // ============================================
-        // شاشة الترحيب (أبطأ)
+        // شاشة الترحيب
         // ============================================
         const splashScreen = document.getElementById('splashScreen');
         const splashProgress = document.getElementById('splashProgress');
         const splashPercentage = document.getElementById('splashPercentage');
-        const splashTitle = document.getElementById('splashTitle');
         const mainSite = document.getElementById('mainSite');
-
-        async function loadData() {
-            try {
-                const doc = await db.collection('settings').doc('comingSoon').get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    
-                    splashTitle.textContent = data.centerName || 'مركز يثرب الخيري التخصصي';
-                    document.getElementById('logoBackText').textContent = data.centerName || 'يثرب الخيري';
-                    
-                    if (data.phone) document.querySelector('#phoneDisplay span').textContent = data.phone;
-                    if (data.address) document.querySelector('#addressDisplay span').textContent = data.address;
-                    if (data.facebook) document.getElementById('facebookLink').href = data.facebook;
-                    if (data.description) document.getElementById('description').textContent = data.description;
-                    if (data.comment) document.getElementById('countdownComment').textContent = data.comment;
-                    
-                    if (data.completionDate) {
-                        const target = new Date(data.completionDate + 'T' + (data.deliveryTime || '12:00'));
-                        setInterval(() => {
-                            const now = new Date();
-                            const diff = target - now;
-                            
-                            if (diff > 0) {
-                                const d = Math.floor(diff / (1000*60*60*24));
-                                const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-                                const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-                                const s = Math.floor((diff % (1000*60)) / 1000);
-                                
-                                document.getElementById('days').textContent = d.toString().padStart(2,'0');
-                                document.getElementById('hours').textContent = h.toString().padStart(2,'0');
-                                document.getElementById('minutes').textContent = m.toString().padStart(2,'0');
-                                document.getElementById('seconds').textContent = s.toString().padStart(2,'0');
-                            }
-                        }, 1000);
-                    }
-                    
-                    if (data.services) {
-                        const grid = document.getElementById('servicesGrid');
-                        data.services.forEach(s => {
-                            const card = document.createElement('div');
-                            card.className = 'service-card';
-                            card.innerHTML = `
-                                <div class="service-icon"><i class="fas ${s.icon || 'fa-stethoscope'}"></i></div>
-                                <div class="service-name">${s.name}</div>
-                                <div class="service-comment">${s.comment}</div>
-                            `;
-                            grid.appendChild(card);
-                        });
-                    }
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }
 
         // شريط التقدم البطيء (2.5 ثانية)
         let progress = 0;
@@ -1199,10 +1232,98 @@
                 setTimeout(() => {
                     splashScreen.classList.add('hidden');
                     mainSite.classList.add('visible');
-                    loadData();
+                    loadRealTimeData(); // بدأ الـ real-time بعد الظهور
                 }, 500);
             }
         }, 35);
+
+        // ============================================
+        // Real-time Data Loading
+        // ============================================
+        function loadRealTimeData() {
+            db.collection('settings').doc('comingSoon').onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    // تحديث اسم المركز
+                    document.getElementById('splashTitle').textContent = data.centerName || 'مركز يثرب الخيري التخصصي';
+                    document.getElementById('logoBackText').textContent = data.centerName || 'يثرب الخيري';
+                    
+                    // تحديث اللوجو إذا تغير
+                    if (data.logoUrl && data.logoUrl !== logoUrl) {
+                        const img = new Image();
+                        img.onload = function() {
+                            document.getElementById('mainLogo').src = data.logoUrl;
+                            if (!logoLoaded) {
+                                document.getElementById('splashLogo').src = data.logoUrl;
+                            }
+                        };
+                        img.src = data.logoUrl;
+                    }
+                    
+                    // تحديث باقي البيانات
+                    if (data.phone) {
+                        document.querySelector('#phoneDisplay span').textContent = data.phone;
+                    }
+                    
+                    if (data.address) {
+                        document.querySelector('#addressDisplay span').textContent = data.address;
+                    }
+                    
+                    if (data.facebook) {
+                        document.getElementById('facebookLink').href = data.facebook;
+                    }
+                    
+                    if (data.description) {
+                        document.getElementById('description').textContent = data.description;
+                    }
+                    
+                    if (data.comment) {
+                        document.getElementById('countdownComment').textContent = data.comment;
+                    }
+                    
+                    if (data.completionDate) {
+                        const target = new Date(data.completionDate + 'T' + (data.deliveryTime || '12:00'));
+                        updateCountdown(target);
+                    }
+                    
+                    if (data.services) {
+                        const grid = document.getElementById('servicesGrid');
+                        grid.innerHTML = '';
+                        data.services.forEach(s => {
+                            const card = document.createElement('div');
+                            card.className = 'service-card';
+                            card.innerHTML = `
+                                <div class="service-icon"><i class="fas ${s.icon || 'fa-stethoscope'}"></i></div>
+                                <div class="service-name">${s.name}</div>
+                                <div class="service-comment">${s.comment}</div>
+                            `;
+                            grid.appendChild(card);
+                        });
+                    }
+                }
+            });
+        }
+
+        // تحديث العد التنازلي
+        function updateCountdown(target) {
+            setInterval(() => {
+                const now = new Date();
+                const diff = target - now;
+                
+                if (diff > 0) {
+                    const d = Math.floor(diff / (1000*60*60*24));
+                    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+                    const s = Math.floor((diff % (1000*60)) / 1000);
+                    
+                    document.getElementById('days').textContent = d.toString().padStart(2,'0');
+                    document.getElementById('hours').textContent = h.toString().padStart(2,'0');
+                    document.getElementById('minutes').textContent = m.toString().padStart(2,'0');
+                    document.getElementById('seconds').textContent = s.toString().padStart(2,'0');
+                }
+            }, 1000);
+        }
 
         // ============================================
         // تصوير الشاشة
@@ -1252,7 +1373,7 @@
         }
 
         // ============================================
-        // معالجة رقم التليفون مع اختيار المستخدم
+        // معالجة رقم التليفون
         // ============================================
         function handlePhoneClick(e) {
             e.preventDefault();
@@ -1262,15 +1383,12 @@
             const phone = phoneSpan.textContent;
             const cleanPhone = phone.replace(/[^0-9+]/g, '');
             
-            // عرض اختيار للمستخدم
             const choice = confirm('اضغط OK لفتح واتساب\nاضغط Cancel للاتصال المباشر');
             
             if (choice) {
-                // واتساب
                 const whatsappUrl = `https://wa.me/${cleanPhone}`;
                 window.open(whatsappUrl, '_blank');
             } else {
-                // اتصال
                 window.location.href = `tel:${cleanPhone}`;
             }
         }
@@ -1287,7 +1405,6 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // جسيمات
         const geo = new THREE.BufferGeometry();
         const count = 1500;
         const pos = new Float32Array(count * 3);
@@ -1355,13 +1472,6 @@
             }
             isFlipped = !isFlipped;
         });
-
-        function showMsg(msg) {
-            const layer = document.getElementById('securityLayer');
-            layer.innerHTML = `<div class="security-message">${msg}</div>`;
-            layer.classList.add('active');
-            setTimeout(() => layer.classList.remove('active'), 2000);
-        }
     </script>
 </body>
 </html>
