@@ -2,7 +2,7 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>مركز يثرب الخيري التخصصي | قريباً</title>
     
     <!-- ===== الأمن السيبراني الشامل ===== -->
@@ -40,10 +40,6 @@
             -webkit-user-drag: none;
             user-drag: none;
         }
-        .no-capture {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-        }
     </style>
     
     <!-- ===== Fonts & Icons ===== -->
@@ -52,10 +48,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- ===== Three.js للخلفية الطبية ===== -->
+    <!-- ===== Three.js للخلفية ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- ===== TensorFlow.js للذكاء الاصطناعي المتقدم ===== -->
+    <!-- ===== TensorFlow.js للذكاء الاصطناعي ===== -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
     
     <!-- ===== Firebase SDK ===== -->
@@ -65,8 +61,11 @@
     <!-- ===== QR Code Generator ===== -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
+    <!-- ===== html2canvas للتصوير ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
-        /* ===== RESET متطور ===== */
+        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
@@ -74,32 +73,27 @@
         }
 
         :root {
-            /* الألوان الطبية */
             --primary: #0e7c9e;
             --primary-dark: #0a5d7a;
             --primary-light: #2a9bc2;
             --secondary: #fbbf24;
             --secondary-dark: #f59e0b;
-            --secondary-light: #fcd34d;
+            --secondary-light: #fde68a;
             --light: #f8fafc;
             --dark: #0a1f2f;
             --darker: #051118;
             --gray: #94a3b8;
             
-            /* التدرجات الطبية */
             --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
             --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --gradient-gold: linear-gradient(145deg, #fbbf24, #fcd34d, #fde68a);
+            --gradient-security: linear-gradient(145deg, #ef4444, #dc2626);
             
-            /* الظلال */
-            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
-            --shadow-xl: 0 30px 70px rgba(0, 0, 0, 0.7);
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-tap-highlight-color: transparent;
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
+            --shadow-xl: 0 30px 70px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
         }
 
         body {
@@ -109,11 +103,9 @@
             position: relative;
             overflow-x: hidden;
             background: var(--darker);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ===== خلفية طبية 3D متحركة ===== */
+        /* ===== خلفية 3D ===== */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -135,7 +127,7 @@
             pointer-events: none;
         }
 
-        /* ===== الأمن السيبراني - حماية كاملة ===== */
+        /* ===== الأمن السيبراني ===== */
         .security-layer {
             position: fixed;
             top: 0;
@@ -151,7 +143,31 @@
             display: block;
         }
 
-        /* ===== شاشة الترحيب المحسنة ===== */
+        .security-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--gradient-security);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            z-index: 999999;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid white;
+            animation: securityFade 2s forwards;
+            text-align: center;
+        }
+
+        @keyframes securityFade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+
+        /* ===== شاشة الترحيب (أبطأ) ===== */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -163,7 +179,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
         }
 
         .splash-screen.hidden {
@@ -175,55 +191,59 @@
             text-align: center;
             max-width: 800px;
             padding: 20px;
-            animation: splashBreathing 3s infinite alternate;
-        }
-
-        @keyframes splashBreathing {
-            0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(14,124,158,0.3)); }
-            100% { transform: scale(1.02); filter: drop-shadow(0 0 50px rgba(251,191,36,0.4)); }
         }
 
         .splash-logo {
-            width: min(350px, 65vw);
-            height: min(350px, 65vw);
-            margin: 0 auto 30px;
+            width: min(320px, 65vw);
+            height: min(320px, 65vw);
+            margin: 0 auto 25px;
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid var(--secondary);
-            box-shadow: 0 0 50px rgba(251,191,36,0.5), 0 0 100px rgba(14,124,158,0.3);
-            background: white;
-            image-rendering: crisp-edges;
-            animation: logoReveal 1.5s ease-out;
+            box-shadow: 0 0 50px rgba(251,191,36,0.5), 0 0 80px rgba(14,124,158,0.3);
+            opacity: 0;
+            transform: scale(0.5);
+            animation: logoAppear 2s ease-out forwards;
         }
 
-        @keyframes logoReveal {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes logoAppear {
+            0% { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+            30% { opacity: 0.4; transform: scale(0.6) rotate(-8deg); }
+            60% { opacity: 0.8; transform: scale(1.1) rotate(3deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0); }
         }
 
         .splash-logo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            image-rendering: crisp-edges;
         }
 
         .splash-title {
             color: white;
-            font-size: clamp(2rem, 6vw, 3rem);
-            margin: 20px 0 30px;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            margin: 20px 0 25px;
             font-weight: 900;
             text-shadow: 0 0 20px var(--primary), 0 0 40px var(--secondary);
             opacity: 0;
-            animation: fadeInUp 1s ease 1s forwards;
+            transform: translateY(20px);
+            animation: titleAppear 1.2s ease 0.8s forwards;
+        }
+
+        @keyframes titleAppear {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .splash-progress-container {
-            width: min(500px, 85vw);
+            width: min(450px, 80vw);
             margin: 0 auto;
             opacity: 0;
-            animation: fadeInUp 1s ease 1.3s forwards;
+            transform: translateY(20px);
+            animation: progressAppear 1.2s ease 1.2s forwards;
+        }
+
+        @keyframes progressAppear {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .splash-progress {
@@ -235,20 +255,19 @@
             margin: 20px 0;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: var(--shadow-md);
         }
 
         .splash-progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary-light));
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             transition: width 0.3s;
             border-radius: 30px;
             box-shadow: 0 0 30px var(--secondary);
         }
 
         .splash-percentage {
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            font-size: clamp(2rem, 8vw, 3rem);
             font-weight: 900;
             color: var(--secondary);
             margin-top: 15px;
@@ -256,15 +275,10 @@
         }
 
         .splash-percentage span {
-            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
             color: var(--light);
             margin-right: 5px;
             opacity: 0.7;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== المحتوى الرئيسي ===== */
@@ -287,88 +301,189 @@
             z-index: 20;
             max-width: min(1400px, 95%);
             margin: 0 auto;
-            padding: clamp(15px, 3vw, 20px);
+            padding: 15px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
+        /* ===== أزرار التحكم ===== */
+        .control-buttons {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .screenshot-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            border: 2px solid var(--secondary);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s;
+            z-index: 1001;
+        }
+
+        .screenshot-btn:hover {
+            transform: scale(1.1) rotate(360deg);
+            background: var(--gradient-secondary);
+            color: var(--darker);
+        }
+
+        .qr-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .qr-button, .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s;
+        }
+
+        .qr-button {
+            background: var(--gradient-secondary);
+            color: var(--darker);
+        }
+
+        .share-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .qr-button:hover, .share-btn:hover {
+            transform: scale(1.1) rotate(360deg);
+        }
+
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5,17,24,0.98);
+            backdrop-filter: blur(30px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal.active {
+            display: flex;
+        }
+
+        .qr-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 50px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .qr-modal-content .qr-large {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .qr-modal-content .close-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
         /* ===== الشريط العلوي ===== */
         .top-bar {
-            background: rgba(5, 17, 24, 0.7);
+            background: rgba(5,17,24,0.8);
             backdrop-filter: blur(20px);
             border-radius: 100px;
-            padding: clamp(12px, 2.5vw, 15px) clamp(20px, 4vw, 30px);
+            padding: 12px 25px;
             margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(251,191,36,0.3);
             flex-wrap: wrap;
             gap: 15px;
-            animation: slideDown 1s ease;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
 
         .contact-info {
             display: flex;
-            gap: clamp(15px, 3vw, 25px);
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 10px;
+            width: auto;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             color: var(--light);
-            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-size: 1rem;
             padding: 8px 20px;
             border-radius: 50px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
             transition: all 0.3s;
+            width: fit-content;
         }
 
         .contact-item:hover {
             background: var(--gradient-primary);
             transform: translateY(-3px);
-            border-color: var(--secondary);
         }
 
         .contact-item i {
             color: var(--secondary);
         }
 
-        .social-links {
-            display: flex;
-            gap: 15px;
-        }
-
         .social-link {
             width: 45px;
             height: 45px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--light);
-            font-size: 1.3rem;
+            text-decoration: none;
             transition: all 0.3s;
-            border: 1px solid rgba(251,191,36,0.3);
         }
 
         .social-link:hover {
             background: var(--gradient-secondary);
-            color: var(--darker);
             transform: rotate(360deg);
+            color: var(--darker);
         }
 
         /* ===== المحتوى الرئيسي ===== */
@@ -376,36 +491,27 @@
             flex: 1;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: clamp(30px, 5vw, 50px);
+            gap: 40px;
             align-items: center;
-            margin: 30px 0;
+            margin: 20px 0;
         }
 
         .coming-badge {
             display: inline-block;
             background: var(--gradient-primary);
             color: white;
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 50px;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 25px;
-            box-shadow: 0 15px 40px rgba(14,124,158,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-            animation: badgePulse 2s infinite;
-        }
-
-        @keyframes badgePulse {
-            0%, 100% { box-shadow: 0 15px 40px rgba(14,124,158,0.5); }
-            50% { box-shadow: 0 25px 60px rgba(251,191,36,0.5); }
+            margin-bottom: 20px;
         }
 
         .main-title {
-            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-size: clamp(2.2rem, 8vw, 4.5rem);
             font-weight: 900;
             line-height: 1.2;
             margin-bottom: 20px;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.5);
             text-align: right;
         }
 
@@ -416,55 +522,46 @@
         }
 
         .main-title .small {
-            font-size: clamp(1.5rem, 5vw, 2.8rem);
+            font-size: clamp(1.3rem, 5vw, 2.5rem);
             display: block;
             color: var(--light);
-            opacity: 0.95;
         }
 
         .description {
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            font-size: 1rem;
             color: var(--light);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             max-width: 600px;
             line-height: 1.8;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             backdrop-filter: blur(15px);
-            padding: 20px 25px;
-            border-radius: 35px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 18px 22px;
+            border-radius: 30px;
         }
 
         /* ===== العد التنازلي ===== */
         .countdown {
             display: flex;
-            gap: clamp(10px, 2vw, 15px);
-            margin: 30px 0;
+            gap: 12px;
+            margin: 25px 0;
             flex-wrap: wrap;
         }
 
         .countdown-item {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: clamp(15px, 3vw, 20px) clamp(10px, 2vw, 15px);
-            min-width: clamp(70px, 15vw, 100px);
+            border-radius: 25px;
+            padding: 15px 12px;
+            min-width: 80px;
             text-align: center;
             border: 1px solid rgba(251,191,36,0.2);
             transition: all 0.3s;
-            box-shadow: var(--shadow-md);
             flex: 1;
-            max-width: 130px;
-        }
-
-        .countdown-item:hover {
-            transform: translateY(-10px);
-            border-color: var(--secondary);
-            box-shadow: 0 20px 40px rgba(251,191,36,0.3);
+            max-width: 110px;
         }
 
         .countdown-number {
-            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
             font-weight: 900;
             color: var(--secondary);
             line-height: 1;
@@ -473,35 +570,32 @@
         }
 
         .countdown-label {
-            font-size: clamp(0.8rem, 2.5vw, 1.1rem);
+            font-size: 0.9rem;
             color: var(--light);
             opacity: 0.9;
         }
 
         .countdown-comment {
-            margin-top: 20px;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            margin-top: 15px;
+            font-size: 1rem;
             color: var(--secondary);
             text-align: center;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             backdrop-filter: blur(20px);
-            padding: 15px 30px;
-            border-radius: 60px;
-            border: 1px solid rgba(251,191,36,0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
             width: fit-content;
         }
 
-        /* ===== اللوجو المتحكم ===== */
+        /* ===== اللوجو ===== */
         .left-section {
             display: flex;
             justify-content: center;
-            align-items: center;
         }
 
         .logo-container {
-            width: min(450px, 80vw);
-            height: min(450px, 80vw);
-            position: relative;
+            width: min(400px, 80vw);
+            height: min(400px, 80vw);
             perspective: 2000px;
             cursor: pointer;
         }
@@ -511,22 +605,41 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 1.2s cubic-bezier(0.4,0,0.2,1);
         }
 
         .logo-3d.hover-flip {
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.15s;
             transform: rotateY(180deg);
         }
 
         .logo-3d.normal-flip {
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotateY(180deg);
         }
 
         .logo-3d.return-flip {
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
             transform: rotateY(0deg);
+        }
+
+        .logo-3d.ai-flip {
+            transition: transform 0.8s cubic-bezier(0.68,-0.55,0.265,1.55);
+            transform: rotateY(180deg);
+        }
+
+        .logo-3d.ai-rotate {
+            transition: transform 0.6s ease;
+            transform: rotateY(360deg);
+        }
+
+        .logo-3d.ai-shake {
+            animation: aiShake 0.5s ease;
+        }
+
+        @keyframes aiShake {
+            0%, 100% { transform: rotateY(0deg); }
+            25% { transform: rotateY(90deg); }
+            50% { transform: rotateY(180deg); }
+            75% { transform: rotateY(90deg); }
         }
 
         .logo-face {
@@ -544,287 +657,153 @@
 
         .logo-front {
             transform: rotateY(0deg);
-            background: white;
-            padding: 20px;
+            background: transparent;
         }
 
         .logo-front img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
+            object-fit: cover;
         }
 
         .logo-back {
             transform: rotateY(180deg);
-            background: var(--gradient-secondary);
+            background: var(--gradient-gold);
             flex-direction: column;
             color: var(--darker);
-            padding: 25px;
+            padding: 15px;
         }
 
         .logo-back i {
-            font-size: clamp(3rem, 8vw, 5rem);
-            margin-bottom: 20px;
-            color: var(--darker);
+            font-size: 3rem;
+            margin-bottom: 10px;
         }
 
         .logo-back span {
-            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            font-size: 1.5rem;
             font-weight: 900;
-            background: rgba(255,255,255,0.3);
-            padding: 15px 30px;
-            border-radius: 60px;
             color: var(--darker);
             text-align: center;
-            max-width: 90%;
         }
 
         /* ===== الخدمات ===== */
         .services-section {
-            margin-top: 80px;
+            margin-top: 60px;
         }
 
         .services-title {
-            font-size: clamp(2rem, 6vw, 2.5rem);
+            font-size: 2rem;
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         .services-title::after {
             content: '';
             position: absolute;
-            bottom: -15px;
+            bottom: -12px;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
+            width: 80px;
+            height: 3px;
             background: var(--gradient-secondary);
-            border-radius: 4px;
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+            gap: 25px;
         }
 
         .service-card {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 40px 25px;
+            border-radius: 40px;
+            padding: 30px 20px;
             text-align: center;
-            transition: all 0.4s;
+            transition: all 0.3s;
             border: 1px solid rgba(251,191,36,0.1);
-            box-shadow: var(--shadow-md);
         }
 
         .service-card:hover {
-            transform: translateY(-20px);
+            transform: translateY(-15px);
             border-color: var(--secondary);
-            box-shadow: 0 30px 60px rgba(251,191,36,0.3);
         }
 
         .service-icon {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             background: var(--gradient-primary);
-            border-radius: 30px;
+            border-radius: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 3.5rem;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
             color: white;
-        }
-
-        .service-card:hover .service-icon {
-            transform: rotateY(180deg);
-            background: var(--gradient-secondary);
+            transition: transform 0.3s;
         }
 
         .service-name {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: white;
         }
 
         .service-comment {
             color: var(--gray);
-            font-size: 1.1rem;
-        }
-
-        /* ===== QR Code ===== */
-        .qr-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .qr-button {
-            width: 50px;
-            height: 50px;
-            background: var(--gradient-secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--darker);
-            font-size: 1.3rem;
-            cursor: pointer;
-            border: 2px solid white;
-        }
-
-        .share-btn {
-            width: 50px;
-            height: 50px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.3rem;
-            cursor: pointer;
-            border: 2px solid var(--secondary);
-        }
-
-        .qr-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .qr-modal.active {
-            display: flex;
-        }
-
-        .qr-modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 40px;
-            text-align: center;
-        }
-
-        .qr-large {
-            width: 250px;
-            height: 250px;
-            margin: 20px auto;
-        }
-
-        .close-btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 12px 40px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin-top: 20px;
+            font-size: 0.95rem;
         }
 
         /* ===== الفوتر ===== */
         .footer {
-            margin-top: 80px;
-            padding: 30px 0;
+            margin-top: 60px;
+            padding: 25px 0;
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.1);
             color: var(--gray);
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            backdrop-filter: blur(15px);
+            font-size: 0.95rem;
         }
 
-        .footer span {
-            color: var(--secondary);
-            font-weight: 700;
-        }
-
-        /* ===== تحسينات الجوال الشاملة ===== */
+        /* ===== تحسينات الجوال ===== */
         @media (max-width: 900px) {
             .main-content {
                 grid-template-columns: 1fr;
                 text-align: center;
-                gap: 30px;
             }
             .main-title {
                 text-align: center;
             }
             .description {
-                margin-left: auto;
-                margin-right: auto;
+                margin: 0 auto;
             }
             .countdown {
                 justify-content: center;
             }
             .countdown-comment {
-                margin-left: auto;
-                margin-right: auto;
+                margin: 15px auto 0;
             }
-            .logo-container {
-                width: 350px;
-                height: 350px;
-                margin: 0 auto;
+            .contact-info {
+                align-items: center;
             }
         }
 
         @media (max-width: 600px) {
-            .top-bar {
-                flex-direction: column;
-                border-radius: 40px;
-            }
-            .contact-info {
+            .contact-item {
+                width: 100%;
                 justify-content: center;
             }
-            .main-title {
-                font-size: 2.5rem;
-            }
-            .main-title .small {
-                font-size: 1.8rem;
+            .top-bar {
+                flex-direction: column;
+                align-items: center;
             }
             .countdown-item {
                 min-width: 70px;
                 padding: 12px 8px;
             }
-            .countdown-number {
-                font-size: 2rem;
-            }
             .logo-container {
                 width: 280px;
                 height: 280px;
-            }
-            .splash-logo {
-                width: 250px;
-                height: 250px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .countdown-item {
-                min-width: 60px;
-                padding: 10px 5px;
-            }
-            .countdown-number {
-                font-size: 1.6rem;
-            }
-            .logo-container {
-                width: 220px;
-                height: 220px;
-            }
-            .splash-logo {
-                width: 200px;
-                height: 200px;
             }
         }
     </style>
@@ -833,11 +812,17 @@
     <!-- طبقة الأمن السيبراني -->
     <div class="security-layer" id="securityLayer"></div>
 
-    <!-- خلفية طبية 3D -->
+    <!-- خلفية 3D -->
     <div id="canvas-container"></div>
     <div class="medical-overlay"></div>
 
-    <!-- QR Code -->
+    <!-- أزرار التحكم -->
+    <div class="control-buttons">
+        <button class="screenshot-btn" onclick="captureFullPage()">
+            <i class="fas fa-camera"></i>
+        </button>
+    </div>
+
     <div class="qr-container">
         <div class="qr-button" onclick="openQRModal()">
             <i class="fas fa-qrcode"></i>
@@ -850,17 +835,17 @@
     <!-- QR Modal -->
     <div class="qr-modal" id="qrModal">
         <div class="qr-modal-content">
-            <h3 style="color: var(--dark);">رمز QR</h3>
+            <h3 style="color:var(--darker)">رمز QR</h3>
             <div class="qr-large" id="qrLarge"></div>
             <button class="close-btn" onclick="closeQRModal()">إغلاق</button>
         </div>
     </div>
 
-    <!-- شاشة الترحيب -->
+    <!-- شاشة الترحيب (أبطأ) -->
     <div class="splash-screen" id="splashScreen">
         <div class="splash-content">
             <div class="splash-logo">
-                <img src="" alt="مركز يثرب الخيري التخصصي" id="splashLogo">
+                <img src="" alt="مركز يثرب" id="splashLogo">
             </div>
             <h2 class="splash-title" id="splashTitle">مركز يثرب الخيري التخصصي</h2>
             <div class="splash-progress-container">
@@ -875,10 +860,9 @@
     <!-- المحتوى الرئيسي -->
     <div class="main-site" id="mainSite">
         <div class="container">
-            <!-- الشريط العلوي -->
             <div class="top-bar">
                 <div class="contact-info">
-                    <div class="contact-item" id="phoneDisplay">
+                    <div class="contact-item" id="phoneDisplay" onclick="handlePhoneClick(event)">
                         <i class="fas fa-phone-alt"></i>
                         <span>...</span>
                     </div>
@@ -887,58 +871,49 @@
                         <span>...</span>
                     </div>
                 </div>
-                <div class="social-links">
-                    <a href="#" class="social-link" id="facebookLink" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                </div>
+                <a href="#" class="social-link" id="facebookLink" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
             </div>
 
-            <!-- المحتوى الرئيسي -->
             <div class="main-content">
-                <div class="right-section">
+                <div>
                     <div class="coming-badge">
                         <i class="fas fa-calendar-alt"></i> سيتم افتتاح الموقع قريباً
                     </div>
-                    
                     <h1 class="main-title">
                         <span class="highlight">مركز يثرب الخيري</span>
                         <span class="small">التخصصي</span>
                     </h1>
-                    
-                    <p class="description" id="description">
-                        صرح طبي متكامل يقدم خدمات صحية متميزة بمعايير عالية وكوادر بشرية متخصصة
-                    </p>
+                    <p class="description" id="description"></p>
 
-                    <!-- العد التنازلي -->
                     <div class="countdown" id="countdown">
-                        <div class="countdown-item">
+                        <div class="countdown-item" id="days-item">
                             <div class="countdown-number" id="days">--</div>
                             <div class="countdown-label">يوم</div>
                         </div>
-                        <div class="countdown-item">
+                        <div class="countdown-item" id="hours-item">
                             <div class="countdown-number" id="hours">--</div>
                             <div class="countdown-label">ساعة</div>
                         </div>
-                        <div class="countdown-item">
+                        <div class="countdown-item" id="minutes-item">
                             <div class="countdown-number" id="minutes">--</div>
                             <div class="countdown-label">دقيقة</div>
                         </div>
-                        <div class="countdown-item">
+                        <div class="countdown-item" id="seconds-item">
                             <div class="countdown-number" id="seconds">--</div>
                             <div class="countdown-label">ثانية</div>
                         </div>
                     </div>
 
-                    <div class="countdown-comment" id="countdownComment">استعدوا معنا لافتتاح المركز</div>
+                    <div class="countdown-comment" id="countdownComment"></div>
                 </div>
 
                 <div class="left-section">
-                    <!-- اللوجو المتحكم -->
                     <div class="logo-container" id="logoContainer">
                         <div class="logo-3d" id="logo3d">
                             <div class="logo-face logo-front">
-                                <img src="" alt="مركز يثرب الخيري التخصصي" id="mainLogo">
+                                <img src="" alt="مركز يثرب" id="mainLogo">
                             </div>
                             <div class="logo-face logo-back">
                                 <i class="fas fa-heart"></i>
@@ -949,414 +924,228 @@
                 </div>
             </div>
 
-            <!-- الخدمات -->
             <div class="services-section">
                 <h2 class="services-title">خدماتنا</h2>
-                <div class="services-grid" id="servicesGrid">
-                    <!-- الخدمات من Firebase -->
-                </div>
+                <div class="services-grid" id="servicesGrid"></div>
             </div>
 
-            <!-- الفوتر -->
             <div class="footer">
-                <i class="fas fa-code"></i> تصميم وتطوير <span>BASHA</span> | جميع الحقوق محفوظة © ٢٠٢٦
+                <i class="fas fa-code"></i> نقابة تكنولوجيا المعلومات والبرمجيات المصرية | جميع الحقوق محفوظة © ٢٠٢٦
             </div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // الأمن السيبراني الشامل
+        // الأمن السيبراني
         // ============================================
         (function() {
-            // منع النقر بالزر الأيمن
-            document.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                showSecurityMessage('🚫 غير مسموح بالنقر بزر الفأرة الأيمن');
-            });
-            
-            // منع اختصارات النسخ والتصوير
-            document.addEventListener('keydown', (e) => {
+            document.addEventListener('contextmenu', e => { e.preventDefault(); showMsg('🚫 غير مسموح'); });
+            document.addEventListener('keydown', e => {
                 if (e.ctrlKey || e.metaKey) {
-                    if (e.key === 'c' || e.key === 'C' || e.key === 'x' || e.key === 'X' || 
-                        e.key === 'u' || e.key === 'U' || e.key === 's' || e.key === 'S' ||
-                        e.key === 'p' || e.key === 'P' || e.key === 'PrintScreen') {
-                        e.preventDefault();
-                        showSecurityMessage('📸 غير مسموح بالتقاط الشاشة');
+                    if (['c','x','u','s','p','a','v','C','X','U','S','P','A','V'].includes(e.key)) {
+                        e.preventDefault(); showMsg('📸 غير مسموح');
                     }
                 }
-                // منع Print Screen
+                if (e.key === 'F12' || e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='J'))) {
+                    e.preventDefault(); showMsg('🔒 أدوات المطور مغلقة');
+                }
                 if (e.key === 'PrintScreen' || e.keyCode === 44) {
-                    e.preventDefault();
-                    showSecurityMessage('📸 غير مسموح بالتقاط الشاشة');
+                    e.preventDefault(); showMsg('📸 غير مسموح');
                 }
             });
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('copy', e => { e.preventDefault(); showMsg('📋 غير مسموح'); });
             
-            // منع تحديد النص
-            document.addEventListener('selectstart', (e) => e.preventDefault());
-            document.addEventListener('selectionchange', () => window.getSelection().removeAllRanges());
-            
-            // منع السحب
-            document.addEventListener('dragstart', (e) => e.preventDefault());
-            
-            // منع النسخ
-            document.addEventListener('copy', (e) => {
-                e.preventDefault();
-                showSecurityMessage('📋 غير مسموح بالنسخ');
+            let devToolsOpen = false;
+            const element = new Image();
+            Object.defineProperty(element, 'id', {
+                get: function() { devToolsOpen = true; showMsg('🔒 تم اكتشاف أدوات المطور'); return ''; }
             });
             
-            // منع القص
-            document.addEventListener('cut', (e) => {
-                e.preventDefault();
-                showSecurityMessage('✂️ غير مسموح بالقص');
-            });
-            
-            // منع اللصق
-            document.addEventListener('paste', (e) => {
-                e.preventDefault();
-                showSecurityMessage('📋 غير مسموح باللصق');
-            });
-            
-            // منع السحب والإفلات
-            document.addEventListener('drop', (e) => e.preventDefault());
-            
-            // منع الـ DevTools
             setInterval(() => {
-                const start = performance.now();
-                debugger;
-                const end = performance.now();
-                if (end - start > 100) {
-                    showSecurityMessage('🔒 تم اكتشاف محاولة فتح أدوات المطور');
+                devToolsOpen = false;
+                console.log(element);
+                if (devToolsOpen) {
+                    document.body.innerHTML = '<div style="color:red; font-size:2rem; text-align:center; margin-top:50vh;">🔒 غير مصرح</div>';
                 }
             }, 1000);
             
-            function showSecurityMessage(msg) {
+            function showMsg(msg) {
                 const layer = document.getElementById('securityLayer');
-                layer.textContent = msg;
-                layer.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: linear-gradient(145deg, #ef4444, #dc2626);
-                    color: white;
-                    padding: 20px 40px;
-                    border-radius: 50px;
-                    font-size: 1.2rem;
-                    font-weight: 700;
-                    z-index: 999999;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-                    border: 2px solid white;
-                    animation: securityFade 2s forwards;
-                `;
-                setTimeout(() => {
-                    layer.style.cssText = '';
-                }, 2000);
+                layer.innerHTML = `<div class="security-message">${msg}</div>`;
+                layer.classList.add('active');
+                setTimeout(() => layer.classList.remove('active'), 2000);
             }
-            
-            console.log('🔒 الأمن السيبراني الشامل مفعل');
         })();
 
         // ============================================
-        // الذكاء الاصطناعي المتقدم
+        // الذكاء الاصطناعي المتطور
         // ============================================
         class AIEngine {
             constructor() {
-                this.model = null;
-                this.initialized = false;
-                this.predictions = new Map();
+                this.countdownItems = [];
+                this.serviceIcons = [];
+                this.logo = document.getElementById('logo3d');
+                this.active = true;
+                this.init();
             }
 
-            async initialize() {
-                try {
-                    // نموذج تنبؤي للتفاعلات
-                    this.model = tf.sequential();
-                    this.model.add(tf.layers.dense({units: 10, inputShape: [5], activation: 'relu'}));
-                    this.model.add(tf.layers.dense({units: 5, activation: 'relu'}));
-                    this.model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));
-                    
-                    this.model.compile({
-                        optimizer: tf.train.adam(0.01),
-                        loss: 'binaryCrossentropy',
-                        metrics: ['accuracy']
+            init() {
+                // حركات العد التنازلي
+                setInterval(() => this.animateCountdown(), 1000);
+                
+                // حركات أيقونات الخدمات
+                setInterval(() => this.animateServiceIcons(), 1000);
+                
+                // حركات اللوجو العشوائية
+                setInterval(() => this.animateLogo(), 2000);
+                
+                // حركات عشوائية أخرى
+                setInterval(() => this.randomEffects(), 3000);
+            }
+
+            animateCountdown() {
+                this.countdownItems = document.querySelectorAll('.countdown-item');
+                if (this.countdownItems.length > 0) {
+                    this.countdownItems.forEach(item => {
+                        item.style.transform = '';
+                        item.style.boxShadow = '';
                     });
-
-                    // تدريب سريع على بيانات وهمية
-                    const xs = tf.randomNormal([100, 5]);
-                    const ys = tf.randomNormal([100, 1]);
-                    await this.model.fit(xs, ys, {
-                        epochs: 5,
-                        verbose: 0
-                    });
-
-                    this.initialized = true;
-                    console.log('🤖 AI Engine initialized');
                     
-                    // بدأ التحليلات
-                    this.startAnalysis();
-                } catch (error) {
-                    console.log('AI init error:', error);
-                }
-            }
-
-            startAnalysis() {
-                // تحليل أداء الصفحة
-                setInterval(() => this.analyzePerformance(), 5000);
-                
-                // تحليل تفاعلات المستخدم
-                document.addEventListener('mousemove', (e) => this.trackUserBehavior(e));
-                
-                // تحسين التحميل
-                this.optimizeLoading();
-            }
-
-            analyzePerformance() {
-                const metrics = {
-                    loadTime: performance.now(),
-                    memory: performance.memory ? performance.memory.usedJSHeapSize / 1024 / 1024 : 0,
-                    fps: this.calculateFPS()
-                };
-                
-                if (metrics.loadTime > 3000) {
-                    this.optimizePage();
-                }
-            }
-
-            calculateFPS() {
-                return 60; // مبسطة
-            }
-
-            optimizePage() {
-                // تحسين الصور
-                document.querySelectorAll('img').forEach(img => {
-                    if (!img.complete) {
-                        img.loading = 'lazy';
+                    const randomIndex = Math.floor(Math.random() * this.countdownItems.length);
+                    const item = this.countdownItems[randomIndex];
+                    
+                    item.style.transition = 'all 0.3s';
+                    item.style.transform = 'translateY(-5px) scale(1.05)';
+                    item.style.boxShadow = '0 0 30px var(--secondary), 0 0 60px var(--primary)';
+                    item.style.borderColor = 'var(--secondary)';
+                    
+                    const number = item.querySelector('.countdown-number');
+                    if (number) {
+                        number.style.transition = 'color 0.3s';
+                        number.style.color = '#fff';
+                        setTimeout(() => number.style.color = '', 500);
                     }
-                });
+                }
             }
 
-            trackUserBehavior(e) {
-                // تتبع حركة الماوس للتنبؤ بالتفاعلات
-                const x = e.clientX / window.innerWidth;
-                const y = e.clientY / window.innerHeight;
+            animateServiceIcons() {
+                this.serviceIcons = document.querySelectorAll('.service-icon');
+                if (this.serviceIcons.length > 0) {
+                    this.serviceIcons.forEach(icon => {
+                        icon.style.transform = '';
+                        icon.style.background = '';
+                    });
+                    
+                    const randomIndex = Math.floor(Math.random() * this.serviceIcons.length);
+                    const icon = this.serviceIcons[randomIndex];
+                    
+                    icon.style.transition = 'all 0.4s';
+                    icon.style.transform = 'rotateY(180deg) scale(1.2)';
+                    icon.style.background = 'var(--gradient-secondary)';
+                    
+                    setTimeout(() => {
+                        icon.style.transform = '';
+                        icon.style.background = '';
+                    }, 800);
+                }
+            }
+
+            animateLogo() {
+                if (!this.logo || !this.active) return;
                 
-                if (this.initialized && Math.random() > 0.99) {
-                    const input = tf.tensor2d([[x, y, 0.5, 0.5, 0.5]]);
-                    const prediction = this.model.predict(input);
-                    prediction.data().then(data => {
-                        if (data[0] > 0.8) {
-                            // تنبؤ بتفاعل قادم
-                            this.prepareInteraction();
-                        }
-                    });
+                const random = Math.random();
+                
+                if (random < 0.3) {
+                    // حركة Flip
+                    this.logo.classList.add('ai-flip');
+                    setTimeout(() => this.logo.classList.remove('ai-flip'), 800);
+                } else if (random < 0.6) {
+                    // حركة Rotate
+                    this.logo.classList.add('ai-rotate');
+                    setTimeout(() => this.logo.classList.remove('ai-rotate'), 600);
+                } else {
+                    // حركة Shake
+                    this.logo.classList.add('ai-shake');
+                    setTimeout(() => this.logo.classList.remove('ai-shake'), 500);
                 }
             }
 
-            prepareInteraction() {
-                // تجهيز تفاعلات متوقعة
-                const logo = document.querySelector('.logo-container');
-                if (logo && Math.random() > 0.7) {
-                    // تنبؤ بأن المستخدم سيتفاعل مع اللوجو
-                    logo.style.transition = 'all 0.5s';
+            randomEffects() {
+                const title = document.querySelector('.main-title .highlight');
+                if (title && Math.random() > 0.5) {
+                    title.style.animation = 'none';
+                    title.offsetHeight;
+                    title.style.animation = 'gradientFlow 3s';
                 }
-            }
-
-            optimizeLoading() {
-                // تحميل ذكي للصور
-                const imageObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            img.style.opacity = '1';
-                            imageObserver.unobserve(img);
-                        }
-                    });
-                });
-
-                document.querySelectorAll('img').forEach(img => {
-                    img.style.opacity = '0';
-                    img.style.transition = 'opacity 0.5s';
-                    imageObserver.observe(img);
-                });
+                
+                const contactItems = document.querySelectorAll('.contact-item');
+                if (contactItems.length > 0 && Math.random() > 0.7) {
+                    const randomContact = contactItems[Math.floor(Math.random() * contactItems.length)];
+                    randomContact.style.background = 'var(--gradient-primary)';
+                    setTimeout(() => randomContact.style.background = '', 500);
+                }
             }
         }
 
         const ai = new AIEngine();
-        ai.initialize();
 
         // ============================================
-        // تهيئة Firebase
+        // Firebase
         // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
             authDomain: "yathreb-10909.firebaseapp.com",
-            projectId: "yathreb-10909",
-            storageBucket: "yathreb-10909.firebasestorage.app",
-            messagingSenderId: "525635197745",
-            appId: "1:525635197745:web:99e1cbab31693af790ae10"
+            projectId: "yathreb-10909"
         };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // ============================================
-        // خلفية طبية 3D
+        // تحميل اللوجو
         // ============================================
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0a1f2f);
-        
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
+        const splashLogo = document.getElementById('splashLogo');
+        const mainLogo = document.getElementById('mainLogo');
 
-        // إضاءة
-        const ambientLight = new THREE.AmbientLight(0x404060);
-        scene.add(ambientLight);
-        
-        const light1 = new THREE.PointLight(0x0e7c9e, 1.5, 30);
-        light1.position.set(5, 5, 5);
-        scene.add(light1);
-        
-        const light2 = new THREE.PointLight(0xfbbf24, 1.5, 30);
-        light2.position.set(-5, -3, 5);
-        scene.add(light2);
-
-        // جسيمات طبية
-        const particlesGeo = new THREE.BufferGeometry();
-        const particlesCount = 1500;
-        const posArray = new Float32Array(particlesCount * 3);
-        
-        for(let i = 0; i < particlesCount * 3; i += 3) {
-            const r = 10 + Math.random() * 10;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.random() * Math.PI * 2;
-            
-            posArray[i] = Math.sin(theta) * Math.cos(phi) * r;
-            posArray[i+1] = Math.sin(theta) * Math.sin(phi) * r * 0.5;
-            posArray[i+2] = Math.cos(theta) * r;
-        }
-        
-        particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        
-        const particlesMat = new THREE.PointsMaterial({
-            size: 0.1,
-            color: 0x0e7c9e,
-            transparent: true,
-            opacity: 0.3,
-            blending: THREE.AdditiveBlending
-        });
-        
-        const particles = new THREE.Points(particlesGeo, particlesMat);
-        scene.add(particles);
-
-        // حلقة طبية
-        const ringGeo = new THREE.TorusGeometry(6, 0.1, 16, 100);
-        const ringMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, emissive: 0xf59e0b, transparent: true, opacity: 0.15 });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 2;
-        scene.add(ring);
-
-        camera.position.z = 18;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            particles.rotation.y += 0.0003;
-            ring.rotation.z += 0.002;
-            
-            renderer.render(scene, camera);
-        }
-        
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // ============================================
-        // QR Code
-        // ============================================
-        function openQRModal() {
-            document.getElementById('qrModal').classList.add('active');
-            document.getElementById('qrLarge').innerHTML = '';
-            new QRCode(document.getElementById("qrLarge"), {
-                text: window.location.href,
-                width: 250,
-                height: 250,
-                colorDark: "#0e7c9e",
-                colorLight: "#ffffff"
-            });
-        }
-
-        function closeQRModal() {
-            document.getElementById('qrModal').classList.remove('active');
-        }
-
-        function sharePage() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'مركز يثرب الخيري التخصصي',
-                    text: 'صرح طبي متكامل',
-                    url: window.location.href
-                });
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert('✅ تم نسخ الرابط');
+        async function preloadLogo() {
+            try {
+                const doc = await db.collection('settings').doc('comingSoon').get();
+                if (doc.exists && doc.data().logoUrl) {
+                    const url = doc.data().logoUrl;
+                    splashLogo.src = url;
+                    mainLogo.src = url;
+                }
+            } catch (e) {
+                console.log(e);
             }
         }
+        preloadLogo();
 
         // ============================================
-        // شاشة الترحيب
+        // شاشة الترحيب (أبطأ)
         // ============================================
         const splashScreen = document.getElementById('splashScreen');
         const splashProgress = document.getElementById('splashProgress');
         const splashPercentage = document.getElementById('splashPercentage');
-        const splashLogo = document.getElementById('splashLogo');
         const splashTitle = document.getElementById('splashTitle');
         const mainSite = document.getElementById('mainSite');
 
-        // تحميل البيانات
         async function loadData() {
             try {
                 const doc = await db.collection('settings').doc('comingSoon').get();
-                
                 if (doc.exists) {
                     const data = doc.data();
                     
-                    const centerName = data.centerName || 'مركز يثرب الخيري التخصصي';
-                    splashTitle.textContent = centerName;
-                    document.getElementById('logoBackText').textContent = centerName;
+                    splashTitle.textContent = data.centerName || 'مركز يثرب الخيري التخصصي';
+                    document.getElementById('logoBackText').textContent = data.centerName || 'يثرب الخيري';
                     
-                    if (data.logoUrl) {
-                        splashLogo.src = data.logoUrl;
-                        document.getElementById('mainLogo').src = data.logoUrl;
-                    }
-                    
-                    if (data.phone) {
-                        document.querySelector('#phoneDisplay span').textContent = data.phone;
-                    }
-                    
-                    if (data.address) {
-                        document.querySelector('#addressDisplay span').textContent = data.address;
-                    }
-                    
-                    if (data.facebook) {
-                        document.getElementById('facebookLink').href = data.facebook;
-                    }
-                    
-                    if (data.description) {
-                        document.getElementById('description').textContent = data.description;
-                    }
-                    
-                    if (data.comment) {
-                        document.getElementById('countdownComment').textContent = data.comment;
-                    }
+                    if (data.phone) document.querySelector('#phoneDisplay span').textContent = data.phone;
+                    if (data.address) document.querySelector('#addressDisplay span').textContent = data.address;
+                    if (data.facebook) document.getElementById('facebookLink').href = data.facebook;
+                    if (data.description) document.getElementById('description').textContent = data.description;
+                    if (data.comment) document.getElementById('countdownComment').textContent = data.comment;
                     
                     if (data.completionDate) {
                         const target = new Date(data.completionDate + 'T' + (data.deliveryTime || '12:00'));
@@ -1365,46 +1154,45 @@
                             const diff = target - now;
                             
                             if (diff > 0) {
-                                const days = Math.floor(diff / (1000*60*60*24));
-                                const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-                                const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
-                                const seconds = Math.floor((diff % (1000*60)) / 1000);
+                                const d = Math.floor(diff / (1000*60*60*24));
+                                const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                                const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+                                const s = Math.floor((diff % (1000*60)) / 1000);
                                 
-                                document.getElementById('days').textContent = days.toString().padStart(2, '0');
-                                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                                document.getElementById('days').textContent = d.toString().padStart(2,'0');
+                                document.getElementById('hours').textContent = h.toString().padStart(2,'0');
+                                document.getElementById('minutes').textContent = m.toString().padStart(2,'0');
+                                document.getElementById('seconds').textContent = s.toString().padStart(2,'0');
                             }
                         }, 1000);
                     }
                     
                     if (data.services) {
                         const grid = document.getElementById('servicesGrid');
-                        data.services.forEach(service => {
+                        data.services.forEach(s => {
                             const card = document.createElement('div');
                             card.className = 'service-card';
                             card.innerHTML = `
-                                <div class="service-icon">
-                                    <i class="fas ${service.icon || 'fa-stethoscope'}"></i>
-                                </div>
-                                <div class="service-name">${service.name}</div>
-                                <div class="service-comment">${service.comment}</div>
+                                <div class="service-icon"><i class="fas ${s.icon || 'fa-stethoscope'}"></i></div>
+                                <div class="service-name">${s.name}</div>
+                                <div class="service-comment">${s.comment}</div>
                             `;
                             grid.appendChild(card);
                         });
                     }
                 }
-            } catch (error) {
-                console.log('Error:', error);
+            } catch (e) {
+                console.log(e);
             }
         }
 
-        // شريط التقدم
+        // شريط التقدم البطيء (2.5 ثانية)
         let progress = 0;
         const interval = setInterval(() => {
-            progress += 1;
+            progress += 1.2;
+            if (progress > 100) progress = 100;
             splashProgress.style.width = progress + '%';
-            splashPercentage.innerHTML = progress + '<span>%</span>';
+            splashPercentage.innerHTML = Math.round(progress) + '<span>%</span>';
             
             if (progress >= 100) {
                 clearInterval(interval);
@@ -1414,78 +1202,166 @@
                     loadData();
                 }, 500);
             }
-        }, 25);
+        }, 35);
 
         // ============================================
-        // حركات اللوجو المحسنة
+        // تصوير الشاشة
+        // ============================================
+        function captureFullPage() {
+            showMsg('📸 جاري التصوير...');
+            html2canvas(document.body, {
+                scale: 2,
+                backgroundColor: null,
+                useCORS: true,
+                width: document.documentElement.scrollWidth,
+                height: document.documentElement.scrollHeight
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'yathreb.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showMsg('✅ تم التصوير');
+            }).catch(() => showMsg('❌ فشل التصوير'));
+        }
+
+        // ============================================
+        // QR Code
+        // ============================================
+        function openQRModal() {
+            document.getElementById('qrModal').classList.add('active');
+            document.getElementById('qrLarge').innerHTML = '';
+            new QRCode(document.getElementById("qrLarge"), {
+                text: window.location.href,
+                width: 200,
+                height: 200,
+                colorDark: "#0e7c9e"
+            });
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.remove('active');
+        }
+
+        function sharePage() {
+            if (navigator.share) {
+                navigator.share({ title: 'مركز يثرب', url: window.location.href });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showMsg('✅ تم نسخ الرابط');
+            }
+        }
+
+        // ============================================
+        // معالجة رقم التليفون مع اختيار المستخدم
+        // ============================================
+        function handlePhoneClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const phoneSpan = document.querySelector('#phoneDisplay span');
+            const phone = phoneSpan.textContent;
+            const cleanPhone = phone.replace(/[^0-9+]/g, '');
+            
+            // عرض اختيار للمستخدم
+            const choice = confirm('اضغط OK لفتح واتساب\nاضغط Cancel للاتصال المباشر');
+            
+            if (choice) {
+                // واتساب
+                const whatsappUrl = `https://wa.me/${cleanPhone}`;
+                window.open(whatsappUrl, '_blank');
+            } else {
+                // اتصال
+                window.location.href = `tel:${cleanPhone}`;
+            }
+        }
+
+        // ============================================
+        // خلفية 3D
+        // ============================================
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a1f2f);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // جسيمات
+        const geo = new THREE.BufferGeometry();
+        const count = 1500;
+        const pos = new Float32Array(count * 3);
+        for (let i = 0; i < count * 3; i += 3) {
+            pos[i] = (Math.random() - 0.5) * 30;
+            pos[i+1] = (Math.random() - 0.5) * 30;
+            pos[i+2] = (Math.random() - 0.5) * 30;
+        }
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        const mat = new THREE.PointsMaterial({ color: 0x0e7c9e, size: 0.1, transparent: true, opacity: 0.3 });
+        const points = new THREE.Points(geo, mat);
+        scene.add(points);
+
+        camera.position.z = 15;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            points.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ============================================
+        // حركات اللوجو الأساسية
         // ============================================
         const logoContainer = document.getElementById('logoContainer');
         const logo3d = document.getElementById('logo3d');
         let isFlipped = false;
-        let hoverTimer;
 
-        // فليب هادي دائم (كل 5 ثواني)
         setInterval(() => {
             if (!isFlipped) {
                 logo3d.classList.add('normal-flip');
-                logo3d.classList.remove('return-flip');
                 isFlipped = true;
-                
                 setTimeout(() => {
                     logo3d.classList.remove('normal-flip');
                     logo3d.classList.add('return-flip');
-                    isFlipped = false;
+                    setTimeout(() => {
+                        logo3d.classList.remove('return-flip');
+                        isFlipped = false;
+                    }, 1200);
                 }, 1200);
             }
         }, 5000);
 
-        // هروب سريع عند hover
         logoContainer.addEventListener('mouseenter', () => {
-            clearTimeout(hoverTimer);
-            hoverTimer = setTimeout(() => {
-                if (!isFlipped) {
-                    logo3d.classList.add('hover-flip');
-                    logo3d.classList.remove('normal-flip', 'return-flip');
-                    
-                    setTimeout(() => {
-                        logo3d.classList.remove('hover-flip');
-                        isFlipped = false;
-                    }, 200);
-                }
-            }, 50);
+            if (!isFlipped) {
+                logo3d.classList.add('hover-flip');
+                setTimeout(() => logo3d.classList.remove('hover-flip'), 150);
+            }
         });
 
-        logoContainer.addEventListener('mouseleave', () => {
-            clearTimeout(hoverTimer);
-        });
-
-        // Flip as Coin عند الضغط
-        logoContainer.addEventListener('click', (e) => {
-            e.stopPropagation();
+        logoContainer.addEventListener('click', () => {
             if (isFlipped) {
                 logo3d.classList.add('return-flip');
-                logo3d.classList.remove('normal-flip', 'hover-flip');
-                setTimeout(() => {
-                    logo3d.classList.remove('return-flip');
-                }, 1200);
+                setTimeout(() => logo3d.classList.remove('return-flip'), 1200);
             } else {
                 logo3d.classList.add('normal-flip');
-                logo3d.classList.remove('return-flip', 'hover-flip');
-                setTimeout(() => {
-                    logo3d.classList.remove('normal-flip');
-                }, 1200);
+                setTimeout(() => logo3d.classList.remove('normal-flip'), 1200);
             }
             isFlipped = !isFlipped;
         });
 
-        // دعم اللمس للجوال
-        logoContainer.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            logo3d.classList.add('hover-flip');
-            setTimeout(() => {
-                logo3d.classList.remove('hover-flip');
-            }, 200);
-        });
+        function showMsg(msg) {
+            const layer = document.getElementById('securityLayer');
+            layer.innerHTML = `<div class="security-message">${msg}</div>`;
+            layer.classList.add('active');
+            setTimeout(() => layer.classList.remove('active'), 2000);
+        }
     </script>
 </body>
 </html>
