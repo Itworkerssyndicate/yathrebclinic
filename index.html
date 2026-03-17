@@ -8,12 +8,12 @@
     <!-- ===== الأمان السيبراني ===== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' https:;
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://player.vimeo.com;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.youtube.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src 'self' data: https:;
-        media-src 'self' https:;
-        frame-src 'self' https://player.vimeo.com https://www.youtube.com;
+        media-src 'self' https: https://www.youtube.com;
+        frame-src 'self' https://www.youtube.com;
         connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
     ">
     
@@ -32,7 +32,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* ===== RESET ===== */
+        /* ===== RESET متقدم ===== */
         * {
             margin: 0;
             padding: 0;
@@ -61,7 +61,7 @@
             background: var(--dark);
         }
 
-        /* ===== خلفية فيديو طبية ===== */
+        /* ===== خلفية فيديو طبية من YouTube ===== */
         .video-background {
             position: fixed;
             top: 0;
@@ -80,8 +80,7 @@
             height: 100vh;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            opacity: 0.15;
-            filter: blur(2px) grayscale(30%);
+            opacity: 0.25;
         }
 
         .video-overlay {
@@ -90,12 +89,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(145deg, rgba(10,31,47,0.85), rgba(10,31,47,0.9));
+            background: linear-gradient(145deg, rgba(10,31,47,0.6), rgba(10,31,47,0.7));
             z-index: 1;
             pointer-events: none;
         }
 
-        /* ===== شاشة الترحيب (مُحسّنة) ===== */
+        /* ===== شاشة الترحيب ===== */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -152,15 +151,17 @@
             font-size: 2.5rem;
             margin-bottom: 30px;
             font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .splash-progress {
             width: 100%;
             height: 6px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.2);
             border-radius: 10px;
             overflow: hidden;
             margin: 20px 0;
+            backdrop-filter: blur(5px);
         }
 
         .splash-progress-bar {
@@ -169,12 +170,14 @@
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             transition: width 0.3s;
             border-radius: 10px;
+            box-shadow: 0 0 20px var(--secondary);
         }
 
         .splash-percentage {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--secondary);
+            text-shadow: 0 0 20px var(--secondary);
         }
 
         /* ===== المحتوى الرئيسي ===== */
@@ -205,7 +208,7 @@
 
         /* ===== شريط العلوي ===== */
         .top-bar {
-            background: rgba(10, 31, 47, 0.7);
+            background: rgba(10, 31, 47, 0.5);
             backdrop-filter: blur(20px);
             border-radius: 60px;
             padding: 15px 30px;
@@ -233,13 +236,16 @@
             font-size: 1.1rem;
             padding: 8px 20px;
             border-radius: 40px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
             transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .contact-item:hover {
             background: var(--gradient-primary);
             transform: translateY(-3px);
+            border-color: var(--secondary);
         }
 
         .contact-item i {
@@ -254,7 +260,8 @@
         .social-link {
             width: 45px;
             height: 45px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -269,6 +276,7 @@
             background: var(--secondary);
             color: var(--dark);
             transform: rotate(360deg);
+            border-color: white;
         }
 
         /* ===== المحتوى الرئيسي ===== */
@@ -299,8 +307,9 @@
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(14,124,158,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(14,124,158,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
         }
 
         .main-title {
@@ -308,6 +317,7 @@
             font-weight: 900;
             line-height: 1.2;
             margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .main-title .highlight {
@@ -329,11 +339,12 @@
             margin-bottom: 40px;
             max-width: 600px;
             line-height: 1.8;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
             padding: 20px 25px;
             border-radius: 30px;
-            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
+            text-shadow: 0 1px 5px rgba(0,0,0,0.5);
         }
 
         /* ===== العد التنازلي ===== */
@@ -345,8 +356,8 @@
         }
 
         .countdown-item {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
             border-radius: 30px;
             padding: 25px 20px;
             min-width: 120px;
@@ -368,12 +379,13 @@
             color: var(--secondary);
             line-height: 1;
             margin-bottom: 5px;
+            text-shadow: 0 0 20px var(--secondary);
         }
 
         .countdown-label {
             font-size: 1.2rem;
             color: var(--light);
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .countdown-comment {
@@ -381,12 +393,13 @@
             font-size: 1.2rem;
             color: var(--secondary);
             text-align: center;
-            background: rgba(251,191,36,0.1);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
             padding: 15px 30px;
             border-radius: 50px;
             border: 1px solid rgba(251,191,36,0.3);
-            backdrop-filter: blur(10px);
             width: fit-content;
+            box-shadow: var(--shadow);
         }
 
         /* ===== اللوجو ===== */
@@ -470,6 +483,7 @@
             border-radius: 50px;
             color: white;
             text-align: center;
+            backdrop-filter: blur(10px);
         }
 
         /* ===== الخدمات ===== */
@@ -482,6 +496,7 @@
             text-align: center;
             margin-bottom: 50px;
             position: relative;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .services-title::after {
@@ -494,6 +509,7 @@
             height: 3px;
             background: var(--secondary);
             border-radius: 3px;
+            box-shadow: 0 0 20px var(--secondary);
         }
 
         .services-grid {
@@ -503,8 +519,8 @@
         }
 
         .service-card {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
             border-radius: 40px;
             padding: 40px 25px;
             text-align: center;
@@ -531,6 +547,7 @@
             font-size: 3.5rem;
             color: white;
             transition: all 0.4s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .service-card:hover .service-icon {
@@ -560,6 +577,8 @@
             color: var(--gray);
             font-size: 1rem;
             backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.2);
+            border-radius: 60px 60px 0 0;
         }
 
         .footer span {
@@ -572,7 +591,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(10px);
             padding: 10px 20px;
             border-radius: 40px;
@@ -636,9 +655,9 @@
     </style>
 </head>
 <body>
-    <!-- خلفية فيديو طبية -->
+    <!-- خلفية فيديو طبية من YouTube (مباشرة) -->
     <div class="video-background">
-        <iframe src="https://player.vimeo.com/video/266172816?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/_TzNc9zUZkA?autoplay=1&mute=1&loop=1&playlist=_TzNc9zUZkA&controls=0&showinfo=0&modestbranding=1&iv_load_policy=3&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
     <div class="video-overlay"></div>
 
@@ -749,7 +768,7 @@
 
             <!-- الفوتر -->
             <div class="footer">
-                <i class="fas fa-code"></i> تصميم وتطوير <span>BASHA</span> | جميع الحقوق محفوظة © ٢٠٢٦
+                <i class="fas fa-code"></i> نقابة تكنولوجيا المعلومات والبرمجيات المصرية | جميع الحقوق محفوظة © ٢٠٢٦
             </div>
         </div>
     </div>
@@ -768,7 +787,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ===== شاشة الترحيب (تحميل سريع للوجو) =====
+        // ===== شاشة الترحيب =====
         const splashScreen = document.getElementById('splashScreen');
         const splashProgress = document.getElementById('splashProgress');
         const splashPercentage = document.getElementById('splashPercentage');
@@ -791,13 +810,20 @@
                         splashLogoImg.src = logoUrl;
                         mainLogo.src = logoUrl;
                     };
+                    
+                    // إذا تأخر التحميل، استخدمها مباشرة بعد 1.5 ثانية
+                    setTimeout(() => {
+                        if (!splashLogoImg.src) {
+                            splashLogoImg.src = logoUrl;
+                            mainLogo.src = logoUrl;
+                        }
+                    }, 1500);
                 }
             } catch (error) {
                 console.log('Logo preload error:', error);
             }
         }
         
-        // بدأ تحميل اللوجو فوراً
         preloadLogo();
 
         // شريط التقدم
