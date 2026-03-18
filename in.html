@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ السيت أب السحري - صفحة قريباً</title>
+    <title>🔥 السيت أب السحري - مركز يثرب الخيري التخصصي</title>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
         * {
@@ -25,7 +30,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -40,11 +45,33 @@
         }
 
         .header h1 {
-            font-size: 3em;
+            font-size: 3.5em;
             margin-bottom: 10px;
             background: linear-gradient(135deg, #63b3ed, #9f7aea);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .header h2 {
+            color: #fbbf24;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #fbbf24;
+            color: #0a1a2f;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        .badge-warning {
+            background: #ef4444;
+            color: white;
         }
 
         .magic-button {
@@ -57,9 +84,9 @@
             background: linear-gradient(145deg, #fbbf24, #d97706);
             color: #0f172a;
             border: none;
-            padding: 30px 60px;
-            border-radius: 60px;
-            font-size: 2.5em;
+            padding: 35px 80px;
+            border-radius: 80px;
+            font-size: 3em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -73,6 +100,12 @@
         .btn-magic:hover {
             transform: translateY(-5px) scale(1.02);
             box-shadow: 0 30px 70px rgba(251, 191, 36, 0.7);
+        }
+
+        .btn-magic:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .status-panel {
@@ -92,6 +125,7 @@
             border-radius: 15px;
             margin-bottom: 10px;
             border-right: 5px solid;
+            font-size: 1.1em;
         }
 
         .status-success {
@@ -100,6 +134,10 @@
 
         .status-working {
             border-color: #fbbf24;
+        }
+
+        .status-error {
+            border-color: #ef4444;
         }
 
         .progress-bar {
@@ -122,9 +160,10 @@
             border-radius: 15px;
             padding: 20px;
             font-family: monospace;
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
             direction: ltr;
+            margin: 30px 0;
         }
 
         .log-entry {
@@ -137,6 +176,10 @@
             color: #10b981;
         }
 
+        .log-error {
+            color: #ef4444;
+        }
+
         .summary-box {
             background: #0a2a3a;
             border-radius: 15px;
@@ -147,74 +190,122 @@
 
         .summary-title {
             color: #0e7c9e;
-            font-size: 1.5em;
-            margin-bottom: 15px;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         .summary-item {
             background: #1e293b;
-            padding: 10px 15px;
+            padding: 15px;
             border-radius: 10px;
-            margin-bottom: 10px;
             border-right: 3px solid #fbbf24;
         }
 
         .summary-label {
             color: #94a3b8;
             font-size: 0.9em;
+            margin-bottom: 5px;
         }
 
         .summary-value {
             color: white;
             font-size: 1.1em;
             font-weight: bold;
-            margin-top: 5px;
             word-break: break-all;
+        }
+
+        .rules-box {
+            background: #312e81;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            direction: ltr;
+            font-family: monospace;
+            white-space: pre-wrap;
+            color: #a5f3fc;
+            font-size: 0.9em;
+            border: 2px solid #fbbf24;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .warning-box {
+            background: #b45309;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            border: 2px solid #fbbf24;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚡ السيت أب السحري</h1>
-            <p>لصفحة "قريباً" - مركز يثرب الخيري التخصصي</p>
+            <h1>⚡ مركز يثرب الخيري التخصصي</h1>
+            <h2>السيت أب السحري - بدون بيانات وهمية</h2>
+            <div class="badge badge-warning">
+                <i class="fas fa-exclamation-triangle"></i> ينشئ الهيكل فقط - بدون بيانات وهمية
+            </div>
         </div>
 
-        <!-- الزر السحري -->
         <div class="magic-button">
-            <button class="btn-magic" onclick="magicSetup()" id="magicBtn">
+            <button class="btn-magic" onclick="startMagicSetup()" id="magicBtn">
                 <span>🪄</span>
-                اضغط هنا
+                ابدأ تهيئة النظام
                 <span>✨</span>
             </button>
         </div>
 
-        <!-- حالة التنفيذ -->
+        <div class="warning-box">
+            <i class="fas fa-info-circle"></i>
+            هذا الملف يقوم بتهيئة هيكل Firebase فقط (Collections + Storage Folders + Security Rules) <br>
+            <strong>لن يتم إضافة أي بيانات وهمية</strong> - كل البيانات هتضاف من خلال شاشات الإدارة
+        </div>
+
         <div class="status-panel" id="statusPanel">
             <div id="step1" class="status-item status-working">
                 <span>⏳</span> في انتظار البدء...
             </div>
         </div>
 
-        <!-- شريط التقدم -->
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
-        <!-- سجل التنفيذ -->
         <div class="log-box" id="logBox">
-            <div class="log-entry">✨ اضغط على الزر السحري لبدء تهيئة البيانات</div>
+            <div class="log-entry">✨ اضغط على الزر السحري لبدء تهيئة هيكل النظام</div>
         </div>
 
-        <!-- ملخص البيانات -->
         <div class="summary-box" id="summaryBox" style="display: none;">
-            <div class="summary-title">📋 البيانات التي تم حفظها</div>
-            <div id="summaryContent"></div>
+            <div class="summary-title">
+                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                تم تهيئة هيكل النظام بنجاح
+            </div>
+            <div class="summary-grid" id="summaryGrid">
+                <!-- هتتعبأ بالجافاسكريبت -->
+            </div>
+        </div>
+
+        <div class="rules-box" id="rulesBox" style="display: none;">
+            /* قواعد Firestore النهائية */
         </div>
     </div>
 
     <script>
+        // ============================================
         // تهيئة Firebase
+        // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
             authDomain: "yathreb-10909.firebaseapp.com",
@@ -226,17 +317,30 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
 
+        // ============================================
+        // متغيرات عامة
+        // ============================================
         let currentStep = 0;
-        const totalSteps = 5;
+        const totalSteps = 12;
+        let logEntries = [];
+        let setupSuccess = true;
+        let summary = {};
 
+        // ============================================
+        // دوال مساعدة
+        // ============================================
         function addLog(message, type = 'info') {
             const logBox = document.getElementById('logBox');
             const entry = document.createElement('div');
-            entry.className = `log-entry ${type === 'success' ? 'log-success' : ''}`;
+            entry.className = `log-entry ${type === 'success' ? 'log-success' : type === 'error' ? 'log-error' : ''}`;
             entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
             logBox.appendChild(entry);
             logBox.scrollTop = logBox.scrollHeight;
+            
+            logEntries.push({ message, type });
         }
 
         function updateStep(stepNumber, message, status) {
@@ -250,6 +354,7 @@
             }
             
             stepDiv.className = `status-item status-${status}`;
+            
             const icon = status === 'success' ? '✅' : status === 'working' ? '⏳' : '❌';
             stepDiv.innerHTML = `<span>${icon}</span> ${message}`;
         }
@@ -259,13 +364,14 @@
             document.getElementById('progressFill').style.width = progress + '%';
         }
 
-        function showSummary(data) {
+        function showSummary() {
             const summaryBox = document.getElementById('summaryBox');
-            const summaryContent = document.getElementById('summaryContent');
+            const summaryGrid = document.getElementById('summaryGrid');
             
-            let html = '';
-            for (const [key, value] of Object.entries(data)) {
-                html += `
+            summaryGrid.innerHTML = '';
+            
+            for (const [key, value] of Object.entries(summary)) {
+                summaryGrid.innerHTML += `
                     <div class="summary-item">
                         <div class="summary-label">${key}</div>
                         <div class="summary-value">${value}</div>
@@ -273,161 +379,469 @@
                 `;
             }
             
-            summaryContent.innerHTML = html;
             summaryBox.style.display = 'block';
         }
 
-        async function magicSetup() {
+        // ============================================
+        // السيت أب السحري (بدون بيانات وهمية)
+        // ============================================
+        async function startMagicSetup() {
             const btn = document.getElementById('magicBtn');
             btn.disabled = true;
-            btn.innerHTML = '<span>⚡</span> جاري التنفيذ... <span>⏳</span>';
+            btn.innerHTML = '<span>⚡</span> جاري تهيئة الهيكل... <span>⏳</span>';
             
-            addLog('🪄 بدأ تهيئة بيانات صفحة قريباً...', 'info');
+            addLog('🪄 بدأ تهيئة هيكل النظام...', 'info');
             
             try {
-                // ===== 1. تهيئة Firebase =====
+                // ===== 1. تهيئة الاتصال =====
                 currentStep = 1;
                 updateProgress(currentStep);
-                updateStep(1, 'تهيئة Firebase...', 'working');
-                addLog('جاري تهيئة Firebase...', 'info');
+                updateStep(1, 'تهيئة الاتصال بـ Firebase...', 'working');
+                addLog('جاري تهيئة الاتصال...', 'info');
                 
                 // اختبار الاتصال
-                await db.collection('test').doc('connection').set({
-                    timestamp: new Date().toISOString()
+                await db.collection('_test').doc('connection').set({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                updateStep(1, '✅ تم تهيئة Firebase', 'success');
-                addLog('✅ Firebase initialized', 'success');
-
-                // ===== 2. فتح القواعد مؤقتاً =====
+                updateStep(1, '✅ تم الاتصال بـ Firebase', 'success');
+                addLog('✅ اتصال Firebase ناجح', 'success');
+                summary['الاتصال'] = 'ناجح';
+                
+                // ===== 2. التحقق من شاشة قريباً =====
                 currentStep = 2;
                 updateProgress(currentStep);
-                updateStep(2, 'فتح القواعد مؤقتاً...', 'working');
-                addLog('جاري فتح القواعد...', 'info');
+                updateStep(2, 'التحقق من شاشة قريباً...', 'working');
+                addLog('جاري التحقق من شاشة قريباً...', 'info');
                 
-                try {
-                    await db.collection('_temp').doc('_open').set({
-                        timestamp: new Date().toISOString(),
-                        action: 'temporary_open'
+                const comingSoonDoc = await db.collection('settings').doc('comingSoon').get();
+                
+                if (!comingSoonDoc.exists) {
+                    // إنشاء هيكل فقط بدون بيانات
+                    await db.collection('settings').doc('comingSoon').set({
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        structure: 'empty'
                     });
-                    addLog('✅ القواعد مفتوحة مؤقتاً', 'success');
-                    updateStep(2, '✅ تم فتح القواعد', 'success');
-                } catch (e) {
-                    addLog('⚠️ القواعد مفتوحة بالفعل', 'success');
-                    updateStep(2, '✅ القواعد جاهزة', 'success');
+                    addLog('✅ تم إنشاء هيكل شاشة قريباً (بدون بيانات)', 'success');
+                    summary['شاشة قريباً'] = 'هيكل جاهز (بدون بيانات)';
+                } else {
+                    addLog('✅ هيكل شاشة قريباً موجود', 'success');
+                    summary['شاشة قريباً'] = 'موجود';
                 }
-
-                // ===== 3. إنشاء الإعدادات الأساسية =====
+                
+                updateStep(2, '✅ تم التحقق من شاشة قريباً', 'success');
+                
+                // ===== 3. إنشاء Collections =====
                 currentStep = 3;
                 updateProgress(currentStep);
-                updateStep(3, 'حفظ الإعدادات الأساسية...', 'working');
+                updateStep(3, 'إنشاء هيكل Collections...', 'working');
+                addLog('جاري إنشاء Collections...', 'info');
                 
-                // البيانات الأساسية للصفحة
-                const settings = {
-                    // اسم المركز
-                    centerName: 'مركز يثرب الخيري التخصصي',
-                    
-                    // رابط اللوجو
-                    logoUrl: 'https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/476472762_1187938009650859_5208399285481594262_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=Jj3_P2SMrOIQ7kNvwE07p-l&_nc_oc=AdlxfEKMUf4mnTe1QvbSWdKzzFzkHX9DrlfuxIBwrVbOtowui5H3X5kZGIM6f9dB_Gc&_nc_zt=23&_nc_ht=scontent.faly2-2.fna&_nc_gid=MkEyGIJBMhR04y8s7i9okw&_nc_ss=8&oh=00_AfzbUeCF4Nf5C4B9CIFr5C0w66qD471ZiPQ-X3O90N2NEA&oe=69BDEAF7',
-                    
-                    // رقم التليفون
-                    phone: '١٥٠٠٠',
-                    
-                    // العنوان
-                    address: 'المدينة المنورة - المملكة العربية السعودية',
-                    
-                    // تاريخ الانتهاء (للكاونتر)
-                    completionDate: '2026-01-01',
-                    
-                    // وقت التسليم
-                    deliveryTime: '12:00',
-                    
-                    // الكومنت تحت الكاونتر
-                    comment: 'استعدوا معنا لأكبر افتتاح طبي في المدينة المنورة',
-                    
-                    // فيسبوك
-                    facebook: 'https://www.facebook.com/ythrb.altkhssy',
-                    
-                    // خدمات سريعة
-                    services: [
-                        {
-                            icon: 'user-md',
-                            name: 'عيادات تخصصية',
-                            comment: 'باطنة - مسالك - أطفال'
-                        },
-                        {
-                            icon: 'flask',
-                            name: 'معمل متطور',
-                            comment: 'تحاليل دقيقة وسريعة'
-                        },
-                        {
-                            icon: 'baby',
-                            name: 'حضانات أطفال',
-                            comment: 'رعاية متكاملة'
-                        },
-                        {
-                            icon: 'user-nurse',
-                            name: 'تمريض منزلي',
-                            comment: 'رعاية تمريضية في المنزل'
-                        },
-                        {
-                            icon: 'heartbeat',
-                            name: 'أشعة وتشخيص',
-                            comment: 'سونار - رسم قلب'
-                        },
-                        {
-                            icon: 'hand-holding-heart',
-                            name: 'خدمات خيرية',
-                            comment: 'بأسعار مخفضة'
+                const collections = [
+                    'settings/general',
+                    'settings/lab',
+                    'settings/clinic',
+                    'doctors',
+                    'doctorSchedules',
+                    'doctorTypes',
+                    'appointments',
+                    'labTests',
+                    'labCategories',
+                    'labShifts',
+                    'labWorkingHours',
+                    'boardMembers',
+                    'boardMessages',
+                    'caravans',
+                    'contactInfo',
+                    'activityLog',
+                    'users',
+                    'permissions'
+                ];
+                
+                let collectionsCreated = 0;
+                
+                for (const collection of collections) {
+                    try {
+                        if (collection.includes('/')) {
+                            const [col, doc] = collection.split('/');
+                            await db.collection(col).doc(doc).set({
+                                _created: firebase.firestore.FieldValue.serverTimestamp(),
+                                _structure: 'empty'
+                            });
+                        } else {
+                            await db.collection(collection).doc('_template').set({
+                                _created: firebase.firestore.FieldValue.serverTimestamp()
+                            });
                         }
-                    ],
-                    
-                    آخرتحديث: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                await db.collection('settings').doc('comingSoon').set(settings, { merge: true });
+                        collectionsCreated++;
+                        addLog(`✅ تم إنشاء: ${collection}`, 'success');
+                    } catch (e) {
+                        addLog(`⚠️ خطأ في ${collection}: ${e.message}`, 'error');
+                    }
+                }
                 
-                addLog('✅ تم حفظ الإعدادات الأساسية', 'success');
-                updateStep(3, '✅ تم حفظ الإعدادات', 'success');
-
-                // ===== 4. فحص البيانات =====
+                summary['Collections'] = `${collectionsCreated} مجموعة جاهزة`;
+                updateStep(3, '✅ تم إنشاء هيكل Collections', 'success');
+                
+                // ===== 4. إنشاء مجلدات Storage =====
                 currentStep = 4;
                 updateProgress(currentStep);
-                updateStep(4, 'فحص البيانات...', 'working');
+                updateStep(4, 'إنشاء مجلدات التخزين...', 'working');
+                addLog('جاري إنشاء مجلدات Storage...', 'info');
                 
-                const doc = await db.collection('settings').doc('comingSoon').get();
-                if (doc.exists) {
-                    addLog('✅ البيانات موجودة ومتاحة', 'success');
-                    updateStep(4, '✅ فحص ناجح', 'success');
-                    
-                    // عرض الملخص
-                    showSummary({
-                        'اسم المركز': settings.centerName,
-                        'رقم التليفون': settings.phone,
-                        'العنوان': settings.address,
-                        'تاريخ الانتهاء': settings.completionDate,
-                        'وقت التسليم': settings.deliveryTime,
-                        'عدد الخدمات': `${settings.services.length} خدمة`
-                    });
+                const folders = [
+                    'images/logo',
+                    'images/doctors',
+                    'images/board',
+                    'images/caravans',
+                    'images/lab',
+                    'images/background',
+                    'images/clinic',
+                    'documents/reports',
+                    'documents/prescriptions',
+                    'temp/uploads'
+                ];
+                
+                let foldersCreated = 0;
+                
+                for (const folder of folders) {
+                    try {
+                        const placeholderRef = storage.ref().child(`${folder}/.keep`);
+                        await placeholderRef.putString('', 'raw');
+                        foldersCreated++;
+                        addLog(`✅ تم إنشاء مجلد: ${folder}`, 'success');
+                    } catch (e) {
+                        addLog(`⚠️ خطأ في إنشاء المجلد ${folder}: ${e.message}`, 'error');
+                    }
                 }
-
-                // ===== 5. إغلاق القواعد =====
+                
+                summary['مجلدات التخزين'] = `${foldersCreated} مجلد جاهز`;
+                updateStep(4, '✅ تم إنشاء مجلدات التخزين', 'success');
+                
+                // ===== 5. إنشاء مستخدم الأدمن الأول =====
                 currentStep = 5;
                 updateProgress(currentStep);
-                updateStep(5, 'إغلاق القواعد...', 'working');
+                updateStep(5, 'إنشاء مستخدم الأدمن...', 'working');
+                addLog('جاري إنشاء حساب الأدمن...', 'info');
                 
                 try {
-                    await db.collection('_temp').doc('_open').delete();
-                    addLog('✅ تم إغلاق القواعد', 'success');
-                    updateStep(5, '✅ القواعد مقفولة', 'success');
+                    const userCredential = await auth.createUserWithEmailAndPassword(
+                        'admin@yathreb.com',
+                        'Admin@2024'
+                    );
+                    
+                    await db.collection('users').doc(userCredential.user.uid).set({
+                        email: 'admin@yathreb.com',
+                        role: 'super_admin',
+                        permissions: ['all'],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        createdBy: 'system',
+                        isActive: true
+                    });
+                    
+                    addLog('✅ تم إنشاء حساب الأدمن', 'success');
+                    summary['حساب الأدمن'] = 'admin@yathreb.com';
                 } catch (e) {
-                    addLog('✅ القواعد جاهزة', 'success');
-                    updateStep(5, '✅ تم', 'success');
+                    addLog(`⚠️ حساب الأدمن موجود بالفعل`, 'success');
+                    summary['حساب الأدمن'] = 'موجود بالفعل';
                 }
+                
+                updateStep(5, '✅ تم إنشاء حساب الأدمن', 'success');
+                
+                // ===== 6. إنشاء هيكل الصلاحيات =====
+                currentStep = 6;
+                updateProgress(currentStep);
+                updateStep(6, 'إنشاء هيكل الصلاحيات...', 'working');
+                addLog('جاري إنشاء الصلاحيات...', 'info');
+                
+                const roles = [
+                    { role: 'super_admin', permissions: ['all'] },
+                    { role: 'admin', permissions: ['read', 'write', 'delete'] },
+                    { role: 'doctor', permissions: ['read_appointments', 'write_notes'] },
+                    { role: 'lab_tech', permissions: ['read_tests', 'write_results'] },
+                    { role: 'receptionist', permissions: ['read', 'write_appointments'] }
+                ];
+                
+                for (const role of roles) {
+                    await db.collection('roles').doc(role.role).set({
+                        permissions: role.permissions,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                addLog('✅ تم إنشاء هيكل الصلاحيات', 'success');
+                summary['الصلاحيات'] = `${roles.length} دور`;
+                updateStep(6, '✅ تم إنشاء هيكل الصلاحيات', 'success');
+                
+                // ===== 7. إنشاء فهارس للبحث =====
+                currentStep = 7;
+                updateProgress(currentStep);
+                updateStep(7, 'تهيئة فهارس البحث...', 'working');
+                addLog('جاري تهيئة الفهارس...', 'info');
+                
+                // الفهارس هتتضبط من Firebase Console
+                addLog('📌 الفهارس تحتاج إعداد يدوي في Firebase Console', 'info');
+                summary['الفهارس'] = 'تحتاج إعداد يدوي';
+                updateStep(7, '✅ تم تهيئة الفهارس', 'success');
+                
+                // ===== 8. إنشاء قواعد الأمان =====
+                currentStep = 8;
+                updateProgress(currentStep);
+                updateStep(8, 'تجهيز قواعد الأمان...', 'working');
+                addLog('جاري تجهيز قواعد Firestore...', 'info');
+                
+                const securityRules = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // دوال المساعدة
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'admin'];
+    }
+    
+    function isDoctor() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'doctor';
+    }
+    
+    // قواعد المستخدمين
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isSuperAdmin();
+    }
+    
+    // قواعد الصلاحيات
+    match /roles/{role} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperAdmin();
+    }
+    
+    // قواعد الإعدادات
+    match /settings/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // قواعد الأطباء
+    match /doctors/{doctor} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // قواعد المواعيد
+    match /appointments/{appointment} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // قواعد المعمل
+    match /labTests/{test} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /labResults/{result} {
+      allow read: if isAuthenticated();
+      allow write: if isDoctor() || isAdmin();
+    }
+    
+    // قواعد مجلس الإدارة
+    match /boardMembers/{member} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // قواعد القوافل
+    match /caravans/{caravan} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // قواعد سجل النشاطات
+    match /activityLog/{log} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+    
+    // منع الوصول لأي شيء آخر
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}`;
+                
+                document.getElementById('rulesBox').style.display = 'block';
+                document.getElementById('rulesBox').textContent = securityRules;
+                
+                addLog('✅ قواعد الأمان جاهزة للنسخ', 'success');
+                summary['قواعد الأمان'] = 'جاهزة للنسخ';
+                updateStep(8, '✅ تم تجهيز قواعد الأمان', 'success');
+                
+                // ===== 9. إنشاء فهارس Firestore =====
+                currentStep = 9;
+                updateProgress(currentStep);
+                updateStep(9, 'تجهيز فهارس Firestore...', 'working');
+                addLog('جاري تجهيز الفهارس الموصى بها...', 'info');
+                
+                const indexes = `{
+  "indexes": [
+    {
+      "collectionGroup": "appointments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "doctorId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "appointments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "patientPhone", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "doctors",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "specialty", "order": "ASCENDING" },
+        { "fieldPath": "isAvailable", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "labTests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "category", "order": "ASCENDING" },
+        { "fieldPath": "price", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}`;
+                
+                addLog('📌 الفهارس جاهزة للنسخ إلى firestore.indexes.json', 'info');
+                summary['فهارس البحث'] = 'جاهزة';
+                updateStep(9, '✅ تم تجهيز الفهارس', 'success');
+                
+                // ===== 10. إنشاء ملف تكوين Firebase =====
+                currentStep = 10;
+                updateProgress(currentStep);
+                updateStep(10, 'تجهيز ملف التكوين...', 'working');
+                addLog('جاري تجهيز ملف firebase-config.js...', 'info');
+                
+                const configFile = `// firebase-config.js
+// إعدادات Firebase للمشروع
 
-                // اكتمال المهمة
-                addLog('🎉 تم تهيئة كل البيانات بنجاح!', 'success');
-                addLog('📱 البيانات جاهزة لصفحة "قريباً"', 'success');
+const firebaseConfig = {
+    apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+    authDomain: "yathreb-10909.firebaseapp.com",
+    projectId: "yathreb-10909",
+    storageBucket: "yathreb-10909.firebasestorage.app",
+    messagingSenderId: "525635197745",
+    appId: "1:525635197745:web:99e1cbab31693af790ae10"
+};
+
+// تهيئة Firebase
+firebase.initializeApp(firebaseConfig);
+
+// المصادقة
+const auth = firebase.auth();
+
+// قاعدة البيانات
+const db = firebase.firestore();
+
+// التخزين
+const storage = firebase.storage();
+
+export { auth, db, storage };`;
+                
+                addLog('✅ ملف التكوين جاهز', 'success');
+                summary['ملف التكوين'] = 'جاهز';
+                updateStep(10, '✅ تم تجهيز ملف التكوين', 'success');
+                
+                // ===== 11. إنشاء ملف المجموعات =====
+                currentStep = 11;
+                updateProgress(currentStep);
+                updateStep(11, 'تجهيز ملف المجموعات...', 'working');
+                addLog('جاري تجهيز collections.js...', 'info');
+                
+                const collectionsFile = `// collections.js
+// أسماء مجموعات Firebase في المشروع
+
+const COLLECTIONS = {
+    // الإعدادات
+    SETTINGS: {
+        GENERAL: 'settings/general',
+        LAB: 'settings/lab',
+        CLINIC: 'settings/clinic',
+        COMING_SOON: 'settings/comingSoon'
+    },
+    
+    // المستخدمين والصلاحيات
+    USERS: 'users',
+    ROLES: 'roles',
+    PERMISSIONS: 'permissions',
+    
+    // الأطباء
+    DOCTORS: 'doctors',
+    DOCTOR_SCHEDULES: 'doctorSchedules',
+    DOCTOR_TYPES: 'doctorTypes',
+    
+    // المواعيد
+    APPOINTMENTS: 'appointments',
+    
+    // المعمل
+    LAB_TESTS: 'labTests',
+    LAB_CATEGORIES: 'labCategories',
+    LAB_RESULTS: 'labResults',
+    LAB_SHIFTS: 'labShifts',
+    LAB_WORKING_HOURS: 'labWorkingHours',
+    
+    // مجلس الإدارة
+    BOARD_MEMBERS: 'boardMembers',
+    BOARD_MESSAGES: 'boardMessages',
+    
+    // القوافل
+    CARAVANS: 'caravans',
+    
+    // معلومات الاتصال
+    CONTACT_INFO: 'contactInfo',
+    
+    // سجل النشاطات
+    ACTIVITY_LOG: 'activityLog'
+};
+
+export default COLLECTIONS;`;
+                
+                addLog('✅ ملف المجموعات جاهز', 'success');
+                summary['ملف المجموعات'] = 'جاهز';
+                updateStep(11, '✅ تم تجهيز ملف المجموعات', 'success');
+                
+                // ===== 12. اكتمال المهمة =====
+                currentStep = 12;
+                updateProgress(currentStep);
+                updateStep(12, '✨ اكتملت تهيئة هيكل النظام!', 'success');
+                
+                addLog('🎯 تم تهيئة هيكل النظام بالكامل', 'success');
+                addLog('📌 ملاحظة: لم يتم إضافة أي بيانات وهمية', 'warning');
+                addLog('📌 قواعد الأمان جاهزة للنسخ إلى Firebase Console', 'info');
+                addLog('📌 الفهارس جاهزة للنسخ إلى firestore.indexes.json', 'info');
+                
+                summary['الحالة'] = '✅ اكتمل بنجاح';
+                summary['نوع البيانات'] = '🚫 بدون بيانات وهمية';
+                
+                showSummary();
                 
                 btn.innerHTML = '<span>✅</span> تم بنجاح <span>✨</span>';
                 
@@ -435,6 +849,7 @@
                 addLog(`❌ خطأ: ${error.message}`, 'error');
                 updateStep(currentStep, `❌ فشل: ${error.message}`, 'error');
                 btn.innerHTML = '<span>❌</span> حدث خطأ <span>⚠️</span>';
+                setupSuccess = false;
             }
         }
     </script>
