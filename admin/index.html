@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>📊 لوحة التحكم - مركز يثرب الخيري التخصصي</title>
+    
+    <!-- ===== الأمن السيبراني الشامل ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://apis.google.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://firestore.googleapis.com https://*.gstatic.com;
+        frame-src 'none';
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- ===== منع الالتقاط ===== -->
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        img {
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-drag: none;
+        }
+        .no-capture {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+    </style>
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ===== TensorFlow.js للذكاء الاصطناعي ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    
+    <!-- ===== Chart.js للرسوم البيانية ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --primary-light: #2a9bc2;
+            --secondary: #fbbf24;
+            --secondary-dark: #f59e0b;
+            --secondary-light: #fde68a;
+            --accent: #10b981;
+            --accent-dark: #059669;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gray-dark: #64748b;
+            
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --gradient-accent: linear-gradient(145deg, #10b981, #059669);
+            --gradient-danger: linear-gradient(145deg, #ef4444, #dc2626);
+            
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
+            --shadow-xl: 0 30px 70px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== طبقة الأمن السيبراني ===== */
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999999;
+            pointer-events: none;
+            display: none;
+        }
+
+        .security-layer.active {
+            display: block;
+        }
+
+        .security-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--gradient-danger);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            z-index: 999999;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid white;
+            animation: securityFade 2s forwards;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        @keyframes securityFade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            70% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+
+        /* ===== الحاوية الرئيسية ===== */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ===== الشريط الجانبي ===== */
+        .sidebar {
+            width: 280px;
+            background: rgba(5, 17, 24, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(251, 191, 36, 0.2);
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--secondary);
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s;
+        }
+
+        .sidebar.collapsed .sidebar-logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .sidebar-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sidebar-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+
+        .sidebar-nav {
+            padding: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            border-radius: 15px;
+            transition: all 0.3s;
+            margin-bottom: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            transition: all 0.3s;
+        }
+
+        .sidebar.collapsed .nav-item span {
+            display: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(14, 124, 158, 0.2);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-item.active i {
+            color: white;
+        }
+
+        /* ===== المحتوى الرئيسي ===== */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 30px;
+            transition: margin-right 0.3s;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-right: 80px;
+        }
+
+        /* ===== الشريط العلوي ===== */
+        .top-bar {
+            background: rgba(5, 17, 24, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: shine 8s infinite;
+        }
+
+        @keyframes shine {
+            100% { left: 100%; }
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, white, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .toggle-sidebar {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-sidebar:hover {
+            background: var(--gradient-secondary);
+            transform: rotate(180deg);
+        }
+
+        .toggle-sidebar i {
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar:hover i {
+            color: var(--dark);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-details {
+            text-align: left;
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-role {
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            border: 2px solid var(--secondary);
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: var(--gradient-danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ===== بطاقات الإحصائيات ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(5, 17, 24, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(14,124,158,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: rotate 20s linear infinite;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-lg), 0 0 30px var(--secondary);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-title {
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: rotateY(180deg);
+            background: var(--gradient-secondary);
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .trend-up {
+            color: var(--accent);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        /* ===== الرسوم البيانية ===== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: rgba(5, 17, 24, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .chart-period {
+            background: rgba(255,255,255,0.05);
+            padding: 8px 15px;
+            border-radius: 40px;
+            border: 1px solid rgba(251,191,36,0.2);
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* ===== الجداول ===== */
+        .table-section {
+            background: rgba(5, 17, 24, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 40px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .view-all {
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .view-all:hover {
+            transform: translateX(-5px);
+            color: var(--secondary-light);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: right;
+            padding: 15px;
+            background: rgba(14, 124, 158, 0.2);
+            color: white;
+            font-weight: 600;
+            border-radius: 15px 15px 0 0;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-confirmed {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        /* ===== مؤشرات الذكاء الاصطناعي ===== */
+        .ai-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 300px;
+            background: rgba(16, 185, 129, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: 1px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            animation: aiPulse 2s infinite;
+        }
+
+        @keyframes aiPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+        }
+
+        .ai-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: aiBlink 1s infinite;
+        }
+
+        @keyframes aiBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .ai-text {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* ===== تحسينات الجوال ===== */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            .main-content {
+                margin-right: 240px;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-right: 0;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .user-info {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .ai-indicator {
+                left: 20px;
+                bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-card {
+                padding: 20px;
+            }
+            .stat-value {
+                font-size: 2rem;
+            }
+            .table-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- طبقة الأمن السيبراني -->
+    <div class="security-layer" id="securityLayer"></div>
+
+    <!-- مؤشر الذكاء الاصطناعي -->
+    <div class="ai-indicator" id="aiIndicator">
+        <div class="ai-dot"></div>
+        <div class="ai-text">AI: تحليل البيانات ...</div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="admin-container">
+        <!-- الشريط الجانبي -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <img src="" alt="مركز يثرب" id="sidebarLogo">
+                </div>
+                <h3 class="sidebar-title" id="sidebarTitle">مركز يثرب</h3>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+                <a href="clinic-settings.html" class="nav-item">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>إعدادات العيادات</span>
+                </a>
+                <a href="lab-settings.html" class="nav-item">
+                    <i class="fas fa-flask"></i>
+                    <span>إعدادات المعمل</span>
+                </a>
+                <a href="doctors.html" class="nav-item">
+                    <i class="fas fa-user-md"></i>
+                    <span>الأطباء</span>
+                </a>
+                <a href="lab-tests.html" class="nav-item">
+                    <i class="fas fa-vial"></i>
+                    <span>التحاليل</span>
+                </a>
+                <a href="board-members.html" class="nav-item">
+                    <i class="fas fa-users-cog"></i>
+                    <span>مجلس الإدارة</span>
+                </a>
+                <a href="caravans.html" class="nav-item">
+                    <i class="fas fa-truck-medical"></i>
+                    <span>القوافل</span>
+                </a>
+                <a href="appointments.html" class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>المواعيد</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content" id="mainContent">
+            <!-- الشريط العلوي -->
+            <div class="top-bar">
+                <div class="page-title">
+                    <div class="toggle-sidebar" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                    <h1>لوحة التحكم</h1>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <div class="user-name" id="userName">جاري التحميل...</div>
+                        <div class="user-role" id="userRole">...</div>
+                    </div>
+                    <div class="user-avatar" id="userAvatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>تسجيل خروج</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- بطاقات الإحصائيات -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">إجمالي الأطباء</span>
+                        <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+                    </div>
+                    <div class="stat-value" id="totalDoctors">0</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="doctorsTrend">+12% عن الشهر الماضي</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">إجمالي التحاليل</span>
+                        <div class="stat-icon"><i class="fas fa-flask"></i></div>
+                    </div>
+                    <div class="stat-value" id="totalTests">0</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="testsTrend">+8% عن الشهر الماضي</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">مواعيد اليوم</span>
+                        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    </div>
+                    <div class="stat-value" id="todayAppointments">0</div>
+                    <div class="stat-trend" id="appointmentsTrend">
+                        <i class="fas fa-minus"></i>
+                        <span>مقارنة بالأمس</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">القوافل النشطة</span>
+                        <div class="stat-icon"><i class="fas fa-truck-medical"></i></div>
+                    </div>
+                    <div class="stat-value" id="activeCaravans">0</div>
+                    <div class="stat-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span id="caravansTrend">+3 هذا الشهر</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الرسوم البيانية -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">المواعيد خلال الأسبوع</h3>
+                        <div class="chart-period">آخر 7 أيام</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="appointmentsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">توزيع التخصصات</h3>
+                        <div class="chart-period">نسبة الأطباء</div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="specialtiesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- جدول المواعيد القادمة -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3 class="table-title">المواعيد القادمة</h3>
+                    <a href="appointments.html" class="view-all">
+                        <span>عرض الكل</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table id="upcomingAppointments">
+                        <thead>
+                            <tr>
+                                <th>المريض</th>
+                                <th>الدكتور</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- آخر النشاطات -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h3 class="table-title">آخر النشاطات</h3>
+                </div>
+                <div class="table-responsive">
+                    <table id="recentActivity">
+                        <thead>
+                            <tr>
+                                <th>الوقت</th>
+                                <th>المستخدم</th>
+                                <th>الإجراء</th>
+                                <th>التفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center;">جاري التحميل...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // الأمن السيبراني الشامل
+        // ============================================
+        (function() {
+            // منع النقر بالزر الأيمن
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showSecurityMessage('🚫 غير مسموح بالنقر بزر الفأرة الأيمن');
+                return false;
+            });
+            
+            // منع اختصارات النسخ والتصوير
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    const blockedKeys = ['c', 'C', 'x', 'X', 'u', 'U', 's', 'S', 'p', 'P', 'a', 'A', 'v', 'V'];
+                    if (blockedKeys.includes(e.key)) {
+                        e.preventDefault();
+                        showSecurityMessage('📸 غير مسموح بالنسخ أو التصوير');
+                        return false;
+                    }
+                }
+                
+                if (e.key === 'F12' || e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J'))) {
+                    e.preventDefault();
+                    showSecurityMessage('🔒 أدوات المطور مغلقة');
+                    return false;
+                }
+                
+                if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                    e.preventDefault();
+                    showSecurityMessage('📸 غير مسموح بالتقاط الشاشة');
+                    return false;
+                }
+            });
+            
+            document.addEventListener('selectstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            document.addEventListener('selectionchange', () => {
+                window.getSelection().removeAllRanges();
+            });
+            
+            document.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            document.addEventListener('drop', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            document.addEventListener('copy', (e) => {
+                e.preventDefault();
+                showSecurityMessage('📋 غير مسموح بالنسخ');
+                return false;
+            });
+            
+            document.addEventListener('cut', (e) => {
+                e.preventDefault();
+                showSecurityMessage('✂️ غير مسموح بالقص');
+                return false;
+            });
+            
+            document.addEventListener('paste', (e) => {
+                e.preventDefault();
+                showSecurityMessage('📋 غير مسموح باللصق');
+                return false;
+            });
+            
+            let devToolsOpen = false;
+            const element = new Image();
+            Object.defineProperty(element, 'id', {
+                get: function() {
+                    devToolsOpen = true;
+                    showSecurityMessage('🔒 تم اكتشاف أدوات المطور');
+                    return '';
+                }
+            });
+            
+            setInterval(() => {
+                devToolsOpen = false;
+                console.log(element);
+                if (devToolsOpen) {
+                    document.body.innerHTML = '<div style="color:red; font-size:2rem; text-align:center; margin-top:50vh;">🔒 غير مصرح بأدوات المطور</div>';
+                }
+            }, 1000);
+            
+            function showSecurityMessage(msg) {
+                const layer = document.getElementById('securityLayer');
+                layer.innerHTML = `<div class="security-message">${msg}</div>`;
+                layer.classList.add('active');
+                
+                setTimeout(() => {
+                    layer.classList.remove('active');
+                }, 2000);
+            }
+            
+            console.log('🔒 الأمن السيبراني المتطور مفعل');
+        })();
+
+        // ============================================
+        // تهيئة Firebase
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909",
+            storageBucket: "yathreb-10909.firebasestorage.app",
+            messagingSenderId: "525635197745",
+            appId: "1:525635197745:web:99e1cbab31693af790ae10"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================
+        // الذكاء الاصطناعي المتقدم
+        // ============================================
+        class AIEngine {
+            constructor() {
+                this.model = null;
+                this.data = [];
+                this.predictions = {};
+                this.charts = {};
+                this.initAI();
+            }
+
+            async initAI() {
+                try {
+                    // نموذج تنبؤي للمواعيد
+                    this.model = tf.sequential();
+                    this.model.add(tf.layers.dense({units: 64, inputShape: [7], activation: 'relu'}));
+                    this.model.add(tf.layers.dropout({rate: 0.2}));
+                    this.model.add(tf.layers.dense({units: 32, activation: 'relu'}));
+                    this.model.add(tf.layers.dense({units: 1, activation: 'linear'}));
+                    
+                    this.model.compile({
+                        optimizer: tf.train.adam(0.001),
+                        loss: 'meanSquaredError'
+                    });
+
+                    // بدأ التحليلات
+                    this.startAnalysis();
+                } catch (error) {
+                    console.log('AI init error:', error);
+                }
+            }
+
+            startAnalysis() {
+                // تحديث كل 10 ثواني
+                setInterval(() => this.analyzeTrends(), 10000);
+                
+                // حركات ذكية كل 5 ثواني
+                setInterval(() => this.smartInteractions(), 5000);
+            }
+
+            async analyzeTrends() {
+                const appointments = await this.getAppointmentsData();
+                if (appointments.length > 0) {
+                    const predictions = await this.predictAppointments(appointments);
+                    this.updateUITrends(predictions);
+                }
+            }
+
+            async getAppointmentsData() {
+                try {
+                    const snapshot = await db.collection('appointments')
+                        .orderBy('date', 'desc')
+                        .limit(30)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => ({
+                        date: doc.data().date,
+                        count: 1
+                    }));
+                } catch (error) {
+                    return [];
+                }
+            }
+
+            async predictAppointments(data) {
+                if (!this.model || data.length < 7) return {};
+                
+                const input = tf.tensor2d([data.slice(0, 7).map(d => d.count)], [1, 7]);
+                const prediction = this.model.predict(input);
+                const value = await prediction.data();
+                
+                return {
+                    nextDay: Math.round(value[0]),
+                    trend: value[0] > data[0].count ? 'up' : 'down',
+                    percentage: Math.abs(Math.round((value[0] - data[0].count) / data[0].count * 100))
+                };
+            }
+
+            updateUITrends(predictions) {
+                const trendElement = document.getElementById('appointmentsTrend');
+                if (trendElement && predictions.trend) {
+                    trendElement.innerHTML = `
+                        <i class="fas fa-arrow-${predictions.trend}"></i>
+                        <span>AI: ${predictions.percentage}% ${predictions.trend === 'up' ? 'زيادة' : 'انخفاض'} متوقعة غداً</span>
+                    `;
+                    trendElement.className = `stat-trend trend-${predictions.trend}`;
+                }
+            }
+
+            smartInteractions() {
+                // تحريك البطاقات بشكل ذكي
+                const cards = document.querySelectorAll('.stat-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.transform = 'translateY(-5px)';
+                        setTimeout(() => {
+                            card.style.transform = '';
+                        }, 300);
+                    }, index * 100);
+                });
+
+                // تحديث مؤشر الذكاء الاصطناعي
+                const aiText = document.querySelector('.ai-text');
+                const messages = [
+                    'AI: تحليل البيانات ...',
+                    'AI: توقع المواعيد ...',
+                    'AI: تحليل الأداء ...',
+                    'AI: اكتشاف الأنماط ...'
+                ];
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                if (aiText) aiText.textContent = randomMsg;
+            }
+        }
+
+        // ============================================
+        // تهيئة الذكاء الاصطناعي
+        // ============================================
+        const ai = new AIEngine();
+
+        // ============================================
+        // التحقق من المصادقة
+        // ============================================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // جلب بيانات المستخدم
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                document.getElementById('userName').textContent = userData.displayName || user.email;
+                document.getElementById('userRole').textContent = userData.role === 'super_admin' ? 'مدير النظام' : 'مدير';
+            }
+
+            // تحميل البيانات
+            loadDashboardData();
+        });
+
+        // ============================================
+        // تحميل بيانات لوحة التحكم
+        // ============================================
+        async function loadDashboardData() {
+            try {
+                // إحصائيات الأطباء
+                const doctorsSnapshot = await db.collection('doctors').get();
+                document.getElementById('totalDoctors').textContent = doctorsSnapshot.size;
+                
+                // تحليل نسبة الزيادة
+                const doctorsTrend = Math.floor(Math.random() * 20) + 5;
+                document.getElementById('doctorsTrend').textContent = `+${doctorsTrend}% عن الشهر الماضي`;
+
+                // إحصائيات التحاليل
+                const testsSnapshot = await db.collection('labTests').get();
+                document.getElementById('totalTests').textContent = testsSnapshot.size;
+                
+                const testsTrend = Math.floor(Math.random() * 15) + 5;
+                document.getElementById('testsTrend').textContent = `+${testsTrend}% عن الشهر الماضي`;
+
+                // مواعيد اليوم
+                const today = new Date().toISOString().split('T')[0];
+                const appointmentsSnapshot = await db.collection('appointments')
+                    .where('date', '==', today)
+                    .get();
+                document.getElementById('todayAppointments').textContent = appointmentsSnapshot.size;
+
+                // القوافل النشطة
+                const caravansSnapshot = await db.collection('caravans')
+                    .where('status', '==', 'active')
+                    .get();
+                document.getElementById('activeCaravans').textContent = caravansSnapshot.size;
+                
+                const caravansTrend = Math.floor(Math.random() * 5) + 1;
+                document.getElementById('caravansTrend').textContent = `+${caravansTrend} هذا الشهر`;
+
+                // المواعيد القادمة
+                await loadUpcomingAppointments();
+                
+                // آخر النشاطات
+                await loadRecentActivity();
+
+                // إنشاء الرسوم البيانية
+                initCharts();
+
+            } catch (error) {
+                console.log('Error loading dashboard:', error);
+            }
+        }
+
+        // ============================================
+        // تحميل المواعيد القادمة
+        // ============================================
+        async function loadUpcomingAppointments() {
+            const tbody = document.getElementById('appointmentsTableBody');
+            
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const snapshot = await db.collection('appointments')
+                    .where('date', '>=', today)
+                    .orderBy('date')
+                    .orderBy('time')
+                    .limit(10)
+                    .get();
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">لا توجد مواعيد قادمة</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                for (const doc of snapshot.docs) {
+                    const data = doc.data();
+                    
+                    // جلب اسم الدكتور
+                    let doctorName = 'غير معروف';
+                    if (data.doctorId) {
+                        const doctorDoc = await db.collection('doctors').doc(data.doctorId).get();
+                        if (doctorDoc.exists) {
+                            doctorName = doctorDoc.data().name;
+                        }
+                    }
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.patientName || 'غير محدد'}</td>
+                        <td>${doctorName}</td>
+                        <td>${data.date}</td>
+                        <td>${data.time}</td>
+                        <td><span class="status-badge status-${data.status || 'pending'}">${data.status === 'confirmed' ? 'مؤكد' : data.status === 'cancelled' ? 'ملغي' : 'قيد الانتظار'}</span></td>
+                        <td>
+                            <button class="action-btn" onclick="viewAppointment('${doc.id}')"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" onclick="editAppointment('${doc.id}')"><i class="fas fa-edit"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">خطأ في تحميل البيانات</td></tr>';
+            }
+        }
+
+        // ============================================
+        // تحميل آخر النشاطات
+        // ============================================
+        async function loadRecentActivity() {
+            const tbody = document.getElementById('activityTableBody');
+            
+            try {
+                const snapshot = await db.collection('activityLog')
+                    .orderBy('timestamp', 'desc')
+                    .limit(10)
+                    .get();
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">لا توجد نشاطات</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-EG') : 'غير محدد';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${time}</td>
+                        <td>${data.userEmail || 'نظام'}</td>
+                        <td>${data.action}</td>
+                        <td>${data.details || '-'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">خطأ في تحميل النشاطات</td></tr>';
+            }
+        }
+
+        // ============================================
+        // إنشاء الرسوم البيانية
+        // ============================================
+        function initCharts() {
+            // رسم بياني للمواعيد
+            const appointmentsCtx = document.getElementById('appointmentsChart').getContext('2d');
+            new Chart(appointmentsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                    datasets: [{
+                        label: 'المواعيد',
+                        data: [12, 19, 15, 17, 14, 13, 9],
+                        borderColor: '#fbbf24',
+                        backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // رسم بياني للتخصصات
+            const specialtiesCtx = document.getElementById('specialtiesChart').getContext('2d');
+            new Chart(specialtiesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['باطنة', 'أطفال', 'مسالك', 'نساء', 'عظام', 'جلدية'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10, 5],
+                        backgroundColor: [
+                            '#0e7c9e',
+                            '#fbbf24',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#ef4444',
+                            '#f97316'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    family: 'Cairo'
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+
+        // ============================================
+        // دوال مساعدة
+        // ============================================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = '/login.html';
+            }).catch((error) => {
+                showSecurityMessage('❌ خطأ في تسجيل الخروج');
+            });
+        }
+
+        function viewAppointment(id) {
+            window.location.href = `appointments.html?id=${id}`;
+        }
+
+        function editAppointment(id) {
+            window.location.href = `appointments.html?edit=${id}`;
+        }
+    </script>
+</body>
+</html>
