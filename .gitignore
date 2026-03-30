@@ -1,0 +1,101 @@
+# ============================================
+# ملف تجاهل جيت هاب - مركز يثرب الخيري التخصصي
+# ============================================
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+database-debug.log
+ui-debug.log
+*.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# البيئة والمتغيرات السرية
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# ملفات الإعدادات الشخصية
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ملفات البناء
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# ملفات التخزين المؤقت
+.cache/
+.temp/
+tmp/
+temp/
+
+# ملفات السجلات
+logs/
+*.log
+
+# ملفات المصادقة
+firebase-admin-key.json
+service-account-key.json
+*.key
+*.pem
+*.cert
+
+# ملفات قاعدة البيانات المحلية
+*.db
+*.sqlite
+*.sqlite3
+
+# ملفات المستخدم
+.ssh/
+.gpg/
+
+# ملفات النظام
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# أيقونات النظام
+Icon
+._*
+
+# ملفات ثنائية
+*.exe
+*.dll
+*.so
+*.dylib
+
+# ملفات أرشفة
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ملفات الصور المؤقتة
+*.tmp.jpg
+*.tmp.png
+*.tmp.gif
+
+# ملفات خاصة بالمشروع
+.ftpconfig
+.ftppass
+.sftp-config.json
