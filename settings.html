@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚙️ الإعدادات الرئيسية - مركز يثرب الخيري التخصصي</title>
+    
+    <!-- ===== الأمن السيبراني الشامل ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://firestore.googleapis.com https://*.gstatic.com;
+        frame-src 'none';
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --primary-light: #2a9bc2;
+            --secondary: #fbbf24;
+            --secondary-dark: #f59e0b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --gradient-danger: linear-gradient(145deg, #ef4444, #dc2626);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== الهيدر ===== */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(26, 32, 44, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #63b3ed, #9f7aea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--gray);
+        }
+
+        /* ===== التبويبات ===== */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: rgba(10, 31, 47, 0.5);
+            padding: 15px;
+            border-radius: 60px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .tab-btn i {
+            margin-left: 8px;
+            color: var(--secondary);
+        }
+
+        .tab-btn:hover {
+            background: rgba(14, 124, 158, 0.2);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-btn.active i {
+            color: white;
+        }
+
+        /* ===== محتوى التبويبات ===== */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== البطاقات ===== */
+        .settings-card {
+            background: rgba(5, 17, 24, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-label i {
+            color: var(--secondary);
+            margin-left: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* ===== الخدمات ===== */
+        .services-list {
+            margin-bottom: 20px;
+        }
+
+        .service-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+            position: relative;
+        }
+
+        .service-remove {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 30px;
+            height: 30px;
+            background: var(--danger);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border: 2px solid white;
+            transition: all 0.3s;
+        }
+
+        .service-remove:hover {
+            transform: scale(1.1);
+            background: var(--gradient-danger);
+        }
+
+        .icon-selector {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .icon-option {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-option:hover,
+        .icon-option.selected {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* ===== الأزرار ===== */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            border: 1px solid var(--secondary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-success {
+            background: linear-gradient(145deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(145deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--gradient-secondary);
+            color: var(--darker);
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        /* ===== حالة الاتصال ===== */
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .led-green {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .led-red {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        /* ===== رسائل ===== */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+
+        .message.success {
+            background: linear-gradient(145deg, #10b981, #059669);
+        }
+
+        .message.error {
+            background: linear-gradient(145deg, #ef4444, #dc2626);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 1024px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .icon-selector {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            .tabs {
+                flex-direction: column;
+                border-radius: 30px;
+            }
+            .icon-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ الإعدادات الرئيسية</h1>
+            <p>تحكم في كل محتوى الموقع من مكان واحد</p>
+        </div>
+
+        <!-- التبويبات -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('general')">
+                <i class="fas fa-sliders-h"></i> عام
+            </button>
+            <button class="tab-btn" onclick="switchTab('services')">
+                <i class="fas fa-cubes"></i> الخدمات
+            </button>
+            <button class="tab-btn" onclick="switchTab('contacts')">
+                <i class="fas fa-phone"></i> جهات الاتصال
+            </button>
+        </div>
+
+        <!-- تبويب عام -->
+        <div id="tab-general" class="tab-content active">
+            <div class="settings-card">
+                <div class="card-title">
+                    <i class="fas fa-info-circle"></i> معلومات المركز
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-building"></i> اسم المركز</label>
+                        <input type="text" class="form-control" id="centerName" placeholder="اسم المركز">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-image"></i> رابط اللوجو</label>
+                        <input type="url" class="form-control" id="logoUrl" placeholder="https://...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label"><i class="fas fa-align-right"></i> الوصف</label>
+                        <textarea class="form-control" id="description" placeholder="وصف المركز"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-calendar"></i> تاريخ الافتتاح</label>
+                        <input type="date" class="form-control" id="completionDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-clock"></i> وقت التسليم</label>
+                        <input type="time" class="form-control" id="deliveryTime">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label"><i class="fas fa-comment"></i> كومنت تحت الكاونتر</label>
+                        <input type="text" class="form-control" id="comment" placeholder="استعدوا معنا...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الخدمات -->
+        <div id="tab-services" class="tab-content">
+            <div class="settings-card">
+                <div class="card-title">
+                    <i class="fas fa-cubes"></i> إدارة الخدمات
+                </div>
+                <div id="servicesContainer" class="services-list"></div>
+                <button class="btn btn-success" onclick="addService()">
+                    <i class="fas fa-plus"></i> إضافة خدمة جديدة
+                </button>
+            </div>
+        </div>
+
+        <!-- تبويب جهات الاتصال -->
+        <div id="tab-contacts" class="tab-content">
+            <div class="settings-card">
+                <div class="card-title">
+                    <i class="fas fa-phone-alt"></i> أرقام التواصل
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-phone"></i> رقم التليفون</label>
+                        <input type="text" class="form-control" id="phone" placeholder="مثال: 15000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fab fa-facebook"></i> رابط فيسبوك</label>
+                        <input type="url" class="form-control" id="facebook" placeholder="https://facebook.com/...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> العنوان</label>
+                        <input type="text" class="form-control" id="address" placeholder="العنوان الكامل">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار الإجراءات -->
+        <div class="actions-bar">
+            <button class="btn btn-primary" onclick="saveAllSettings()">
+                <i class="fas fa-save"></i> حفظ كل الإعدادات
+            </button>
+            <button class="btn btn-outline" onclick="loadAllSettings()">
+                <i class="fas fa-sync-alt"></i> تحديث
+            </button>
+        </div>
+    </div>
+
+    <!-- حالة الاتصال -->
+    <div class="connection-status" id="connectionStatus">
+        <div class="status-led" id="connectionLed"></div>
+        <span id="connectionText">جاري الاتصال...</span>
+    </div>
+
+    <!-- رسائل -->
+    <div id="message" class="message"></div>
+
+    <script>
+        // ============================================
+        // الأمن السيبراني
+        // ============================================
+        (function() {
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && ['c', 'x', 'u', 's'].includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                }
+                if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                }
+            });
+            document.addEventListener('selectstart', (e) => e.preventDefault());
+        })();
+
+        // ============================================
+        // تهيئة Firebase
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909",
+            storageBucket: "yathreb-10909.firebasestorage.app",
+            messagingSenderId: "525635197745",
+            appId: "1:525635197745:web:99e1cbab31693af790ae10"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================
+        // المتغيرات
+        // ============================================
+        let services = [];
+
+        // الأيقونات المتاحة
+        const availableIcons = [
+            'fa-stethoscope', 'fa-flask', 'fa-baby', 'fa-user-nurse', 'fa-heartbeat',
+            'fa-hand-holding-heart', 'fa-tooth', 'fa-eye', 'fa-lungs', 'fa-brain',
+            'fa-bone', 'fa-syringe', 'fa-pills', 'fa-microscope', 'fa-x-ray',
+            'fa-truck-medical', 'fa-house-chimney-medical', 'fa-user-doctor',
+            'fa-heart', 'fa-ambulance', 'fa-vial', 'fa-dna', 'fa-laptop-medical'
+        ];
+
+        // ============================================
+        // التحقق من المصادقة
+        // ============================================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                showMessage('الرجاء تسجيل الدخول', 'error');
+                setTimeout(() => {
+                    window.location.href = 'admin/login.html';
+                }, 2000);
+                return;
+            }
+
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            const userData = userDoc.data();
+            
+            if (userData?.role !== 'super_admin' && userData?.role !== 'admin') {
+                showMessage('غير مصرح لك بالدخول', 'error');
+                setTimeout(() => {
+                    window.location.href = 'admin/login.html';
+                }, 2000);
+                return;
+            }
+
+            loadAllSettings();
+            updateConnectionStatus(true);
+        }, () => {
+            updateConnectionStatus(false);
+        });
+
+        // ============================================
+        // دوال الخدمات
+        // ============================================
+        function renderServices() {
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = '';
+
+            services.forEach((service, index) => {
+                const serviceDiv = document.createElement('div');
+                serviceDiv.className = 'service-item';
+                
+                let iconsHtml = '';
+                availableIcons.forEach(icon => {
+                    iconsHtml += `
+                        <div class="icon-option ${service.icon === icon ? 'selected' : ''}" 
+                             onclick="updateServiceIcon(${index}, '${icon}')">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                    `;
+                });
+
+                serviceDiv.innerHTML = `
+                    <div class="service-remove" onclick="removeService(${index})">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-tag"></i> اسم الخدمة</label>
+                            <input type="text" class="form-control" value="${service.name || ''}"
+                                   onchange="updateService(${index}, 'name', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-link"></i> الرابط</label>
+                            <input type="text" class="form-control" value="${service.link || ''}"
+                                   placeholder="/clinic/index.html"
+                                   onchange="updateService(${index}, 'link', this.value)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-comment"></i> وصف الخدمة</label>
+                        <textarea class="form-control" onchange="updateService(${index}, 'comment', this.value)">${service.comment || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-icons"></i> اختر الأيقونة</label>
+                        <div class="icon-selector">${iconsHtml}</div>
+                    </div>
+                `;
+                container.appendChild(serviceDiv);
+            });
+        }
+
+        function addService() {
+            services.push({
+                icon: 'fa-stethoscope',
+                name: 'خدمة جديدة',
+                comment: 'وصف الخدمة',
+                link: '#'
+            });
+            renderServices();
+        }
+
+        function removeService(index) {
+            services.splice(index, 1);
+            renderServices();
+        }
+
+        function updateService(index, field, value) {
+            services[index][field] = value;
+        }
+
+        function updateServiceIcon(index, icon) {
+            services[index].icon = icon;
+            renderServices();
+        }
+
+        // ============================================
+        // حفظ وتحميل البيانات
+        // ============================================
+        async function saveAllSettings() {
+            try {
+                const settings = {
+                    centerName: document.getElementById('centerName').value,
+                    logoUrl: document.getElementById('logoUrl').value,
+                    description: document.getElementById('description').value,
+                    completionDate: document.getElementById('completionDate').value,
+                    deliveryTime: document.getElementById('deliveryTime').value,
+                    comment: document.getElementById('comment').value,
+                    phone: document.getElementById('phone').value,
+                    facebook: document.getElementById('facebook').value,
+                    address: document.getElementById('address').value,
+                    services: services,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                await db.collection('settings').doc('comingSoon').set(settings, { merge: true });
+                showMessage('✅ تم حفظ الإعدادات بنجاح', 'success');
+            } catch (error) {
+                console.error('Error saving:', error);
+                showMessage('❌ خطأ في الحفظ: ' + error.message, 'error');
+            }
+        }
+
+        async function loadAllSettings() {
+            try {
+                const doc = await db.collection('settings').doc('comingSoon').get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    document.getElementById('centerName').value = data.centerName || '';
+                    document.getElementById('logoUrl').value = data.logoUrl || '';
+                    document.getElementById('description').value = data.description || '';
+                    document.getElementById('completionDate').value = data.completionDate || '';
+                    document.getElementById('deliveryTime').value = data.deliveryTime || '';
+                    document.getElementById('comment').value = data.comment || '';
+                    document.getElementById('phone').value = data.phone || '';
+                    document.getElementById('facebook').value = data.facebook || '';
+                    document.getElementById('address').value = data.address || '';
+                    
+                    services = data.services || [];
+                    renderServices();
+                }
+            } catch (error) {
+                console.error('Error loading:', error);
+                showMessage('❌ خطأ في التحميل', 'error');
+            }
+        }
+
+        // ============================================
+        // دوال مساعدة
+        // ============================================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function updateConnectionStatus(connected) {
+            const led = document.getElementById('connectionLed');
+            const text = document.getElementById('connectionText');
+            
+            if (connected) {
+                led.className = 'status-led led-green';
+                text.textContent = 'متصل بـ Firebase';
+            } else {
+                led.className = 'status-led led-red';
+                text.textContent = 'غير متصل';
+            }
+        }
+
+        function showMessage(msg, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = msg;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
