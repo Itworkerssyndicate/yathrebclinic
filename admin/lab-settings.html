@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🔬 إعدادات المعمل - مركز يثرب الخيري التخصصي</title>
+    
+    <!-- ===== الأمن السيبراني ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com wss://firestore.googleapis.com https://*.gstatic.com;
+        frame-src 'none';
+        object-src 'none';
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <!-- ===== Cloudinary SDK ===== -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --secondary: #fbbf24;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        /* ===== الشريط الجانبي ===== */
+        .sidebar {
+            width: 280px;
+            background: rgba(5, 17, 24, 0.95);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-left: 1px solid rgba(251,191,36,0.2);
+            padding: 30px 0;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo { width: 100px; height: 100px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 3px solid var(--secondary); }
+        .sidebar-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-title { color: white; font-size: 1.2rem; font-weight: 700; }
+
+        .sidebar-nav { padding: 20px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--gray);
+            text-decoration: none;
+            border-radius: 15px;
+            transition: all 0.3s;
+            margin-bottom: 5px;
+        }
+        .nav-item i { width: 24px; color: var(--secondary); }
+        .nav-item:hover { background: rgba(14,124,158,0.2); color: white; transform: translateX(-5px); }
+        .nav-item.active { background: var(--gradient-primary); color: white; }
+        .nav-item.active i { color: white; }
+
+        /* ===== المحتوى الرئيسي ===== */
+        .main-content { margin-right: 280px; padding: 30px; min-height: 100vh; }
+
+        /* ===== الشريط العلوي ===== */
+        .top-bar {
+            background: rgba(5,17,24,0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-title h1 { font-size: 1.5rem; font-weight: 700; color: white; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .user-name { font-size: 0.9rem; color: var(--secondary); }
+        .logout-btn { background: rgba(239,68,68,0.2); border: 1px solid var(--danger); color: var(--danger); padding: 8px 20px; border-radius: 40px; cursor: pointer; }
+
+        /* ===== بطاقات الإعدادات ===== */
+        .settings-card {
+            background: rgba(5,17,24,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(251,191,36,0.1);
+        }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid rgba(251,191,36,0.2);
+            padding-bottom: 15px;
+        }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full-width { grid-column: span 2; }
+        .form-label { display: block; margin-bottom: 8px; color: var(--gray); font-weight: 600; font-size: 0.9rem; }
+        .form-label i { color: var(--secondary); margin-left: 5px; }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .form-control:focus { outline: none; border-color: var(--secondary); }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-primary { background: var(--gradient-primary); color: white; border: 1px solid var(--secondary); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+        .btn-success { background: linear-gradient(145deg, #10b981, #059669); color: white; }
+        .btn-danger { background: linear-gradient(145deg, #ef4444, #dc2626); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
+        .actions-bar { display: flex; gap: 20px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+
+        /* ===== إدارة الشيفتات ===== */
+        .shift-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .shift-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .shift-name { font-weight: 700; color: var(--secondary); font-size: 1.1rem; }
+        .shift-remove { background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        .add-shift { margin-top: 15px; }
+
+        /* ===== فئات التحاليل ===== */
+        .category-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .category-remove { background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        .message.success { background: var(--gradient-primary); }
+        .message.error { background: linear-gradient(145deg, #ef4444, #dc2626); }
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(100%); position: fixed; z-index: 200; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-right: 0; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><img src="" alt="Logo" id="sidebarLogo"></div>
+            <h3 class="sidebar-title">مركز يثرب</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+            <a href="clinic-settings.html" class="nav-item"><i class="fas fa-stethoscope"></i> إعدادات العيادات</a>
+            <a href="lab-settings.html" class="nav-item active"><i class="fas fa-flask"></i> إعدادات المعمل</a>
+            <a href="doctors.html" class="nav-item"><i class="fas fa-user-md"></i> الأطباء</a>
+            <a href="lab-tests.html" class="nav-item"><i class="fas fa-vial"></i> التحاليل</a>
+            <a href="board-members.html" class="nav-item"><i class="fas fa-users-cog"></i> مجلس الإدارة</a>
+            <a href="caravans.html" class="nav-item"><i class="fas fa-truck-medical"></i> القوافل</a>
+            <a href="appointments.html" class="nav-item"><i class="fas fa-calendar-check"></i> المواعيد</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="page-title"><h1>🔬 إعدادات المعمل</h1></div>
+            <div class="user-info">
+                <div class="user-name" id="userName">جاري التحميل...</div>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> خروج</button>
+            </div>
+            <div class="toggle-sidebar" onclick="document.getElementById('sidebar').classList.toggle('active')" style="display:none;">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-info-circle"></i> معلومات المعمل</div>
+            <div class="grid-2">
+                <div class="form-group"><label class="form-label"><i class="fas fa-building"></i> اسم المعمل</label><input type="text" class="form-control" id="labName" placeholder="معمل يثرب للتحاليل"></div>
+                <div class="form-group"><label class="form-label"><i class="fas fa-image"></i> لوجو المعمل</label><input type="url" class="form-control" id="labLogo" placeholder="https://..."><button class="btn btn-primary" style="margin-top:10px; width:100%;" onclick="uploadLogo('lab')"><i class="fas fa-cloud-upload-alt"></i> رفع صورة</button></div>
+                <div class="form-group"><label class="form-label"><i class="fab fa-whatsapp"></i> واتساب المعمل</label><input type="text" class="form-control" id="labWhatsapp" placeholder="966500000000"></div>
+                <div class="form-group"><label class="form-label"><i class="fab fa-facebook"></i> فيسبوك المعمل</label><input type="url" class="form-control" id="labFacebook" placeholder="https://facebook.com/..."></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-clock"></i> مواعيد عمل المعمل</div>
+            <div class="grid-2">
+                <div class="form-group"><label class="form-label">السبت - الخميس</label><input type="text" class="form-control" id="workWeekdays" placeholder="9:00 ص - 9:00 م"></div>
+                <div class="form-group"><label class="form-label">الجمعة</label><input type="text" class="form-control" id="workFriday" placeholder="مغلق"></div>
+                <div class="form-group"><label class="form-label">رمضان (صباحاً)</label><input type="text" class="form-control" id="ramadanMorning" placeholder="10:00 ص - 3:00 م"></div>
+                <div class="form-group"><label class="form-label">رمضان (مساءً)</label><input type="text" class="form-control" id="ramadanEvening" placeholder="8:00 م - 1:00 ص"></div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-exchange-alt"></i> شيفتات العمل</div>
+            <div id="shiftsContainer"></div>
+            <button class="btn btn-outline add-shift" onclick="addShift()"><i class="fas fa-plus"></i> إضافة شيفت جديد</button>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-tags"></i> فئات التحاليل</div>
+            <div id="categoriesContainer"></div>
+            <button class="btn btn-outline" onclick="addCategory()"><i class="fas fa-plus"></i> إضافة فئة جديدة</button>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-tags"></i> أسعار القوافل (خصومات)</div>
+            <div class="grid-3">
+                <div class="form-group"><label class="form-label">خصم التحاليل الأساسية (%)</label><input type="number" class="form-control" id="caravanBasic" placeholder="30"></div>
+                <div class="form-group"><label class="form-label">خصم التحاليل المتخصصة (%)</label><input type="number" class="form-control" id="caravanSpecialized" placeholder="25"></div>
+                <div class="form-group"><label class="form-label">خصم الباقات (%)</label><input type="number" class="form-control" id="caravanPackages" placeholder="40"></div>
+            </div>
+        </div>
+
+        <div class="actions-bar">
+            <button class="btn btn-primary" onclick="saveAllSettings()"><i class="fas fa-save"></i> حفظ الإعدادات</button>
+            <button class="btn btn-success" onclick="loadAllSettings()"><i class="fas fa-sync-alt"></i> تحديث</button>
+        </div>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <script>
+        // ============================================
+        // الأمن السيبراني
+        // ============================================
+        (function() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => { if (e.ctrlKey && ['c','x','u','s'].includes(e.key.toLowerCase())) e.preventDefault(); if (e.key === 'F12') e.preventDefault(); });
+            document.addEventListener('selectstart', e => e.preventDefault());
+        })();
+
+        // ============================================
+        // تهيئة Firebase
+        // ============================================
+        const firebaseConfig = { apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU", authDomain: "yathreb-10909.firebaseapp.com", projectId: "yathreb-10909" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================
+        // Cloudinary
+        // ============================================
+        let cloudinaryConfig = { cloudName: '', uploadPreset: 'yathreb_preset' };
+        
+        async function loadCloudinaryConfig() {
+            const doc = await db.collection('cloudinaryConfig').doc('settings').get();
+            if (doc.exists) { cloudinaryConfig.cloudName = doc.data().cloudName; cloudinaryConfig.uploadPreset = doc.data().uploadPreset; }
+        }
+        loadCloudinaryConfig();
+
+        function uploadLogo(target) {
+            if (!cloudinaryConfig.cloudName) { showMessage('❌ لم يتم تهيئة Cloudinary بعد', 'error'); return; }
+            const widget = cloudinary.createUploadWidget({ cloudName: cloudinaryConfig.cloudName, uploadPreset: cloudinaryConfig.uploadPreset, folder: `yathreb/${target}` },
+                (error, result) => { if (!error && result.event === 'success') { document.getElementById(`${target}Logo`).value = result.info.secure_url; showMessage('✅ تم رفع الصورة بنجاح', 'success'); } });
+            widget.open();
+        }
+
+        // ============================================
+        // إدارة الشيفتات
+        // ============================================
+        let shifts = [];
+
+        function renderShifts() {
+            const container = document.getElementById('shiftsContainer');
+            container.innerHTML = '';
+            shifts.forEach((shift, index) => {
+                container.innerHTML += `
+                    <div class="shift-item">
+                        <div class="shift-header">
+                            <span class="shift-name">شيفت ${index + 1}</span>
+                            <button class="shift-remove" onclick="removeShift(${index})"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="grid-3">
+                            <div class="form-group"><label>اسم الشيفت</label><input type="text" class="form-control" value="${shift.name || ''}" onchange="updateShift(${index}, 'name', this.value)"></div>
+                            <div class="form-group"><label>من</label><input type="time" class="form-control" value="${shift.start || ''}" onchange="updateShift(${index}, 'start', this.value)"></div>
+                            <div class="form-group"><label>إلى</label><input type="time" class="form-control" value="${shift.end || ''}" onchange="updateShift(${index}, 'end', this.value)"></div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function addShift() { shifts.push({ name: 'شيفت جديد', start: '09:00', end: '17:00' }); renderShifts(); }
+        function removeShift(index) { shifts.splice(index, 1); renderShifts(); }
+        function updateShift(index, field, value) { shifts[index][field] = value; }
+
+        // ============================================
+        // إدارة الفئات
+        // ============================================
+        let categories = [];
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+            categories.forEach((cat, index) => {
+                container.innerHTML += `
+                    <div class="category-item">
+                        <div class="category-header">
+                            <span class="shift-name">${cat.name || 'فئة جديدة'}</span>
+                            <button class="category-remove" onclick="removeCategory(${index})"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group"><label>اسم الفئة</label><input type="text" class="form-control" value="${cat.name || ''}" onchange="updateCategory(${index}, 'name', this.value)"></div>
+                            <div class="form-group"><label>الأيقونة</label><input type="text" class="form-control" value="${cat.icon || 'fa-flask'}" onchange="updateCategory(${index}, 'icon', this.value)"></div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function addCategory() { categories.push({ name: 'فئة جديدة', icon: 'fa-flask' }); renderCategories(); }
+        function removeCategory(index) { categories.splice(index, 1); renderCategories(); }
+        function updateCategory(index, field, value) { categories[index][field] = value; }
+
+        // ============================================
+        // حفظ وتحميل
+        // ============================================
+        async function saveAllSettings() {
+            const settings = {
+                name: document.getElementById('labName').value,
+                logoUrl: document.getElementById('labLogo').value,
+                whatsapp: document.getElementById('labWhatsapp').value,
+                facebook: document.getElementById('labFacebook').value,
+                workingHours: {
+                    weekdays: document.getElementById('workWeekdays').value,
+                    friday: document.getElementById('workFriday').value,
+                    ramadanMorning: document.getElementById('ramadanMorning').value,
+                    ramadanEvening: document.getElementById('ramadanEvening').value
+                },
+                shifts: shifts,
+                testCategories: categories,
+                caravans: {
+                    basicDiscount: parseInt(document.getElementById('caravanBasic').value) || 0,
+                    specializedDiscount: parseInt(document.getElementById('caravanSpecialized').value) || 0,
+                    packagesDiscount: parseInt(document.getElementById('caravanPackages').value) || 0
+                },
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            try {
+                await db.collection('settings').doc('lab').set(settings, { merge: true });
+                showMessage('✅ تم حفظ الإعدادات بنجاح', 'success');
+            } catch (error) { showMessage('❌ خطأ في الحفظ: ' + error.message, 'error'); }
+        }
+
+        async function loadAllSettings() {
+            try {
+                const doc = await db.collection('settings').doc('lab').get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('labName').value = data.name || '';
+                    document.getElementById('labLogo').value = data.logoUrl || '';
+                    document.getElementById('labWhatsapp').value = data.whatsapp || '';
+                    document.getElementById('labFacebook').value = data.facebook || '';
+                    if (data.workingHours) {
+                        document.getElementById('workWeekdays').value = data.workingHours.weekdays || '';
+                        document.getElementById('workFriday').value = data.workingHours.friday || '';
+                        document.getElementById('ramadanMorning').value = data.workingHours.ramadanMorning || '';
+                        document.getElementById('ramadanEvening').value = data.workingHours.ramadanEvening || '';
+                    }
+                    if (data.caravans) {
+                        document.getElementById('caravanBasic').value = data.caravans.basicDiscount || '';
+                        document.getElementById('caravanSpecialized').value = data.caravans.specializedDiscount || '';
+                        document.getElementById('caravanPackages').value = data.caravans.packagesDiscount || '';
+                    }
+                    shifts = data.shifts || [];
+                    categories = data.testCategories || [];
+                    renderShifts();
+                    renderCategories();
+                }
+            } catch (error) { showMessage('❌ خطأ في التحميل', 'error'); }
+        }
+
+        // ============================================
+        // مصادقة
+        // ============================================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            const userData = userDoc.data();
+            if (!userData || (userData.role !== 'super_admin' && userData.role !== 'admin')) { window.location.href = 'login.html'; return; }
+            document.getElementById('userName').textContent = userData.displayName || user.email;
+            loadAllSettings();
+        });
+
+        function logout() { auth.signOut().then(() => window.location.href = 'login.html'); }
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = msg;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => msgDiv.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
