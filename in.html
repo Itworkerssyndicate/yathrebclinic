@@ -68,105 +68,9 @@
             font-size: 1.2em;
         }
 
-        .badge-info {
-            background: #0e7c9e;
+        .badge-warning {
+            background: #ef4444;
             color: white;
-        }
-
-        .config-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .config-card {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 25px;
-            border: 2px solid #334155;
-        }
-
-        .config-title {
-            color: #fbbf24;
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .config-item {
-            margin-bottom: 15px;
-        }
-
-        .config-label {
-            color: #94a3b8;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .config-value {
-            background: #0f172a;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 1px solid #334155;
-            color: #a5f3fc;
-            font-family: monospace;
-            font-size: 0.9em;
-            word-break: break-all;
-        }
-
-        .admin-creation {
-            background: #312e81;
-            border-radius: 20px;
-            padding: 30px;
-            margin: 30px 0;
-            border: 2px solid #fbbf24;
-        }
-
-        .admin-title {
-            color: #fbbf24;
-            font-size: 2em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .admin-field {
-            background: #1e293b;
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        .admin-label {
-            color: #94a3b8;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        .admin-input {
-            width: 100%;
-            padding: 12px 15px;
-            background: #0f172a;
-            border: 2px solid #334155;
-            border-radius: 10px;
-            color: white;
-            font-size: 1.1em;
-            font-family: monospace;
-        }
-
-        .admin-input:focus {
-            outline: none;
-            border-color: #fbbf24;
         }
 
         .magic-button {
@@ -201,6 +105,105 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .config-card {
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid #334155;
+        }
+
+        .config-title {
+            color: #fbbf24;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        .config-item {
+            margin-bottom: 15px;
+        }
+
+        .config-label {
+            color: #94a3b8;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .config-value {
+            background: #0f172a;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            color: #a5f3fc;
+            font-family: monospace;
+            font-size: 0.85em;
+            word-break: break-all;
+        }
+
+        .admin-creation {
+            background: #312e81;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid #fbbf24;
+        }
+
+        .admin-title {
+            color: #fbbf24;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-field {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .admin-label {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+            font-family: monospace;
+        }
+
+        .admin-input:focus {
+            outline: none;
+            border-color: #fbbf24;
         }
 
         .status-panel {
@@ -289,7 +292,7 @@
 
         .summary-title {
             color: #0e7c9e;
-            font-size: 1.8em;
+            font-size: 1.5em;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -298,26 +301,26 @@
 
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
         }
 
         .summary-item {
             background: #1e293b;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             border-right: 3px solid #fbbf24;
         }
 
         .summary-label {
             color: #94a3b8;
-            font-size: 0.9em;
+            font-size: 0.85em;
             margin-bottom: 5px;
         }
 
         .summary-value {
             color: white;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: bold;
             word-break: break-all;
         }
@@ -331,7 +334,7 @@
             font-family: monospace;
             white-space: pre-wrap;
             color: #a5f3fc;
-            font-size: 0.9em;
+            font-size: 0.85em;
             border: 2px solid #fbbf24;
             max-height: 400px;
             overflow-y: auto;
@@ -343,7 +346,7 @@
             padding: 20px;
             border-radius: 15px;
             margin: 20px 0;
-            font-size: 1.1em;
+            font-size: 1em;
             border: 2px solid #fbbf24;
         }
 
@@ -353,8 +356,19 @@
             padding: 20px;
             border-radius: 15px;
             margin: 20px 0;
-            font-size: 1.1em;
+            font-size: 1em;
             border: 2px solid #fbbf24;
+        }
+
+        .cloudinary-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            color: white;
+            font-size: 1em;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -362,9 +376,12 @@
     <div class="container">
         <div class="header">
             <h1>⚡ مركز يثرب الخيري التخصصي</h1>
-            <h2>السيت أب السحري - مع سوبر أدمن</h2>
-            <div class="badge badge-info">
-                <i class="fas fa-crown"></i> Super Admin: admin / 12345
+            <h2>السيت أب السحري - النسخة النهائية</h2>
+            <div class="badge">
+                <i class="fas fa-database"></i> تهيئة النظام كاملاً بدون بيانات وهمية
+            </div>
+            <div class="badge badge-warning" style="margin-right: 10px;">
+                <i class="fas fa-exclamation-triangle"></i> سوبر أدمن: admin@yathreb.com / 12345
             </div>
         </div>
 
@@ -397,10 +414,6 @@
                     <i class="fas fa-cloud"></i> Cloudinary Configuration
                 </div>
                 <div class="config-item">
-                    <span class="config-label">Cloud Name</span>
-                    <div class="config-value" id="cloudName">[أدخل اسم السحابة]</div>
-                </div>
-                <div class="config-item">
                     <span class="config-label">API Key</span>
                     <div class="config-value">745672834333249</div>
                 </div>
@@ -419,28 +432,28 @@
         <div class="admin-creation">
             <div class="admin-title">
                 <i class="fas fa-crown" style="color: #fbbf24;"></i>
-                إنشاء حساب السوبر أدمن
+                حساب السوبر أدمن
             </div>
             <div class="admin-grid">
                 <div class="admin-field">
                     <div class="admin-label">البريد الإلكتروني</div>
-                    <input type="email" class="admin-input" id="adminEmail" value="admin" placeholder="admin">
+                    <input type="email" class="admin-input" id="adminEmail" value="admin">
                 </div>
                 <div class="admin-field">
                     <div class="admin-label">كلمة المرور</div>
-                    <input type="text" class="admin-input" id="adminPassword" value="12345" placeholder="12345">
+                    <input type="text" class="admin-input" id="adminPassword" value="12345">
                 </div>
                 <div class="admin-field">
                     <div class="admin-label">الاسم</div>
-                    <input type="text" class="admin-input" id="adminName" value="مدير النظام" placeholder="مدير النظام">
+                    <input type="text" class="admin-input" id="adminName" value="مدير النظام">
                 </div>
             </div>
         </div>
 
         <div class="info-box">
             <i class="fas fa-info-circle"></i>
-            <strong>مهم:</strong> قبل الضغط على الزر، أدخل اسم السحابة الخاص بك من Cloudinary Dashboard
-            <input type="text" id="cloudNameInput" placeholder="أدخل Cloud Name" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 10px; border: 2px solid #fbbf24; background: #0f172a; color: white; font-family: monospace;">
+            <strong>إعدادات Cloudinary:</strong> أدخل اسم السحابة الخاص بك من Cloudinary Dashboard
+            <input type="text" id="cloudNameInput" class="cloudinary-input" placeholder="أدخل Cloud Name (مثال: dxxxxxxx)">
         </div>
 
         <div class="magic-button">
@@ -462,7 +475,7 @@
         </div>
 
         <div class="log-box" id="logBox">
-            <div class="log-entry">✨ اضغط على الزر السحري لبدء تهيئة هيكل النظام</div>
+            <div class="log-entry">✨ اضغط على الزر السحري لبدء تهيئة النظام</div>
         </div>
 
         <div class="summary-box" id="summaryBox" style="display: none;">
@@ -470,9 +483,7 @@
                 <i class="fas fa-check-circle" style="color: #10b981;"></i>
                 تم تهيئة النظام بنجاح
             </div>
-            <div class="summary-grid" id="summaryGrid">
-                <!-- هتتعبأ بالجافاسكريبت -->
-            </div>
+            <div class="summary-grid" id="summaryGrid"></div>
         </div>
 
         <div class="rules-box" id="rulesBox" style="display: none;">
@@ -511,7 +522,6 @@
         // ============================================
         let currentStep = 0;
         const totalSteps = 15;
-        let logEntries = [];
         let setupSuccess = true;
         let summary = {};
 
@@ -525,8 +535,6 @@
             entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
             logBox.appendChild(entry);
             logBox.scrollTop = logBox.scrollHeight;
-            
-            logEntries.push({ message, type });
         }
 
         function updateStep(stepNumber, message, status) {
@@ -540,7 +548,6 @@
             }
             
             stepDiv.className = `status-item status-${status}`;
-            
             const icon = status === 'success' ? '✅' : status === 'working' ? '⏳' : '❌';
             stepDiv.innerHTML = `<span>${icon}</span> ${message}`;
         }
@@ -555,7 +562,6 @@
             const summaryGrid = document.getElementById('summaryGrid');
             
             summaryGrid.innerHTML = '';
-            
             for (const [key, value] of Object.entries(summary)) {
                 summaryGrid.innerHTML += `
                     <div class="summary-item">
@@ -564,12 +570,11 @@
                     </div>
                 `;
             }
-            
             summaryBox.style.display = 'block';
         }
 
         // ============================================
-        // السيت أب السحري مع سوبر أدمن
+        // السيت أب السحري
         // ============================================
         async function startMagicSetup() {
             const cloudName = document.getElementById('cloudNameInput').value.trim();
@@ -591,7 +596,7 @@
             btn.disabled = true;
             btn.innerHTML = '<span>⚡</span> جاري تهيئة النظام... <span>⏳</span>';
             
-            addLog('🪄 بدأ تهيئة النظام مع سوبر أدمن...', 'info');
+            addLog('🪄 بدأ تهيئة النظام...', 'info');
             
             try {
                 // ===== 1. تهيئة الاتصال =====
@@ -608,47 +613,17 @@
                 addLog('✅ اتصال Firebase ناجح', 'success');
                 summary['الاتصال'] = 'ناجح';
                 
-                // ===== 2. التحقق من شاشة قريباً =====
+                // ===== 2. إنشاء Collections =====
                 currentStep = 2;
                 updateProgress(currentStep);
-                updateStep(2, 'التحقق من شاشة قريباً...', 'working');
-                addLog('جاري التحقق من شاشة قريباً...', 'info');
-                
-                const comingSoonDoc = await db.collection('settings').doc('comingSoon').get();
-                
-                if (!comingSoonDoc.exists) {
-                    await db.collection('settings').doc('comingSoon').set({
-                        centerName: 'مركز يثرب الخيري التخصصي',
-                        logoUrl: '',
-                        phone: '١٥٠٠٠',
-                        address: 'المدينة المنورة',
-                        facebook: 'https://www.facebook.com/ythrb.altkhssy',
-                        completionDate: '2026-01-01',
-                        deliveryTime: '12:00',
-                        comment: 'استعدوا معنا لافتتاح المركز',
-                        description: 'صرح طبي متكامل يقدم خدمات صحية متميزة',
-                        services: [],
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    addLog('✅ تم إنشاء شاشة قريباً', 'success');
-                    summary['شاشة قريباً'] = 'تم إنشاؤها';
-                } else {
-                    addLog('✅ شاشة قريباً موجودة', 'success');
-                    summary['شاشة قريباً'] = 'موجودة';
-                }
-                
-                updateStep(2, '✅ تم التحقق من شاشة قريباً', 'success');
-                
-                // ===== 3. إنشاء Collections الرئيسية =====
-                currentStep = 3;
-                updateProgress(currentStep);
-                updateStep(3, 'إنشاء هيكل Collections...', 'working');
+                updateStep(2, 'إنشاء هيكل Collections...', 'working');
                 addLog('جاري إنشاء Collections...', 'info');
                 
                 const collections = [
                     'settings/general',
                     'settings/lab',
                     'settings/clinic',
+                    'settings/comingSoon',
                     'doctors',
                     'doctorSchedules',
                     'doctorTypes',
@@ -671,7 +646,6 @@
                 ];
                 
                 let collectionsCreated = 0;
-                
                 for (const collection of collections) {
                     try {
                         if (collection.includes('/')) {
@@ -693,18 +667,17 @@
                 }
                 
                 summary['Collections'] = `${collectionsCreated} مجموعة جاهزة`;
-                updateStep(3, '✅ تم إنشاء هيكل Collections', 'success');
+                updateStep(2, '✅ تم إنشاء هيكل Collections', 'success');
                 
-                // ===== 4. حفظ إعدادات Cloudinary =====
-                currentStep = 4;
+                // ===== 3. حفظ إعدادات Cloudinary =====
+                currentStep = 3;
                 updateProgress(currentStep);
-                updateStep(4, 'حفظ إعدادات Cloudinary...', 'working');
+                updateStep(3, 'حفظ إعدادات Cloudinary...', 'working');
                 addLog('جاري حفظ إعدادات Cloudinary...', 'info');
                 
                 await db.collection('cloudinaryConfig').doc('settings').set({
                     cloudName: cloudName,
                     apiKey: CLOUDINARY_CONFIG.apiKey,
-                    apiSecret: CLOUDINARY_CONFIG.apiSecret,
                     uploadPreset: CLOUDINARY_CONFIG.uploadPreset,
                     folders: {
                         doctors: 'yathreb/doctors',
@@ -714,59 +687,37 @@
                         logo: 'yathreb/logo',
                         general: 'yathreb/general'
                     },
-                    defaultImages: {
-                        doctor: `https://res.cloudinary.com/${cloudName}/image/upload/v1/yathreb/defaults/doctor.png`,
-                        board: `https://res.cloudinary.com/${cloudName}/image/upload/v1/yathreb/defaults/board.png`,
-                        caravan: `https://res.cloudinary.com/${cloudName}/image/upload/v1/yathreb/defaults/caravan.png`,
-                        lab: `https://res.cloudinary.com/${cloudName}/image/upload/v1/yathreb/defaults/lab.png`
-                    },
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
                 addLog('✅ تم حفظ إعدادات Cloudinary', 'success');
                 summary['Cloudinary'] = cloudName;
-                updateStep(4, '✅ تم حفظ إعدادات Cloudinary', 'success');
+                updateStep(3, '✅ تم حفظ إعدادات Cloudinary', 'success');
                 
-                // ===== 5. إنشاء مستخدم السوبر أدمن =====
-                currentStep = 5;
+                // ===== 4. إنشاء مستخدم السوبر أدمن =====
+                currentStep = 4;
                 updateProgress(currentStep);
-                updateStep(5, 'إنشاء حساب السوبر أدمن...', 'working');
+                updateStep(4, 'إنشاء حساب السوبر أدمن...', 'working');
                 addLog('جاري إنشاء حساب السوبر أدمن...', 'info');
                 
                 try {
-                    // محاولة إنشاء المستخدم
                     const userCredential = await auth.createUserWithEmailAndPassword(
                         adminEmail + '@yathreb.com',
                         adminPassword
                     );
                     
-                    const user = userCredential.user;
-                    
-                    // تحديث اسم المستخدم
-                    await user.updateProfile({
+                    await userCredential.user.updateProfile({
                         displayName: adminName
                     });
                     
-                    // حفظ بيانات المستخدم في Firestore
-                    await db.collection('users').doc(user.uid).set({
+                    await db.collection('users').doc(userCredential.user.uid).set({
                         email: adminEmail + '@yathreb.com',
                         displayName: adminName,
                         role: 'super_admin',
                         permissions: ['all'],
                         isActive: true,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        createdBy: 'system',
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                        imageUrl: `https://res.cloudinary.com/${cloudName}/image/upload/v1/yathreb/defaults/admin.png`
-                    });
-                    
-                    // تسجيل في سجل النشاطات
-                    await db.collection('activityLog').add({
-                        action: 'user_created',
-                        userId: user.uid,
-                        userEmail: adminEmail + '@yathreb.com',
-                        role: 'super_admin',
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        createdBy: 'system'
                     });
                     
                     addLog(`✅ تم إنشاء حساب السوبر أدمن: ${adminEmail}@yathreb.com`, 'success');
@@ -780,40 +731,20 @@
                     }
                 }
                 
-                updateStep(5, '✅ تم إنشاء حساب السوبر أدمن', 'success');
+                updateStep(4, '✅ تم إنشاء حساب السوبر أدمن', 'success');
                 
-                // ===== 6. إنشاء الصلاحيات =====
-                currentStep = 6;
+                // ===== 5. إنشاء الصلاحيات =====
+                currentStep = 5;
                 updateProgress(currentStep);
-                updateStep(6, 'إنشاء هيكل الصلاحيات...', 'working');
+                updateStep(5, 'إنشاء هيكل الصلاحيات...', 'working');
                 addLog('جاري إنشاء الصلاحيات...', 'info');
                 
                 const roles = [
-                    { 
-                        role: 'super_admin', 
-                        permissions: ['all'],
-                        description: 'التحكم الكامل في النظام'
-                    },
-                    { 
-                        role: 'admin', 
-                        permissions: ['read', 'write', 'delete'],
-                        description: 'مدير النظام'
-                    },
-                    { 
-                        role: 'doctor', 
-                        permissions: ['read_appointments', 'write_notes', 'read_patients', 'write_prescriptions'],
-                        description: 'طبيب'
-                    },
-                    { 
-                        role: 'lab_tech', 
-                        permissions: ['read_tests', 'write_results', 'read_equipment'],
-                        description: 'فني معمل'
-                    },
-                    { 
-                        role: 'receptionist', 
-                        permissions: ['read', 'write_appointments', 'read_patients', 'read_doctors'],
-                        description: 'موظف استقبال'
-                    }
+                    { role: 'super_admin', permissions: ['all'], description: 'التحكم الكامل في النظام' },
+                    { role: 'admin', permissions: ['read', 'write', 'delete'], description: 'مدير النظام' },
+                    { role: 'doctor', permissions: ['read_appointments', 'write_notes', 'read_patients'], description: 'طبيب' },
+                    { role: 'lab_tech', permissions: ['read_tests', 'write_results'], description: 'فني معمل' },
+                    { role: 'receptionist', permissions: ['read', 'write_appointments'], description: 'موظف استقبال' }
                 ];
                 
                 for (const role of roles) {
@@ -826,245 +757,127 @@
                 
                 addLog('✅ تم إنشاء هيكل الصلاحيات', 'success');
                 summary['الصلاحيات'] = `${roles.length} دور`;
-                updateStep(6, '✅ تم إنشاء هيكل الصلاحيات', 'success');
+                updateStep(5, '✅ تم إنشاء هيكل الصلاحيات', 'success');
                 
-                // ===== 7. إنشاء دوال رفع الصور =====
-                currentStep = 7;
+                // ===== 6. إنشاء معلومات الاتصال الأساسية =====
+                currentStep = 6;
                 updateProgress(currentStep);
-                updateStep(7, 'تجهيز دوال رفع الصور...', 'working');
-                addLog('جاري تجهيز دوال Cloudinary...', 'info');
+                updateStep(6, 'إنشاء معلومات الاتصال...', 'working');
+                addLog('جاري إنشاء معلومات الاتصال...', 'info');
                 
-                const uploadFunction = `// ===== دوال رفع الصور إلى Cloudinary =====
-const CLOUD_NAME = '${cloudName}';
-const UPLOAD_PRESET = '${CLOUDINARY_CONFIG.uploadPreset}';
-
-/**
- * رفع صورة إلى Cloudinary
- * @param {File} file - ملف الصورة
- * @param {string} folder - المجلد (doctors, board, caravans, lab, logo, general)
- * @returns {Promise<Object>} - نتيجة الرفع
- */
-async function uploadImage(file, folder = 'general') {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('folder', \`yathreb/\${folder}\`);
-    
-    try {
-        const response = await fetch(
-            \`https://api.cloudinary.com/v1_1/\${CLOUD_NAME}/image/upload\`,
-            { method: 'POST', body: formData }
-        );
-        
-        const data = await response.json();
-        
-        if (data.secure_url) {
-            return {
-                success: true,
-                url: data.secure_url,
-                publicId: data.public_id,
-                format: data.format,
-                size: data.bytes,
-                width: data.width,
-                height: data.height
-            };
-        } else {
-            return {
-                success: false,
-                error: 'فشل رفع الصورة'
-            };
-        }
-    } catch (error) {
-        return {
-            success: false,
-            error: error.message
-        };
-    }
-}
-
-/**
- * حذف صورة من Cloudinary (يحتاج خادم خلفي)
- * @param {string} publicId - المعرف العام للصورة
- */
-async function deleteImage(publicId) {
-    // هذه الدالة تحتاج إلى خادم خلفي للتوثيق
-    // يمكن استخدام Cloudinary Admin SDK في Node.js
-    console.log('Delete image:', publicId);
-}
-
-export { uploadImage, deleteImage };`;
-                
-                await db.collection('cloudinaryConfig').doc('uploadFunction').set({
-                    code: uploadFunction,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                await db.collection('contactInfo').doc('main').set({
+                    phones: { landline1: '', landline2: '', mobile1: '', mobile2: '' },
+                    whatsapp: { clinic: '', lab: '', emergency: '' },
+                    emails: { info: '', appointments: '', lab: '' },
+                    address: { full: '', street: '', building: '', city: 'المدينة المنورة', country: 'السعودية' },
+                    mapUrl: '',
+                    workingHours: {
+                        saturday: '',
+                        sunday: '',
+                        monday: '',
+                        tuesday: '',
+                        wednesday: '',
+                        thursday: '',
+                        friday: 'مغلق'
+                    }
                 });
                 
-                addLog('✅ دوال رفع الصور جاهزة', 'success');
-                summary['رفع الصور'] = 'Cloudinary Ready';
-                updateStep(7, '✅ تم تجهيز دوال رفع الصور', 'success');
+                addLog('✅ تم إنشاء معلومات الاتصال', 'success');
+                updateStep(6, '✅ تم إنشاء معلومات الاتصال', 'success');
                 
-                // ===== 8. إنشاء قواعد الأمان =====
+                // ===== 7. إنشاء إعدادات شاشة قريباً =====
+                currentStep = 7;
+                updateProgress(currentStep);
+                updateStep(7, 'إنشاء إعدادات شاشة قريباً...', 'working');
+                addLog('جاري إنشاء إعدادات شاشة قريباً...', 'info');
+                
+                await db.collection('settings').doc('comingSoon').set({
+                    centerName: 'مركز يثرب الخيري التخصصي',
+                    logoUrl: '',
+                    phone: '',
+                    address: '',
+                    facebook: '',
+                    completionDate: '2026-01-01',
+                    deliveryTime: '12:00',
+                    comment: '',
+                    description: '',
+                    services: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                addLog('✅ تم إنشاء إعدادات شاشة قريباً', 'success');
+                updateStep(7, '✅ تم إنشاء إعدادات شاشة قريباً', 'success');
+                
+                // ===== 8. إنشاء إعدادات العيادات =====
                 currentStep = 8;
                 updateProgress(currentStep);
-                updateStep(8, 'تجهيز قواعد الأمان...', 'working');
+                updateStep(8, 'إنشاء إعدادات العيادات...', 'working');
+                addLog('جاري إنشاء إعدادات العيادات...', 'info');
+                
+                await db.collection('settings').doc('clinic').set({
+                    name: 'عيادات يثرب التخصصية',
+                    logoUrl: '',
+                    whatsapp: '',
+                    facebook: '',
+                    workingHours: {},
+                    prices: {
+                        consultation: 0,
+                        followUp: 0,
+                        emergency: 0
+                    },
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                addLog('✅ تم إنشاء إعدادات العيادات', 'success');
+                updateStep(8, '✅ تم إنشاء إعدادات العيادات', 'success');
+                
+                // ===== 9. إنشاء إعدادات المعمل =====
+                currentStep = 9;
+                updateProgress(currentStep);
+                updateStep(9, 'إنشاء إعدادات المعمل...', 'working');
+                addLog('جاري إنشاء إعدادات المعمل...', 'info');
+                
+                await db.collection('settings').doc('lab').set({
+                    name: 'معمل يثرب للتحاليل',
+                    logoUrl: '',
+                    whatsapp: '',
+                    facebook: '',
+                    workingHours: {},
+                    shifts: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                addLog('✅ تم إنشاء إعدادات المعمل', 'success');
+                updateStep(9, '✅ تم إنشاء إعدادات المعمل', 'success');
+                
+                // ===== 10. إنشاء قواعد الأمان =====
+                currentStep = 10;
+                updateProgress(currentStep);
+                updateStep(10, 'تجهيز قواعد الأمان...', 'working');
                 addLog('جاري تجهيز قواعد Firestore...', 'info');
                 
                 const securityRules = `rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // دوال المساعدة
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
+    function isAuthenticated() { return request.auth != null; }
     function isSuperAdmin() {
       return isAuthenticated() && 
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
     }
-    
     function isAdmin() {
       return isAuthenticated() && 
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['super_admin', 'admin'];
     }
     
-    function isDoctor() {
-      return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'doctor';
-    }
-    
-    function isLabTech() {
-      return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'lab_tech';
-    }
-    
-    function isReceptionist() {
-      return isAuthenticated() && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'receptionist';
-    }
-    
-    // إعدادات Cloudinary
-    match /cloudinaryConfig/{document} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // الصور - روابط فقط
-    match /imageReferences/{image} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // المستخدمين
-    match /users/{userId} {
-      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      allow write: if isSuperAdmin();
-      allow delete: if isSuperAdmin();
-    }
-    
-    // الصلاحيات
-    match /roles/{role} {
-      allow read: if isAuthenticated();
-      allow write: if isSuperAdmin();
-    }
-    
-    // الإعدادات
-    match /settings/{document} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // الأطباء
-    match /doctors/{doctor} {
-      allow read: if true;
-      allow write: if isAdmin();
-      allow create: if isAdmin();
-      allow delete: if isSuperAdmin();
-    }
-    
-    // جداول الأطباء
-    match /doctorSchedules/{schedule} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // أنواع الأطباء
-    match /doctorTypes/{type} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // المواعيد
-    match /appointments/{appointment} {
-      allow read: if isAuthenticated();
-      allow write: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow delete: if isAdmin();
-    }
-    
-    // التحاليل
-    match /labTests/{test} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // فئات التحاليل
-    match /labCategories/{category} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // نتائج التحاليل
-    match /labResults/{result} {
-      allow read: if isAuthenticated();
-      allow write: if isLabTech() || isAdmin();
-    }
-    
-    // شيفتات المعمل
-    match /labShifts/{shift} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // مواعيد عمل المعمل
-    match /labWorkingHours/{hours} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // مجلس الإدارة
-    match /boardMembers/{member} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // رسائل مجلس الإدارة
-    match /boardMessages/{message} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // القوافل
-    match /caravans/{caravan} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // معلومات الاتصال
-    match /contactInfo/{info} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // سجل النشاطات
-    match /activityLog/{log} {
-      allow read: if isAdmin();
-      allow write: if false;
-    }
-    
-    // منع الوصول لأي شيء آخر
-    match /{document=**} {
-      allow read, write: if false;
-    }
+    match /settings/{document} { allow read: if true; allow write: if isAdmin(); }
+    match /doctors/{doctor} { allow read: if true; allow write: if isAdmin(); }
+    match /appointments/{appointment} { allow read: if isAuthenticated(); allow write: if isAuthenticated(); }
+    match /labTests/{test} { allow read: if true; allow write: if isAdmin(); }
+    match /boardMembers/{member} { allow read: if true; allow write: if isAdmin(); }
+    match /caravans/{caravan} { allow read: if true; allow write: if isAdmin(); }
+    match /users/{userId} { allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin()); allow write: if isSuperAdmin(); }
+    match /activityLog/{log} { allow read: if isAdmin(); allow write: if false; }
+    match /{document=**} { allow read, write: if false; }
   }
 }`;
                 
@@ -1073,115 +886,31 @@ service cloud.firestore {
                 
                 addLog('✅ قواعد الأمان جاهزة للنسخ', 'success');
                 summary['قواعد الأمان'] = 'جاهزة';
-                updateStep(8, '✅ تم تجهيز قواعد الأمان', 'success');
+                updateStep(10, '✅ تم تجهيز قواعد الأمان', 'success');
                 
-                // ===== 9. إنشاء فهارس البحث =====
-                currentStep = 9;
+                // ===== 11. تسجيل النشاط الأول =====
+                currentStep = 11;
                 updateProgress(currentStep);
-                updateStep(9, 'تجهيز فهارس البحث...', 'working');
-                addLog('جاري تجهيز فهارس Firestore...', 'info');
+                updateStep(11, 'تسجيل النشاط الأول...', 'working');
+                addLog('جاري تسجيل النشاط الأول...', 'info');
                 
-                const indexes = `{
-  "indexes": [
-    {
-      "collectionGroup": "appointments",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "doctorId", "order": "ASCENDING" },
-        { "fieldPath": "date", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "appointments",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "patientPhone", "order": "ASCENDING" },
-        { "fieldPath": "date", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "appointments",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "date", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "doctors",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "specialty", "order": "ASCENDING" },
-        { "fieldPath": "isAvailable", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "doctors",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "name", "order": "ASCENDING" },
-        { "fieldPath": "specialty", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "labTests",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "category", "order": "ASCENDING" },
-        { "fieldPath": "price", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "labTests",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "name", "order": "ASCENDING" },
-        { "fieldPath": "category", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "caravans",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "startDate", "order": "ASCENDING" },
-        { "fieldPath": "endDate", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "caravans",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "status", "order": "ASCENDING" },
-        { "fieldPath": "startDate", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "activityLog",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "timestamp", "order": "DESCENDING" },
-        { "fieldPath": "userId", "order": "ASCENDING" }
-      ]
-    }
-  ],
-  "fieldOverrides": []
-}`;
+                await db.collection('activityLog').add({
+                    action: 'system_initialized',
+                    description: 'تم تهيئة النظام لأول مرة',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    performedBy: 'system'
+                });
                 
-                addLog('📌 فهارس البحث جاهزة', 'info');
-                summary['فهارس البحث'] = 'جاهزة';
-                updateStep(9, '✅ تم تجهيز فهارس البحث', 'success');
+                addLog('✅ تم تسجيل النشاط الأول', 'success');
+                updateStep(11, '✅ تم تسجيل النشاط الأول', 'success');
                 
-                // ===== 10. إنشاء ملف التكوين =====
-                currentStep = 10;
+                // ===== 12. إنشاء ملف التكوين =====
+                currentStep = 12;
                 updateProgress(currentStep);
-                updateStep(10, 'تجهيز ملف التكوين...', 'working');
+                updateStep(12, 'تجهيز ملف التكوين...', 'working');
                 addLog('جاري تجهيز ملف firebase-config.js...', 'info');
                 
                 const configFile = `// firebase-config.js
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-
 const firebaseConfig = {
     apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
     authDomain: "yathreb-10909.firebaseapp.com",
@@ -1191,269 +920,75 @@ const firebaseConfig = {
     appId: "1:525635197745:web:99e1cbab31693af790ae10"
 };
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-export const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+export const db = firebase.firestore();
+export const auth = firebase.auth();
 
-// ===== إعدادات Cloudinary =====
 export const CLOUDINARY_CONFIG = {
     cloudName: '${cloudName}',
-    uploadPreset: '${CLOUDINARY_CONFIG.uploadPreset}',
-    apiKey: '${CLOUDINARY_CONFIG.apiKey}',
-    folders: {
-        doctors: 'yathreb/doctors',
-        board: 'yathreb/board',
-        caravans: 'yathreb/caravans',
-        lab: 'yathreb/lab',
-        logo: 'yathreb/logo',
-        general: 'yathreb/general'
-    }
-};
-
-// ===== رفع الصور إلى Cloudinary =====
-export const uploadImage = async (file, folder = 'general') => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
-    formData.append('folder', \`yathreb/\${folder}\`);
-    
-    try {
-        const response = await fetch(
-            \`https://api.cloudinary.com/v1_1/\${CLOUDINARY_CONFIG.cloudName}/image/upload\`,
-            { method: 'POST', body: formData }
-        );
-        
-        const data = await response.json();
-        
-        if (data.secure_url) {
-            return {
-                success: true,
-                url: data.secure_url,
-                publicId: data.public_id,
-                format: data.format,
-                size: data.bytes,
-                width: data.width,
-                height: data.height
-            };
-        }
-        
-        return {
-            success: false,
-            error: 'فشل رفع الصورة'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: error.message
-        };
-    }
-};
-
-// ===== حفظ مرجع الصورة في Firebase =====
-export const saveImageReference = async (imageData, collection, documentId, field = 'imageUrl') => {
-    try {
-        const update = {};
-        update[field] = imageData.url;
-        update[\`\${field}PublicId\`] = imageData.publicId;
-        
-        await db.collection(collection).doc(documentId).update(update);
-        
-        // حفظ في مجموعة الصور
-        await db.collection('imageReferences').add({
-            url: imageData.url,
-            publicId: imageData.publicId,
-            collection: collection,
-            documentId: documentId,
-            field: field,
-            uploadedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            uploadedBy: auth.currentUser?.uid
-        });
-        
-        return true;
-    } catch (error) {
-        console.error('Error saving image reference:', error);
-        return false;
-    }
+    uploadPreset: '${CLOUDINARY_CONFIG.uploadPreset}'
 };`;
                 
                 addLog('✅ ملف التكوين جاهز', 'success');
                 summary['ملف التكوين'] = 'جاهز';
-                updateStep(10, '✅ تم تجهيز ملف التكوين', 'success');
+                updateStep(12, '✅ تم تجهيز ملف التكوين', 'success');
                 
-                // ===== 11. إنشاء ملف المجموعات =====
-                currentStep = 11;
+                // ===== 13. إنشاء ملف المجموعات =====
+                currentStep = 13;
                 updateProgress(currentStep);
-                updateStep(11, 'تجهيز ملف المجموعات...', 'working');
+                updateStep(13, 'تجهيز ملف المجموعات...', 'working');
                 addLog('جاري تجهيز collections.js...', 'info');
                 
                 const collectionsFile = `// collections.js
-/**
- * أسماء مجموعات Firebase في المشروع
- * هذا الملف يساعد في تجنب الأخطاء الإملائية
- */
-
 const COLLECTIONS = {
-    // الإعدادات
-    SETTINGS: {
-        GENERAL: 'settings/general',
-        LAB: 'settings/lab',
-        CLINIC: 'settings/clinic',
-        COMING_SOON: 'settings/comingSoon'
-    },
-    
-    // Cloudinary
+    SETTINGS: { GENERAL: 'settings/general', LAB: 'settings/lab', CLINIC: 'settings/clinic', COMING_SOON: 'settings/comingSoon' },
     CLOUDINARY: 'cloudinaryConfig',
-    
-    // الصور
-    IMAGE_REFERENCES: 'imageReferences',
-    
-    // المستخدمين والصلاحيات
-    USERS: 'users',
-    ROLES: 'roles',
-    PERMISSIONS: 'permissions',
-    
-    // الأطباء
     DOCTORS: 'doctors',
-    DOCTOR_SCHEDULES: 'doctorSchedules',
-    DOCTOR_TYPES: 'doctorTypes',
-    
-    // المواعيد
     APPOINTMENTS: 'appointments',
-    
-    // المعمل
     LAB_TESTS: 'labTests',
     LAB_CATEGORIES: 'labCategories',
-    LAB_RESULTS: 'labResults',
-    LAB_SHIFTS: 'labShifts',
-    LAB_WORKING_HOURS: 'labWorkingHours',
-    
-    // مجلس الإدارة
     BOARD_MEMBERS: 'boardMembers',
-    BOARD_MESSAGES: 'boardMessages',
-    
-    // القوافل
     CARAVANS: 'caravans',
-    
-    // معلومات الاتصال
+    USERS: 'users',
+    ROLES: 'roles',
     CONTACT_INFO: 'contactInfo',
-    
-    // سجل النشاطات
     ACTIVITY_LOG: 'activityLog'
 };
-
 export default COLLECTIONS;`;
                 
                 addLog('✅ ملف المجموعات جاهز', 'success');
                 summary['ملف المجموعات'] = 'جاهز';
-                updateStep(11, '✅ تم تجهيز ملف المجموعات', 'success');
+                updateStep(13, '✅ تم تجهيز ملف المجموعات', 'success');
                 
-                // ===== 12. إنشاء بيانات تجريبية للصلاحيات =====
-                currentStep = 12;
-                updateProgress(currentStep);
-                updateStep(12, 'تجهيز بيانات الصلاحيات...', 'working');
-                addLog('جاري تجهيز بيانات الصلاحيات...', 'info');
-                
-                const permissionsData = {
-                    doctor: {
-                        canViewAppointments: true,
-                        canEditAppointments: false,
-                        canDeleteAppointments: false,
-                        canViewPatients: true,
-                        canEditPatients: true,
-                        canWritePrescriptions: true,
-                        canViewTests: true,
-                        canRequestTests: true
-                    },
-                    lab_tech: {
-                        canViewTests: true,
-                        canEditTests: false,
-                        canEnterResults: true,
-                        canApproveResults: true,
-                        canViewEquipment: true,
-                        canEditEquipment: false
-                    },
-                    receptionist: {
-                        canViewAppointments: true,
-                        canCreateAppointments: true,
-                        canEditAppointments: true,
-                        canCancelAppointments: true,
-                        canViewPatients: true,
-                        canCreatePatients: true,
-                        canEditPatients: true,
-                        canViewDoctors: true,
-                        canViewTests: true
-                    }
-                };
-                
-                await db.collection('permissions').doc('roles').set(permissionsData);
-                
-                addLog('✅ بيانات الصلاحيات جاهزة', 'success');
-                updateStep(12, '✅ تم تجهيز بيانات الصلاحيات', 'success');
-                
-                // ===== 13. إنشاء معلومات الاتصال الافتراضية =====
-                currentStep = 13;
-                updateProgress(currentStep);
-                updateStep(13, 'تجهيز معلومات الاتصال...', 'working');
-                addLog('جاري تجهيز معلومات الاتصال...', 'info');
-                
-                const contactInfo = {
-                    phones: {
-                        landline1: '0141234567',
-                        landline2: '0147654321',
-                        mobile1: '0500000000',
-                        mobile2: '0511111111',
-                        fax: '0141234568'
-                    },
-                    whatsapp: {
-                        clinic: '966500000000',
-                        lab: '966511111111',
-                        emergency: '966522222222'
-                    },
-                    emails: {
-                        info: 'info@yathreb.com',
-                        appointments: 'appointments@yathreb.com',
-                        lab: 'lab@yathreb.com',
-                        support: 'support@yathreb.com'
-                    },
-                    address: {
-                        full: 'المدينة المنورة - المملكة العربية السعودية',
-                        street: 'طريق الملك عبدالله',
-                        building: 'برج يثرب الطبي',
-                        city: 'المدينة المنورة',
-                        country: 'السعودية'
-                    },
-                    mapUrl: 'https://maps.google.com/?q=24.524654,39.569184',
-                    workingHours: {
-                        saturday: '9:00 ص - 9:00 م',
-                        sunday: '9:00 ص - 9:00 م',
-                        monday: '9:00 ص - 9:00 م',
-                        tuesday: '9:00 ص - 9:00 م',
-                        wednesday: '9:00 ص - 9:00 م',
-                        thursday: '9:00 ص - 9:00 م',
-                        friday: 'مغلق'
-                    }
-                };
-                
-                await db.collection('contactInfo').doc('main').set(contactInfo);
-                
-                addLog('✅ معلومات الاتصال جاهزة', 'success');
-                updateStep(13, '✅ تم تجهيز معلومات الاتصال', 'success');
-                
-                // ===== 14. إنشاء سجل النشاطات الأول =====
+                // ===== 14. إنشاء دوال رفع الصور =====
                 currentStep = 14;
                 updateProgress(currentStep);
-                updateStep(14, 'تسجيل النشاطات الأولية...', 'working');
-                addLog('جاري تسجيل النشاطات...', 'info');
+                updateStep(14, 'تجهيز دوال رفع الصور...', 'working');
+                addLog('جاري تجهيز دوال Cloudinary...', 'info');
                 
-                await db.collection('activityLog').add({
-                    action: 'system_setup',
-                    description: 'تم تهيئة النظام لأول مرة',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    performedBy: 'system'
+                const uploadFunction = `// cloudinary.js
+export const uploadImage = async (file, folder = 'general') => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', '${CLOUDINARY_CONFIG.uploadPreset}');
+    formData.append('folder', \`yathreb/\${folder}\`);
+    
+    const response = await fetch(
+        \`https://api.cloudinary.com/v1_1/${cloudName}/image/upload\`,
+        { method: 'POST', body: formData }
+    );
+    const data = await response.json();
+    return { success: true, url: data.secure_url, publicId: data.public_id };
+};`;
+                
+                await db.collection('cloudinaryConfig').doc('uploadFunction').set({
+                    code: uploadFunction,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 
-                addLog('✅ تم تسجيل النشاطات', 'success');
-                updateStep(14, '✅ تم تسجيل النشاطات الأولية', 'success');
+                addLog('✅ دوال رفع الصور جاهزة', 'success');
+                summary['رفع الصور'] = 'Cloudinary Ready';
+                updateStep(14, '✅ تم تجهيز دوال رفع الصور', 'success');
                 
                 // ===== 15. اكتمال المهمة =====
                 currentStep = 15;
@@ -1463,8 +998,7 @@ export default COLLECTIONS;`;
                 addLog('🎯 تم تهيئة النظام بالكامل بنجاح', 'success');
                 addLog(`👑 حساب السوبر أدمن: ${adminEmail}@yathreb.com`, 'success');
                 addLog(`🔑 كلمة المرور: ${adminPassword}`, 'warning');
-                addLog('📌 قواعد الأمان جاهزة للنسخ', 'info');
-                addLog('📌 فهارس البحث جاهزة', 'info');
+                addLog('📌 قواعد الأمان جاهزة للنسخ إلى Firebase Console', 'info');
                 addLog('📌 Cloudinary مهيأ وجاهز', 'info');
                 
                 summary['الحالة'] = '✅ اكتمل بنجاح';
@@ -1472,7 +1006,7 @@ export default COLLECTIONS;`;
                 summary['كلمة السر'] = adminPassword;
                 summary['Cloudinary'] = cloudName;
                 summary['المجموعات'] = '23 مجموعة';
-                summary['الصلاحيات'] = '5 أدوار';
+                summary['نوع البيانات'] = '🚫 بدون بيانات وهمية';
                 
                 showSummary();
                 
@@ -1482,7 +1016,6 @@ export default COLLECTIONS;`;
                 addLog(`❌ خطأ: ${error.message}`, 'error');
                 updateStep(currentStep, `❌ فشل: ${error.message}`, 'error');
                 btn.innerHTML = '<span>❌</span> حدث خطأ <span>⚠️</span>';
-                setupSuccess = false;
             }
         }
     </script>
