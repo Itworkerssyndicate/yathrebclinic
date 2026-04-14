@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>القوافل الخيرية - مركز يثرب الخيري التخصصي</title>
+    
+    <!-- ===== الأمن السيبراني الشامل ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --primary-light: #2a9bc2;
+            --secondary: #fbbf24;
+            --secondary-dark: #f59e0b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
+            --shadow-xl: 0 30px 70px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        /* ===== حماية ===== */
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        img { pointer-events: none; -webkit-user-drag: none; user-drag: none; }
+
+        /* ===== الشريط العلوي ===== */
+        .top-bar {
+            background: rgba(5,17,24,0.8);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(251,191,36,0.2);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .site-title { font-size: 1.3rem; font-weight: 700; color: white; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--gray); text-decoration: none; transition: all 0.3s; }
+        .nav-links a:hover { color: var(--secondary); }
+
+        /* ===== الهيدر ===== */
+        .header {
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .header h1 { font-size: 3rem; color: white; position: relative; }
+        .header p { color: rgba(255,255,255,0.8); margin-top: 10px; position: relative; font-size: 1.1rem; }
+
+        /* ===== الحاوية ===== */
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+
+        /* ===== شاشة التحميل ===== */
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .loading i { font-size: 3rem; color: var(--secondary); animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== الفلاتر ===== */
+        .filters-bar {
+            background: rgba(5,17,24,0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 15px 25px;
+            margin-bottom: 40px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .filter-btn {
+            background: transparent;
+            border: 1px solid rgba(251,191,36,0.3);
+            color: var(--gray);
+            padding: 10px 25px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ===== شبكة القوافل ===== */
+        .caravans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 35px;
+        }
+        .caravan-card {
+            background: rgba(5,17,24,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(251,191,36,0.1);
+            cursor: pointer;
+        }
+        .caravan-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-glow);
+        }
+        .caravan-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        .caravan-info {
+            padding: 25px;
+        }
+        .caravan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        .caravan-date {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .caravan-date i { color: var(--primary-light); }
+        .caravan-type {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+        .type-discount { background: rgba(16,185,129,0.2); color: var(--accent); }
+        .type-free { background: rgba(251,191,36,0.2); color: var(--secondary); }
+        .caravan-services {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .services-title {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .services-list {
+            color: var(--light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .caravan-description {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+        .caravan-status {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(251,191,36,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+        .status-active { background: rgba(16,185,129,0.2); color: var(--accent); }
+        .status-upcoming { background: rgba(251,191,36,0.2); color: var(--secondary); }
+        .status-ended { background: rgba(239,68,68,0.2); color: var(--danger); }
+        .details-btn {
+            background: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .details-btn:hover {
+            background: var(--gradient-secondary);
+            color: var(--darker);
+        }
+
+        /* ===== لا توجد بيانات ===== */
+        .no-data {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--gray);
+        }
+        .no-data i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+
+        /* ===== الفوتر ===== */
+        .footer {
+            background: rgba(5,17,24,0.8);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 1px solid rgba(251,191,36,0.1);
+            color: var(--gray);
+        }
+        .footer a { color: var(--secondary); text-decoration: none; margin: 0 10px; }
+
+        /* ===== رسائل ===== */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        .message.success { background: var(--gradient-primary); }
+        .message.error { background: linear-gradient(145deg, #ef4444, #dc2626); }
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; }
+            .header h1 { font-size: 2rem; }
+            .caravans-grid { grid-template-columns: 1fr; }
+            .filter-btn { padding: 6px 15px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo-area">
+            <img src="" alt="Logo" class="logo" id="siteLogo">
+            <span class="site-title" id="siteTitle">مركز يثرب</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html">الرئيسية</a>
+            <a href="/clinic/index.html">العيادات</a>
+            <a href="/lab/index.html">المعمل</a>
+            <a href="/admin/login.html">دخول الأدمن</a>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>القوافل الخيرية</h1>
+        <p>خدمات طبية بأسعار مخفضة وخدمات مجانية للمجتمع</p>
+    </div>
+
+    <div class="container">
+        <div class="filters-bar" id="filtersBar">
+            <button class="filter-btn active" data-status="all">الكل</button>
+            <button class="filter-btn" data-status="active">نشطة حالياً</button>
+            <button class="filter-btn" data-status="upcoming">قادمة</button>
+            <button class="filter-btn" data-status="ended">منتهية</button>
+        </div>
+
+        <div id="caravansContainer">
+            <div class="loading">
+                <i class="fas fa-circle-notch"></i>
+                <p>جاري تحميل القوافل...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="/index.html">الرئيسية</a>
+        <a href="/clinic/index.html">العيادات</a>
+        <a href="/lab/index.html">المعمل</a>
+        <a href="/admin/login.html">دخول الأدمن</a>
+        <p style="margin-top: 15px;">نقابة تكنولوجيا المعلومات والبرمجيات المصرية © 2026</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <script>
+        // ============================================
+        // الأمن السيبراني الشامل
+        // ============================================
+        (function() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && ['c','x','u','s','p','a','v'].includes(e.key.toLowerCase())) e.preventDefault();
+                if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
+                if (e.key === 'PrintScreen' || e.keyCode === 44) e.preventDefault();
+            });
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
+            document.addEventListener('copy', e => e.preventDefault());
+            document.addEventListener('cut', e => e.preventDefault());
+        })();
+
+        // ============================================
+        // تهيئة Firebase
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ============================================
+        // متغيرات عامة
+        // ============================================
+        let allCaravans = [];
+
+        // ============================================
+        // تحميل بيانات الموقع العامة
+        // ============================================
+        async function loadSiteData() {
+            try {
+                const settings = await db.collection('settings').doc('comingSoon').get();
+                if (settings.exists) {
+                    const data = settings.data();
+                    if (data.logoUrl) document.getElementById('siteLogo').src = data.logoUrl;
+                    if (data.centerName) document.getElementById('siteTitle').textContent = data.centerName;
+                }
+            } catch (error) {
+                console.log('Error loading site data:', error);
+            }
+        }
+
+        // ============================================
+        // حساب حالة القافلة
+        // ============================================
+        function getCaravanStatus(startDate, endDate) {
+            const today = new Date().toISOString().split('T')[0];
+            if (startDate <= today && endDate >= today) return 'active';
+            if (startDate > today) return 'upcoming';
+            return 'ended';
+        }
+
+        // ============================================
+        // تحميل القوافل
+        // ============================================
+        async function loadCaravans() {
+            try {
+                const snapshot = await db.collection('caravans').orderBy('startDate', 'desc').get();
+                allCaravans = [];
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const status = getCaravanStatus(data.startDate, data.endDate);
+                    allCaravans.push({ id: doc.id, ...data, status });
+                });
+                
+                filterCaravans('all');
+                
+            } catch (error) {
+                console.log('Error loading caravans:', error);
+                showMessage('❌ حدث خطأ في تحميل البيانات', 'error');
+                document.getElementById('caravansContainer').innerHTML = '<div class="no-data"><i class="fas fa-exclamation-circle"></i><p>حدث خطأ في تحميل البيانات</p></div>';
+            }
+        }
+
+        // ============================================
+        // فلترة القوافل
+        // ============================================
+        function filterCaravans(status) {
+            let filtered = allCaravans;
+            if (status !== 'all') {
+                filtered = allCaravans.filter(c => c.status === status);
+            }
+            renderCaravans(filtered);
+        }
+
+        // ============================================
+        // عرض القوافل
+        // ============================================
+        function renderCaravans(caravans) {
+            const container = document.getElementById('caravansContainer');
+            
+            if (caravans.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fas fa-truck-medical"></i><p>لا توجد قوافل في هذا الوقت</p></div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            const grid = document.createElement('div');
+            grid.className = 'caravans-grid';
+            
+            caravans.forEach(caravan => {
+                const statusClass = {
+                    active: 'status-active',
+                    upcoming: 'status-upcoming',
+                    ended: 'status-ended'
+                }[caravan.status];
+                
+                const statusText = {
+                    active: 'نشطة حالياً',
+                    upcoming: 'قادمة',
+                    ended: 'منتهية'
+                }[caravan.status];
+                
+                const typeClass = caravan.type === 'discount' ? 'type-discount' : 'type-free';
+                const typeText = caravan.type === 'discount' ? 'خصومات على الأسعار' : 'خدمات مجانية';
+                
+                let servicesHtml = '';
+                if (caravan.type === 'discount' && caravan.services?.length) {
+                    servicesHtml = `
+                        <div class="caravan-services">
+                            <div class="services-title"><i class="fas fa-percent"></i> الخدمات المخفضة</div>
+                            <div class="services-list">
+                                ${caravan.services.map(s => `${s.name}: ${s.discount}% خصم`).join('<br>')}
+                            </div>
+                        </div>
+                    `;
+                } else if (caravan.type === 'free' && caravan.freeServices?.length) {
+                    servicesHtml = `
+                        <div class="caravan-services">
+                            <div class="services-title"><i class="fas fa-gift"></i> الخدمات المجانية</div>
+                            <div class="services-list">
+                                ${caravan.freeServices.join('<br>')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                const card = document.createElement('div');
+                card.className = 'caravan-card';
+                card.onclick = () => {
+                    window.location.href = `/caravans/caravan.html?id=${caravan.id}`;
+                };
+                card.innerHTML = `
+                    <img src="${caravan.imageUrl || 'https://via.placeholder.com/400x220/0e7c9e/ffffff?text=Caravan'}" class="caravan-image" onerror="this.src='https://via.placeholder.com/400x220/0e7c9e/ffffff?text=Caravan'">
+                    <div class="caravan-info">
+                        <div class="caravan-name">${caravan.name || 'قافلة خيرية'}</div>
+                        <div class="caravan-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>${caravan.startDate} - ${caravan.endDate}</span>
+                        </div>
+                        <div class="caravan-type ${typeClass}">${typeText}</div>
+                        ${servicesHtml}
+                        <div class="caravan-description">${caravan.description || ''}</div>
+                        <div class="caravan-status">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <button class="details-btn" onclick="event.stopPropagation(); window.location.href='/caravans/caravan.html?id=${caravan.id}'">التفاصيل <i class="fas fa-arrow-left"></i></button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            container.appendChild(grid);
+        }
+
+        // ============================================
+        // الفلاتر
+        // ============================================
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterCaravans(btn.dataset.status);
+            });
+        });
+
+        // ============================================
+        // عرض الرسائل
+        // ============================================
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = msg;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        }
+
+        // ============================================
+        // تشغيل
+        // ============================================
+        loadSiteData();
+        loadCaravans();
+    </script>
+</body>
+</html>
