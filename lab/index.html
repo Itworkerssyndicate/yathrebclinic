@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>معمل يثرب للتحاليل الطبية</title>
+    
+    <!-- ===== الأمن السيبراني ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --secondary: #fbbf24;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: rgba(5,17,24,0.8);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(251,191,36,0.2);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .site-title { font-size: 1.3rem; font-weight: 700; color: white; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--gray); text-decoration: none; transition: all 0.3s; }
+        .nav-links a:hover { color: var(--secondary); }
+
+        .header {
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .header h1 { font-size: 3rem; color: white; position: relative; }
+        .header p { color: rgba(255,255,255,0.8); margin-top: 10px; position: relative; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+
+        .categories-bar {
+            background: rgba(5,17,24,0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 15px 25px;
+            margin-bottom: 40px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .category-btn {
+            background: transparent;
+            border: 1px solid rgba(251,191,36,0.3);
+            color: var(--gray);
+            padding: 10px 25px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .search-bar {
+            background: rgba(5,17,24,0.5);
+            border-radius: 60px;
+            padding: 10px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .search-bar i { color: var(--secondary); }
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px;
+            font-size: 1rem;
+        }
+        .search-bar input:focus { outline: none; }
+
+        .tests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        .test-card {
+            background: rgba(5,17,24,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 25px;
+            transition: all 0.3s;
+            border: 1px solid rgba(251,191,36,0.1);
+            cursor: pointer;
+        }
+        .test-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-glow);
+        }
+        .test-name { font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 10px; }
+        .test-category { color: var(--secondary); font-size: 0.9rem; margin-bottom: 10px; }
+        .test-price { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+        .test-duration { color: var(--gray); font-size: 0.85rem; display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+        .test-instructions {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .footer {
+            background: rgba(5,17,24,0.8);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 1px solid rgba(251,191,36,0.1);
+            color: var(--gray);
+        }
+        .footer a { color: var(--secondary); text-decoration: none; margin: 0 10px; }
+
+        @media (max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; }
+            .header h1 { font-size: 2rem; }
+            .tests-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo-area">
+            <img src="" alt="Logo" class="logo" id="siteLogo">
+            <span class="site-title" id="siteTitle">مركز يثرب</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html">الرئيسية</a>
+            <a href="/clinic/index.html">العيادات</a>
+            <a href="/admin/login.html">دخول الأدمن</a>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>معمل يثرب للتحاليل الطبية</h1>
+        <p>دقة وسرعة في النتائج - أحدث الأجهزة</p>
+    </div>
+
+    <div class="container">
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="ابحث عن تحليل..." onkeyup="filterTests()">
+        </div>
+        <div class="categories-bar" id="categoriesBar"></div>
+        <div class="tests-grid" id="testsGrid">
+            <div style="text-align:center; padding:60px;"><i class="fas fa-circle-notch fa-spin"></i> جاري التحميل...</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="/index.html">الرئيسية</a>
+        <a href="/clinic/index.html">العيادات</a>
+        <a href="/admin/login.html">دخول الأدمن</a>
+        <p style="margin-top: 15px;">نقابة تكنولوجيا المعلومات والبرمجيات المصرية © 2026</p>
+    </div>
+
+    <script>
+        (function() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => { if (e.ctrlKey && ['c','x','u','s'].includes(e.key.toLowerCase())) e.preventDefault(); if (e.key === 'F12') e.preventDefault(); });
+            document.addEventListener('selectstart', e => e.preventDefault());
+        })();
+
+        const firebaseConfig = { apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU", authDomain: "yathreb-10909.firebaseapp.com", projectId: "yathreb-10909" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let allTests = [];
+        let categories = new Set();
+
+        async function loadSiteData() {
+            const settings = await db.collection('settings').doc('comingSoon').get();
+            if (settings.exists) {
+                const data = settings.data();
+                if (data.logoUrl) document.getElementById('siteLogo').src = data.logoUrl;
+                if (data.centerName) document.getElementById('siteTitle').textContent = data.centerName;
+            }
+        }
+
+        async function loadTests() {
+            const snapshot = await db.collection('labTests').get();
+            allTests = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                allTests.push({ id: doc.id, ...data });
+                if (data.category) categories.add(data.category);
+            });
+            renderCategories();
+            renderTests(allTests);
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesBar');
+            container.innerHTML = '<button class="category-btn active" data-category="all">جميع التحاليل</button>';
+            categories.forEach(cat => {
+                container.innerHTML += `<button class="category-btn" data-category="${cat}">${cat}</button>`;
+            });
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterTests();
+                });
+            });
+        }
+
+        function filterTests() {
+            const category = document.querySelector('.category-btn.active')?.dataset.category || 'all';
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = allTests;
+            if (category !== 'all') filtered = filtered.filter(t => t.category === category);
+            if (search) filtered = filtered.filter(t => t.name?.toLowerCase().includes(search));
+            renderTests(filtered);
+        }
+
+        function renderTests(tests) {
+            const container = document.getElementById('testsGrid');
+            if (tests.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:60px;">لا توجد تحاليل حالياً</p>';
+                return;
+            }
+            container.innerHTML = '';
+            tests.forEach(test => {
+                const card = document.createElement('div');
+                card.className = 'test-card';
+                card.innerHTML = `
+                    <div class="test-name">${test.name || 'تحليل'}</div>
+                    <div class="test-category"><i class="fas fa-tag"></i> ${test.category || 'عام'}</div>
+                    <div class="test-price">${test.offerPrice && test.offerPrice < test.price ? test.offerPrice : test.price} ج.م</div>
+                    <div class="test-duration"><i class="fas fa-clock"></i> مدة التحليل: ${test.duration || 'غير محدد'}</div>
+                    <div class="test-duration"><i class="fas fa-chart-line"></i> ظهور النتيجة: ${test.resultsTime || '24 ساعة'}</div>
+                    ${test.instructions && test.instructions.length ? `<div class="test-instructions"><i class="fas fa-info-circle"></i> ${test.instructions[0]}${test.instructions.length > 1 ? '...' : ''}</div>` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        loadSiteData();
+        loadTests();
+    </script>
+</body>
+</html>
