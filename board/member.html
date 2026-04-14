@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>تفاصيل العضو - مجلس إدارة مركز يثرب الخيري التخصصي</title>
+    
+    <!-- ===== الأمن السيبراني الشامل ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --primary-light: #2a9bc2;
+            --secondary: #fbbf24;
+            --secondary-dark: #f59e0b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
+            --shadow-xl: 0 30px 70px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        /* ===== حماية ===== */
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        img { pointer-events: none; -webkit-user-drag: none; user-drag: none; }
+
+        /* ===== الشريط العلوي ===== */
+        .top-bar {
+            background: rgba(5,17,24,0.8);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(251,191,36,0.2);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .site-title { font-size: 1.3rem; font-weight: 700; color: white; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--gray); text-decoration: none; transition: all 0.3s; }
+        .nav-links a:hover { color: var(--secondary); }
+
+        /* ===== شاشة التحميل ===== */
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .loading i { font-size: 3rem; color: var(--secondary); animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== المحتوى ===== */
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* ===== بطاقة العضو ===== */
+        .member-card {
+            background: rgba(5,17,24,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            overflow: hidden;
+            border: 1px solid rgba(251,191,36,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .member-header {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 40px;
+            padding: 40px;
+            border-bottom: 1px solid rgba(251,191,36,0.1);
+        }
+        .member-image-area { text-align: center; }
+        .member-image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 30px;
+            box-shadow: var(--shadow-lg);
+            border: 3px solid var(--secondary);
+        }
+        .member-info h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .member-position {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .member-bio {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .member-details {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .detail-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .detail-item i { color: var(--secondary); font-size: 1.2rem; }
+        .detail-item span { color: var(--gray); font-size: 0.9rem; }
+
+        /* ===== قسم الكلمة ===== */
+        .message-section {
+            padding: 40px;
+            border-bottom: 1px solid rgba(251,191,36,0.1);
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .message-content {
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            padding: 30px;
+            color: var(--light);
+            font-size: 1.1rem;
+            line-height: 1.9;
+            white-space: pre-wrap;
+        }
+
+        /* ===== زر العودة ===== */
+        .back-section {
+            padding: 30px;
+            text-align: center;
+        }
+        .back-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .back-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow-glow); }
+
+        /* ===== الفوتر ===== */
+        .footer {
+            background: rgba(5,17,24,0.8);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 1px solid rgba(251,191,36,0.1);
+            color: var(--gray);
+        }
+        .footer a { color: var(--secondary); text-decoration: none; margin: 0 10px; }
+
+        /* ===== رسائل ===== */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        .message.success { background: var(--gradient-primary); }
+        .message.error { background: linear-gradient(145deg, #ef4444, #dc2626); }
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 1024px) {
+            .member-header {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .member-image { margin: 0 auto; }
+            .member-details { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; }
+            .member-info h1 { font-size: 2rem; }
+            .message-content { padding: 20px; font-size: 1rem; }
+            .section-title { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo-area">
+            <img src="" alt="Logo" class="logo" id="siteLogo">
+            <span class="site-title" id="siteTitle">مركز يثرب</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html">الرئيسية</a>
+            <a href="/clinic/index.html">العيادات</a>
+            <a href="/lab/index.html">المعمل</a>
+            <a href="/admin/login.html">دخول الأدمن</a>
+        </div>
+    </div>
+
+    <div class="container" id="container">
+        <div class="loading" id="loading">
+            <i class="fas fa-circle-notch"></i>
+            <p>جاري تحميل بيانات العضو...</p>
+        </div>
+        <div id="memberContent" style="display: none;"></div>
+    </div>
+
+    <div class="footer">
+        <a href="/index.html">الرئيسية</a>
+        <a href="/clinic/index.html">العيادات</a>
+        <a href="/lab/index.html">المعمل</a>
+        <a href="/admin/login.html">دخول الأدمن</a>
+        <p style="margin-top: 15px;">نقابة تكنولوجيا المعلومات والبرمجيات المصرية © 2026</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <script>
+        // ============================================
+        // الأمن السيبراني الشامل
+        // ============================================
+        (function() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && ['c','x','u','s','p','a','v'].includes(e.key.toLowerCase())) e.preventDefault();
+                if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
+                if (e.key === 'PrintScreen' || e.keyCode === 44) e.preventDefault();
+            });
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
+            document.addEventListener('copy', e => e.preventDefault());
+            document.addEventListener('cut', e => e.preventDefault());
+        })();
+
+        // ============================================
+        // تهيئة Firebase
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ============================================
+        // متغيرات عامة
+        // ============================================
+        let memberId = null;
+        let memberData = null;
+
+        // ============================================
+        // الحصول على ID العضو من الرابط
+        // ============================================
+        function getMemberIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // ============================================
+        // تحميل بيانات الموقع العامة
+        // ============================================
+        async function loadSiteData() {
+            try {
+                const settings = await db.collection('settings').doc('comingSoon').get();
+                if (settings.exists) {
+                    const data = settings.data();
+                    if (data.logoUrl) document.getElementById('siteLogo').src = data.logoUrl;
+                    if (data.centerName) document.getElementById('siteTitle').textContent = data.centerName;
+                }
+            } catch (error) {
+                console.log('Error loading site data:', error);
+            }
+        }
+
+        // ============================================
+        // تحميل بيانات العضو
+        // ============================================
+        async function loadMemberData() {
+            memberId = getMemberIdFromUrl();
+            
+            if (!memberId) {
+                showMessage('❌ لم يتم تحديد العضو', 'error');
+                setTimeout(() => { window.location.href = '/board/index.html'; }, 2000);
+                return;
+            }
+
+            try {
+                const doc = await db.collection('boardMembers').doc(memberId).get();
+                
+                if (!doc.exists) {
+                    showMessage('❌ العضو غير موجود', 'error');
+                    setTimeout(() => { window.location.href = '/board/index.html'; }, 2000);
+                    return;
+                }
+
+                memberData = { id: doc.id, ...doc.data() };
+                renderMemberPage();
+
+            } catch (error) {
+                console.log('Error loading member:', error);
+                showMessage('❌ حدث خطأ في تحميل البيانات', 'error');
+            }
+        }
+
+        // ============================================
+        // عرض صفحة العضو
+        // ============================================
+        function renderMemberPage() {
+            document.getElementById('loading').style.display = 'none';
+            const container = document.getElementById('memberContent');
+            container.style.display = 'block';
+
+            const defaultImage = 'https://via.placeholder.com/300x300/0e7c9e/ffffff?text=Member';
+            const messageContent = memberData.message || 'لا توجد كلمة مسجلة بعد';
+            const messageTitle = memberData.messageTitle || `كلمة ${memberData.name}`;
+
+            container.innerHTML = `
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-image-area">
+                            <img src="${memberData.imageUrl || defaultImage}" class="member-image" onerror="this.src='${defaultImage}'">
+                        </div>
+                        <div class="member-info">
+                            <h1>${memberData.name || 'عضو مجلس الإدارة'}</h1>
+                            <div class="member-position">${memberData.position || 'مجلس الإدارة'}</div>
+                            <div class="member-bio">${memberData.bio || ''}</div>
+                            <div class="member-details">
+                                <div class="detail-item"><i class="fas fa-sort-numeric-down"></i><span>الترتيب: ${memberData.order || 0}</span></div>
+                                <div class="detail-item"><i class="fas fa-eye"></i><span>${memberData.showInHome ? 'يظهر في الرئيسية' : 'لا يظهر في الرئيسية'}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="message-section">
+                        <div class="section-title"><i class="fas fa-envelope"></i> ${messageTitle}</div>
+                        <div class="message-content">${messageContent.replace(/\n/g, '<br>')}</div>
+                    </div>
+
+                    <div class="back-section">
+                        <a href="/board/index.html" class="back-btn"><i class="fas fa-arrow-right"></i> العودة إلى مجلس الإدارة</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // عرض الرسائل
+        // ============================================
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = msg;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+        }
+
+        // ============================================
+        // تشغيل
+        // ============================================
+        loadSiteData();
+        loadMemberData();
+    </script>
+</body>
+</html>
