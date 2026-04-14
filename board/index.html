@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>مجلس الإدارة - مركز يثرب الخيري التخصصي</title>
+    
+    <!-- ===== الأمن السيبراني الشامل ===== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data: blob:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+    ">
+    
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- ===== Fonts & Icons ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ===== Firebase SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #0e7c9e;
+            --primary-dark: #0a5d7a;
+            --primary-light: #2a9bc2;
+            --secondary: #fbbf24;
+            --secondary-dark: #f59e0b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #0a1f2f;
+            --darker: #051118;
+            --gray: #94a3b8;
+            --gradient-primary: linear-gradient(145deg, #0e7c9e, #0a5d7a);
+            --gradient-secondary: linear-gradient(145deg, #fbbf24, #f59e0b);
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 50px rgba(0,0,0,0.5);
+            --shadow-xl: 0 30px 70px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 30px rgba(251,191,36,0.3);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        /* ===== حماية ===== */
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        img { pointer-events: none; -webkit-user-drag: none; user-drag: none; }
+
+        /* ===== الشريط العلوي ===== */
+        .top-bar {
+            background: rgba(5,17,24,0.8);
+            backdrop-filter: blur(20px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(251,191,36,0.2);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .site-title { font-size: 1.3rem; font-weight: 700; color: white; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: var(--gray); text-decoration: none; transition: all 0.3s; }
+        .nav-links a:hover { color: var(--secondary); }
+
+        /* ===== الهيدر ===== */
+        .header {
+            background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .header h1 { font-size: 3rem; color: white; position: relative; }
+        .header p { color: rgba(255,255,255,0.8); margin-top: 10px; position: relative; font-size: 1.1rem; }
+
+        /* ===== شاشة التحميل ===== */
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .loading i { font-size: 3rem; color: var(--secondary); animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== الحاوية ===== */
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+
+        /* ===== شبكة الأعضاء ===== */
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        .member-card {
+            background: rgba(5,17,24,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(251,191,36,0.1);
+            cursor: pointer;
+        }
+        .member-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-glow);
+        }
+        .member-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+        .member-info {
+            padding: 25px;
+            text-align: center;
+        }
+        .member-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+        .member-position {
+            color: var(--secondary);
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .member-message-btn {
+            background: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            padding: 10px 25px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .member-message-btn:hover {
+            background: var(--gradient-secondary);
+            color: var(--darker);
+            transform: translateY(-3px);
+        }
+
+        /* ===== مودال عرض الكلمة ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--dark);
+            border-radius: 40px;
+            padding: 40px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid var(--secondary);
+            animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .modal-header h3 { color: var(--secondary); font-size: 1.8rem; }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-close:hover { color: var(--danger); transform: rotate(90deg); }
+        .modal-message {
+            color: var(--light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            white-space: pre-wrap;
+        }
+        .modal-footer {
+            text-align: center;
+        }
+        .modal-footer button {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .modal-footer button:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+
+        /* ===== لا توجد بيانات ===== */
+        .no-data {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--gray);
+        }
+        .no-data i { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+
+        /* ===== الفوتر ===== */
+        .footer {
+            background: rgba(5,17,24,0.8);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 1px solid rgba(251,191,36,0.1);
+            color: var(--gray);
+        }
+        .footer a { color: var(--secondary); text-decoration: none; margin: 0 10px; transition: all 0.3s; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ===== رسائل ===== */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+        .message.success { background: var(--gradient-primary); }
+        .message.error { background: linear-gradient(145deg, #ef4444, #dc2626); }
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar { flex-direction: column; text-align: center; }
+            .header h1 { font-size: 2rem; }
+            .board-grid { grid-template-columns: 1fr; }
+            .member-image { height: 280px; }
+            .member-name { font-size: 1.3rem; }
+            .modal-content { padding: 25px; }
+            .modal-header h3 { font-size: 1.4rem; }
+            .modal-message { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo-area">
+            <img src="" alt="Logo" class="logo" id="siteLogo">
+            <span class="site-title" id="siteTitle">مركز يثرب</span>
+        </div>
+        <div class="nav-links">
+            <a href="/index.html">الرئيسية</a>
+            <a href="/clinic/index.html">العيادات</a>
+            <a href="/lab/index.html">المعمل</a>
+            <a href="/admin/login.html">دخول الأدمن</a>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1>مجلس الإدارة</h1>
+        <p>قيادة رشيدة وخبرات متنوعة لخدمة المجتمع</p>
+    </div>
+
+    <div class="container" id="container">
+        <div id="boardContainer">
+            <div class="loading">
+                <i class="fas fa-circle-notch"></i>
+                <p>جاري تحميل أعضاء مجلس الإدارة...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال عرض الكلمة -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-message" id="modalMessage"></div>
+            <div class="modal-footer">
+                <button onclick="closeModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="/index.html">الرئيسية</a>
+        <a href="/clinic/index.html">العيادات</a>
+        <a href="/lab/index.html">المعمل</a>
+        <a href="/admin/login.html">دخول الأدمن</a>
+        <p style="margin-top: 15px;">نقابة تكنولوجيا المعلومات والبرمجيات المصرية © 2026</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <script>
+        // ============================================
+        // الأمن السيبراني الشامل
+        // ============================================
+        (function() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && ['c','x','u','s','p','a','v'].includes(e.key.toLowerCase())) e.preventDefault();
+                if (e.key === 'F12' || e.keyCode === 123) e.preventDefault();
+                if (e.key === 'PrintScreen' || e.keyCode === 44) e.preventDefault();
+            });
+            document.addEventListener('selectstart', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
+            document.addEventListener('copy', e => e.preventDefault());
+            document.addEventListener('cut', e => e.preventDefault());
+        })();
+
+        // ============================================
+        // تهيئة Firebase
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMXfjOsas18yb0b8mbbhGqJj78yFFTVyU",
+            authDomain: "yathreb-10909.firebaseapp.com",
+            projectId: "yathreb-10909"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ============================================
+        // متغيرات عامة
+        // ============================================
+        let allMembers = [];
+
+        // ============================================
+        // تحميل بيانات الموقع العامة
+        // ============================================
+        async function loadSiteData() {
+            try {
+                const settings = await db.collection('settings').doc('comingSoon').get();
+                if (settings.exists) {
+                    const data = settings.data();
+                    if (data.logoUrl) document.getElementById('siteLogo').src = data.logoUrl;
+                    if (data.centerName) document.getElementById('siteTitle').textContent = data.centerName;
+                }
+            } catch (error) {
+                console.log('Error loading site data:', error);
+            }
+        }
+
+        // ============================================
+        // تحميل أعضاء مجلس الإدارة
+        // ============================================
+        async function loadBoardMembers() {
+            try {
+                const snapshot = await db.collection('boardMembers').orderBy('order').get();
+                allMembers = [];
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    allMembers.push({ id: doc.id, ...data });
+                });
+                
+                renderBoardMembers();
+                
+            } catch (error) {
+                console.log('Error loading board members:', error);
+                showMessage('❌ حدث خطأ في تحميل البيانات', 'error');
+                const container = document.getElementById('boardContainer');
+                container.innerHTML = '<div class="no-data"><i class="fas fa-exclamation-circle"></i><p>حدث خطأ في تحميل البيانات</p></div>';
+            }
+        }
+
+        // ============================================
+        // عرض أعضاء مجلس الإدارة
+        // ============================================
+        function renderBoardMembers() {
+            const container = document.getElementById('boardContainer');
+            
+            if (allMembers.length === 0) {
+                container.innerHTML = '<div class="no-data"><i class="fas fa-users"></i><p>لا يوجد أعضاء في مجلس الإدارة حالياً</p></div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            const grid = document.createElement('div');
+            grid.className = 'board-grid';
+            
+            allMembers.forEach(member => {
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML = `
+                    <img src="${member.imageUrl || 'https://via.placeholder.com/350x350/0e7c9e/ffffff?text=Member'}" class="member-image" onerror="this.src='https://via.placeholder.com/350x350/0e7c9e/ffffff?text=Member'">
+                    <div class="member-info">
+                        <div class="member-name">${member.name || 'عضو'}</div>
+                        <div class="member-position">${member.position || 'مجلس الإدارة'}</div>
+                        <button class="member-message-btn" onclick="showMessageModal('${member.id}')">
+                            <i class="fas fa-envelope"></i> اقرأ الكلمة
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            container.appendChild(grid);
+        }
+
+        // ============================================
+        // عرض مودال الكلمة
+        // ============================================
+        function showMessageModal(memberId) {
+            const member = allMembers.find(m => m.id === memberId);
+            if (!member) return;
+            
+            document.getElementById('modalTitle').textContent = member.messageTitle || `كلمة ${member.name}`;
+            document.getElementById('modalMessage').innerHTML = (member.message || 'لا توجد كلمة بعد').replace(/\n/g, '<br>');
+            document.getElementById('messageModal').classList.add('active');
+        }
+
+        // ============================================
+        // إغلاق المودال
+        // ============================================
+        function closeModal() {
+            document.getElementById('messageModal').classList.remove('active');
+        }
+
+        // ============================================
+        // عرض الرسائل
+        // ============================================
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = msg;
+            msgDiv.className = `message ${type}`;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============================================
+        // تشغيل
+        // ============================================
+        loadSiteData();
+        loadBoardMembers();
+    </script>
+</body>
+</html>
